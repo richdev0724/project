@@ -1,0 +1,247 @@
+{
+  "id": null,
+  "uid": "marketmono-support-tickets",
+  "title": "MarketMono - Support Tickets",
+  "tags": ["support", "tickets", "email", "notifications"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "backend_host",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(marketmono_support_tickets_count{job=\"backend-server\"}, host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "app_host",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(http_server_requests_seconds_count{job=~\"backend-server|backend-admin\"}, host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "search",
+        "type": "textbox",
+        "current": { "text": "", "value": "" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Active Tickets",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max(marketmono_support_tickets_count{job=\"backend-server\",host=~\"$backend_host\",status=\"OPEN_OR_PENDING\",priority=\"ALL\",assignment=\"ALL\"})",
+          "legendFormat": "active"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 10 }, { "color": "red", "value": 25 }] } } },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area" }
+    },
+    {
+      "id": 2,
+      "title": "Unassigned Active",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum(max by (status, priority, assignment) (marketmono_support_tickets_count{job=\"backend-server\",host=~\"$backend_host\",status=~\"OPEN|PENDING_RESPONSE\",assignment=\"unassigned\"}))",
+          "legendFormat": "unassigned"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 }] } } },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area" }
+    },
+    {
+      "id": 3,
+      "title": "High / Urgent Active",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum(max by (status, priority, assignment) (marketmono_support_tickets_count{job=\"backend-server\",host=~\"$backend_host\",status=~\"OPEN|PENDING_RESPONSE\",priority=~\"HIGH|URGENT\"}))",
+          "legendFormat": "high or urgent"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 3 }] } } },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area" }
+    },
+    {
+      "id": 4,
+      "title": "Oldest Open Age",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max(marketmono_support_tickets_oldest_open_age_seconds{job=\"backend-server\",host=~\"$backend_host\",status=\"OPEN\",priority=\"ALL\",assignment=\"ALL\"})",
+          "legendFormat": "oldest open"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 86400 }, { "color": "red", "value": 259200 }] } } },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area" }
+    },
+    {
+      "id": 5,
+      "title": "Tickets By Status",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max by (status) (marketmono_support_tickets_count{job=\"backend-server\",host=~\"$backend_host\",status!=\"OPEN_OR_PENDING\",priority=\"ALL\",assignment=\"ALL\"})",
+          "legendFormat": "{{status}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 6,
+      "title": "Active Tickets By Priority",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (priority, assignment) (max by (status, priority, assignment) (marketmono_support_tickets_count{job=\"backend-server\",host=~\"$backend_host\",status=~\"OPEN|PENDING_RESPONSE\",priority!=\"ALL\",assignment!=\"ALL\"}))",
+          "legendFormat": "{{priority}} {{assignment}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 7,
+      "title": "Last 24h Ticket Activity",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max by (activity) (marketmono_support_ticket_activity_count{job=\"backend-server\",host=~\"$backend_host\"})",
+          "legendFormat": "{{activity}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "displayMode": "gradient", "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } }
+    },
+    {
+      "id": 8,
+      "title": "Notification Backlog",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max(marketmono_support_ticket_notifications_count{job=\"backend-server\",host=~\"$backend_host\",status=\"PENDING_OR_IN_PROGRESS\",event_type=\"ALL\",recipient_type=\"ALL\"})",
+          "legendFormat": "backlog"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 5 }, { "color": "red", "value": 20 }] } } },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area" }
+    },
+    {
+      "id": 9,
+      "title": "Oldest Pending Notification",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max(marketmono_support_ticket_notifications_oldest_pending_age_seconds{job=\"backend-server\",host=~\"$backend_host\",status=\"PENDING_OR_IN_PROGRESS\",event_type=\"ALL\",recipient_type=\"ALL\"})",
+          "legendFormat": "oldest pending"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 300 }, { "color": "red", "value": 900 }] } } },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area" }
+    },
+    {
+      "id": 10,
+      "title": "Notification Events By Status",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 8, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max by (status, event_type, recipient_type) (marketmono_support_ticket_notifications_count{job=\"backend-server\",host=~\"$backend_host\",status!=\"PENDING_OR_IN_PROGRESS\",event_type=\"ALL\",recipient_type=\"ALL\"})",
+          "legendFormat": "{{status}} {{event_type}} {{recipient_type}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 11,
+      "title": "Support API Request Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (job, uri, status) (rate(http_server_requests_seconds_count{job=~\"backend-server|backend-admin\",host=~\"$app_host\",uri=~\"/api/v1/support/tickets.*|/support-tickets.*\"}[5m]))",
+          "legendFormat": "{{job}} {{uri}} {{status}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "id": 12,
+      "title": "Support API 5xx Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (job, uri, status) (rate(http_server_requests_seconds_count{job=~\"backend-server|backend-admin\",host=~\"$app_host\",uri=~\"/api/v1/support/tickets.*|/support-tickets.*\",status=~\"5..\"}[5m]))",
+          "legendFormat": "{{job}} {{uri}} {{status}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 0.001 }] } } }
+    },
+    {
+      "id": 13,
+      "title": "Support Ticket Error Logs",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 32 },
+      "datasource": { "type": "loki", "uid": "afisr480c5af4e" },
+      "targets": [
+        {
+          "expr": "{host=~\"$app_host\", job=\"docker\"} |~ \"(?i)(support ticket|support-ticket|support/tickets|SUPPORT_TICKET_)\" |~ \"(?i)(failed|unavailable|exception|SUPPORT_TICKET_RATE_LIMITER_UNAVAILABLE|SUPPORT_TICKET_RATE_LIMITED|SUPPORT_TICKET_INVALID|SUPPORT_TICKET_NOT_FOUND)\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": { "showTime": true, "showLabels": true, "wrapLogMessage": true, "sortOrder": "Descending", "enableLogDetails": true }
+    },
+    {
+      "id": 14,
+      "title": "Support Email / Notification Logs",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 32 },
+      "datasource": { "type": "loki", "uid": "afisr480c5af4e" },
+      "targets": [
+        {
+          "expr": "{host=~\"$app_host\", job=\"docker\"} |~ \"(Support ticket notification dispatch failed|Recovered .* stale support ticket notification claim|Support ticket created email sent|Support ticket user reply email sent|Support ticket staff reply email sent)\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": { "showTime": true, "showLabels": true, "wrapLogMessage": true, "sortOrder": "Descending", "enableLogDetails": true }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

@@ -1,0 +1,470 @@
+spring:
+  application:
+    name: market-mono-backend
+
+  config:
+    import: optional:file:.env[.properties]
+  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:marketmono}?reWriteBatchedInserts=true
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin123}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL:35}
+      minimum-idle: ${HIKARI_MIN_IDLE:10}
+      idle-timeout: 300000        # 5min (reduced from 10min)
+      max-lifetime: 1200000       # 20min (reduced)
+      connection-timeout: 20000   # 20s (stricter)
+      leak-detection-threshold: 60000  # 60s leak detection
+      validation-timeout: 5000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false  # Disable OSIV for better performance
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: ${HIBERNATE_BATCH_SIZE:50}  # Increase to 200 when Kafka enabled
+        order_inserts: true  # Group inserts by entity type
+        order_updates: true  # Group updates by entity type
+        batch_versioned_data: true  # Enable batching for @Version entities
+    show-sql: false
+  
+  liquibase:
+    change-log: ${SPRING_LIQUIBASE_CHANGE_LOG:classpath:db/changelog/db.changelog-master.yaml}
+    enabled: ${SPRING_LIQUIBASE_ENABLED:true}  # Keep false for the current DO managed PG18 smoke lane until restored schema/history validation completes.
+  
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=5m
+  
+  threads:
+    virtual:
+      enabled: true
+
+  # Graceful shutdown: let Kafka consumers finish current batch + commit offsets before JVM exits
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  # Kafka consumer configuration for the real-time market data feed.
+  kafka:
+    enabled: ${KAFKA_ENABLED:false}  # Disabled by default; enable per-environment
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:stream.unusualwhales.com:9083}
+    consumer:
+      group-id: ${KAFKA_GROUP_ID:marketmono_farrukh}
+      auto-offset-reset: earliest  # Resume from committed offset after redeploy; 'latest' loses messages during downtime
+      enable-auto-commit: false  # Manual offset commit for reliability
+      max-poll-records: ${KAFKA_MAX_POLL_RECORDS:500}
+      fetch-min-size: 1024       # 1KB minimum fetch
+      fetch-max-wait: 500ms
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        security.protocol: SASL_SSL
+        sasl.mechanism: SCRAM-SHA-512
+        sasl.jaas.config: >-
+          org.apache.kafka.common.security.scram.ScramLoginModule required
+          username="${KAFKA_USERNAME:marketmono}"
+          password="${KAFKA_PASSWORD:}";
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+    listener:
+      type: batch           # Batch listener for high-throughput ingestion
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:3}        # Consumer threads per topic
+      ack-mode: manual_immediate
+      auto-startup: false   # Started by KafkaListenerStartup after app is ready (non-fatal)
+      auth-exception-retry-interval: 30s  # Retry on auth/authz failures instead of dying
+  
+  # WebSocket / STOMP Configuration
+  websocket:
+    message-size-limit: 1048576      # 1MB max message size
+    send-buffer-size-limit: 524288   # 512KB send buffer
+    send-time-limit: 20000           # 20s send timeout
+
+# WebSocket CORS Configuration
+# Use wildcard patterns for flexible origin matching
+# WARNING: http://*:* allows ALL HTTP origins - use only in development!
+websocket:
+  allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://localhost:*,http://127.0.0.1:*,http://[::1]:*}
+
+app:
+  frontend-url: ${APP_FRONTEND_URL:http://localhost:5173}
+  oauth:
+    google:
+      client-id: ${GOOGLE_OAUTH_CLIENT_ID:${NEXT_PUBLIC_GOOGLE_CLIENT_ID:}}
+      # Empty means any verified Google account is allowed. This optional list is an email-domain suffix allow-list, not Google Workspace enforcement.
+      allowed-domains: ${GOOGLE_OAUTH_ALLOWED_DOMAINS:}
+      require-email-verified: ${GOOGLE_OAUTH_REQUIRE_EMAIL_VERIFIED:true}
+      auto-link-users: ${GOOGLE_OAUTH_AUTO_LINK_USERS:true}
+      auto-create-users: ${GOOGLE_OAUTH_AUTO_CREATE_USERS:true}
+      jwks-uri: ${GOOGLE_OAUTH_JWKS_URI:https://www.googleapis.com/oauth2/v3/certs}
+      jwks-connect-timeout: ${GOOGLE_OAUTH_JWKS_CONNECT_TIMEOUT:PT2S}
+      jwks-read-timeout: ${GOOGLE_OAUTH_JWKS_READ_TIMEOUT:PT3S}
+      key-miss-refresh-cooldown: ${GOOGLE_OAUTH_KEY_MISS_REFRESH_COOLDOWN:PT5M}
+  mail:
+    provider: ${MAIL_PROVIDER:gmail-api}
+    from-email: ${MAIL_FROM_EMAIL:noreply@marketmono.com}
+    from-name: ${MAIL_FROM_NAME:Market Mono}
+    gmail-api:
+      service-account-json-base64: ${GMAIL_SERVICE_ACCOUNT_JSON_B64:}
+      service-account-json: ${GMAIL_SERVICE_ACCOUNT_JSON:}
+      service-account-json-path: ${GMAIL_SERVICE_ACCOUNT_JSON_PATH:}
+      delegated-user: ${GMAIL_DELEGATED_USER:${MAIL_FROM_EMAIL:}}
+      token-uri: ${GMAIL_TOKEN_URI:https://oauth2.googleapis.com/token}
+      api-base-url: ${GMAIL_API_BASE_URL:https://gmail.googleapis.com/gmail/v1}
+  option-trades:
+    recent:
+      fallback-window: PT30M
+      fallback-min-premium: 50000
+      fallback-min-volume: 100
+    guard:
+      enabled: ${FLOW_FILTER_GUARD_ENABLED:true}
+      max-concurrent-expensive-queries: ${FLOW_FILTER_GUARD_MAX_CONCURRENT_EXPENSIVE_QUERIES:2}
+      retry-after-seconds: ${FLOW_FILTER_GUARD_RETRY_AFTER_SECONDS:5}
+    cache:
+      max-entries: ${FLOW_FILTER_CACHE_MAX_ENTRIES:512}
+      fresh-ttl: ${FLOW_FILTER_CACHE_FRESH_TTL:PT15S}
+      stale-ttl: ${FLOW_FILTER_CACHE_STALE_TTL:PT2M}
+      negative-cooldown-ttl: ${FLOW_FILTER_CACHE_NEGATIVE_COOLDOWN_TTL:PT5S}
+    aggregation:
+      enabled: ${OPTION_TRADE_AGGREGATION_ENABLED:true}
+      async: ${OPTION_TRADE_AGGREGATION_ASYNC:true}
+      max-in-flight-batches: ${OPTION_TRADE_AGGREGATION_MAX_IN_FLIGHT_BATCHES:1}
+      queue-capacity: ${OPTION_TRADE_AGGREGATION_QUEUE_CAPACITY:2}
+      lookup-chunk-size: ${OPTION_TRADE_AGGREGATION_LOOKUP_CHUNK_SIZE:200}
+      save-chunk-size: ${OPTION_TRADE_AGGREGATION_SAVE_CHUNK_SIZE:200}
+
+# Kafka Topic Configuration
+kafka:
+  topics:
+    option-trades: ${KAFKA_TOPIC_OPTION_TRADES:all-option-trades}
+    flow-alerts: ${KAFKA_TOPIC_FLOW_ALERTS:flow-alerts}
+    live-gex: ${KAFKA_TOPIC_LIVE_GEX:live-gex}
+    option-trades-dlt: ${KAFKA_TOPIC_OPTION_TRADES_DLT:all-option-trades-dlt}
+  consumers:
+    flow-alerts:
+      enabled: ${KAFKA_FLOW_ALERTS_ENABLED:false}  # Disabled — only all-option-trades is needed
+    spot-gex:
+      group-id: ${SPOT_GEX_KAFKA_GROUP_ID:${KAFKA_GROUP_ID:marketmono_farrukh}}
+  consumer:
+    batch-size: ${KAFKA_CONSUMER_BATCH_SIZE:200}            # Records to accumulate before DB flush
+    batch-timeout-ms: ${KAFKA_CONSUMER_BATCH_TIMEOUT_MS:2000}     # Max wait before flushing incomplete batch
+  dead-letter:
+    option-trades-topic: ${KAFKA_TOPIC_OPTION_TRADES_DLT:all-option-trades-dlt}
+    retry-attempts: ${KAFKA_RETRY_ATTEMPTS:3}
+    retry-backoff-ms: ${KAFKA_RETRY_BACKOFF_MS:1000}
+
+# NewsAPI.org Configuration
+# API docs: https://newsapi.org/docs/endpoints/top-headlines
+newsapi:
+  api-key: ${NEWSAPI_API_KEY:}
+  base-url: https://newsapi.org
+
+newsapi-ai:
+  api-key: ${NEWSAPI_AI_API_KEY:${EVENT_REGISTRY_API_KEY:${NEWS_API_KEY:}}}
+  base-url: https://eventregistry.org
+
+fmp:
+  api-key: ${FMP_API_KEY:}
+  base-url: https://financialmodelingprep.com
+
+polygon:
+  api-key: ${POLYGON_API_KEY:}
+  base-url: https://api.polygon.io
+
+marketaux:
+  api-token: ${MARKETAUX_API_TOKEN:}
+  base-url: https://api.marketaux.com
+
+marketmono:
+  uw:
+    shed-503:
+      enabled: ${MARKETMONO_UW_SHED_503_ENABLED:false}
+
+unusual-whales:
+  api:
+    base-url: https://api.unusualwhales.com
+    api-key: ${UNUSUAL_WHALES_API_KEY}
+    rest-enabled: true  # Global REST API enable (individual endpoints controlled below)
+    max-concurrent-requests: ${UW_API_MAX_CONCURRENT_REQUESTS:12}
+    endpoints:
+      # Conservative per-endpoint permissions (only enable necessary endpoints)
+      congress-trades: true          # Enable for politician trade data
+      politician-trades: true        # Enable for politician trade data
+      politician-portfolios: true    # Enable - used for frontend portfolio view
+      politicians-list: false        # Disable
+      flow-alerts: true              # Enable for top block/sweep orders data
+      market-tide: true              # Enable for market tide data
+      top-net-impact: true           # Enable for top bullish/bearish net premium tickers
+      spy-ohlc: true                  # Enable - Required for SPY price line in Mono Matrix chart
+      ticker-tide: true              # Enable for ticker-specific net premium and volume data
+      ticker-ohlc: true              # Enable for ticker-specific OHLC price data
+      stock-state: true              # Enable for stock price, volume, prev_close (replaces Polygon /v3/snapshot)
+      stock-volume-price-levels: true  # Enable for dark pool/lit pool data (replaces Polygon DP/LP)
+      news: true                     # Enable for financial news headlines
+      greek-exposure: true           # Enable for gamma exposure and other greeks data
+      darkpool-recent: true          # Enable for recent dark pool trades
+      option-contracts: true         # Enable for option contracts screener
+      spot-exposure: true            # Enable for spot exposure by strike data
+    rate-limit:
+      daily-limit: ${UW_API_DAILY_LIMIT:300000}  # Upstream daily account request limit (resets at 8 PM EST)
+      target-per-minute: ${UW_API_TARGET_PER_MINUTE:490}  # Per-node target; account target is 980/min with 2 active nodes
+      hard-cap-per-minute: ${UW_API_HARD_CAP_PER_MINUTE:500}  # Per-node hard cap; account ceiling is 1000/min with 2 active nodes
+    timeout:
+      connect: 5000
+      read: 30000
+      permit-wait: ${UW_API_PERMIT_WAIT_MS:1000}
+    retry:
+      max-attempts: ${UW_API_RETRY_MAX_ATTEMPTS:0}
+      backoff-multiplier: 2
+    reporting:
+      enabled: ${UW_CALL_REPORTING_ENABLED:false}
+      admin-api-base-url: ${UW_CALL_REPORTING_ADMIN_API_BASE_URL:}
+      internal-secret: ${UW_CALL_REPORTING_INTERNAL_SECRET:}
+      connect-timeout: ${UW_CALL_REPORTING_CONNECT_TIMEOUT_MS:1000}
+      read-timeout: ${UW_CALL_REPORTING_READ_TIMEOUT_MS:2000}
+      max-attempts: ${UW_CALL_REPORTING_MAX_ATTEMPTS:1}
+  websocket:
+    enabled: ${WEBSOCKET_ENABLED:true}
+    url: ${WEBSOCKET_URL:wss://api.unusualwhales.com/socket}
+    reconnect-interval-seconds: 10
+    max-reconnect-attempts: -1  # -1 for infinite retries
+    ping-interval-seconds: 30
+    message-buffer-size: 1000
+    news:
+      enabled: ${UW_NEWS_WEBSOCKET_ENABLED:true}
+    batch:
+      max-size: 50  # Maximum alerts per batch
+      max-bytes: 1048576  # Maximum 1MB per batch (1024*1024)
+      flush-interval-ms: 2000  # Maximum 2 seconds wait time
+  flow:
+    primary-source: WEBSOCKET
+    fallback-to-rest: true
+    sync:
+      enabled: true
+      interval-seconds: ${FLOW_SYNC_INTERVAL:30}  # Default: 30 seconds (adjustable via env var)
+      batch-size: 100
+      retention-days: 30
+      ledger-cleanup-grace-days: ${FLOW_ALERT_LEDGER_CLEANUP_GRACE_DAYS:2}
+      ledger-cleanup-schedule: "${FLOW_ALERT_LEDGER_CLEANUP_SCHEDULE:0 20 2 * * ?}"
+      initial-delay-seconds: 10
+
+market-data:
+  stock-prices:
+    enabled: ${MARKET_DATA_STOCK_PRICES_ENABLED:false}  # Legacy minute-sampling pipeline; superseded by dashboard-ohlc snapshots
+    intraday-retention-days: 30  # Keep 30 days of minute-level samples for 1D/5D/1M reads
+    daily-retention-days: 1825  # Keep 5 years of midnight summary rows for longer dashboard ranges
+    dashboard-tickers: ${MARKET_DATA_STOCK_PRICES_TICKERS:SPY,QQQ,IWM,DIA}
+    cleanup-schedule: "0 0 2 * * ?"  # Daily at 2:00 AM ET
+    collection-schedule: "0 * 9-16 * * MON-FRI"  # Every minute; service gates to 9:30 AM - 4:15 PM ET Mon-Fri
+    aggregation-schedule: "0 20 16 * * MON-FRI"  # Daily at 4:20 PM ET Mon-Fri, after the 4:15 PM collection cutoff
+    max-concurrent-requests: 100
+    requests-per-second: 50
+  dashboard-ohlc:
+    enabled: ${MARKET_DATA_DASHBOARD_OHLC_ENABLED:true}  # Per-minute OHLC snapshots powering the Market Overview + Mag 7 charts
+    interval-ms: ${MARKET_DATA_DASHBOARD_OHLC_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_DASHBOARD_OHLC_INITIAL_DELAY_MS:15000}
+    tickers: ${MARKET_DATA_DASHBOARD_OHLC_TICKERS:SPY,QQQ,IWM,DIA,NVDA,META,MSFT,AAPL,GOOG,AMZN,TSLA}
+    retention-days: ${MARKET_DATA_DASHBOARD_OHLC_RETENTION_DAYS:4}  # Snapshots older than this are purged (and considered stale for serving)
+  sector-performance:
+    enabled: ${MARKET_DATA_SECTOR_PERFORMANCE_ENABLED:true}  # Sector ETF snapshots powering the dashboard Sectors widget (stock-state + OHLC per ticker every minute)
+    interval-ms: ${MARKET_DATA_SECTOR_PERFORMANCE_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_SECTOR_PERFORMANCE_INITIAL_DELAY_MS:20000}
+  crm-price-stream:
+    enabled: ${MARKET_DATA_CRM_PRICE_STREAM_ENABLED:false}  # Live UW price:<TICKER> websocket for CRM-saved tickers (stored + relayed over STOMP); replaces stock-state REST polling for those tickers (SPX/SPXW/VIX/VIXW always stay on REST)
+    ticker-refresh-ms: ${MARKET_DATA_CRM_PRICE_STREAM_TICKER_REFRESH_MS:60000}  # How often the CRM ticker set is re-read and UW subscriptions reconciled
+    persist-interval-ms: ${MARKET_DATA_CRM_PRICE_STREAM_PERSIST_INTERVAL_MS:5000}  # How often the latest in-memory ticks are flushed to crm_price_snapshots
+    broadcast-throttle-ms: ${MARKET_DATA_CRM_PRICE_STREAM_BROADCAST_THROTTLE_MS:1000}  # Minimum gap between STOMP broadcasts per ticker
+    initial-delay-ms: ${MARKET_DATA_CRM_PRICE_STREAM_INITIAL_DELAY_MS:15000}
+    baseline-schedule: "${MARKET_DATA_CRM_PRICE_STREAM_BASELINE_SCHEDULE:0 30 9 * * MON-FRI}"  # Once-per-day stock-state baseline pull at 9:30 AM ET for % gain/loss
+    baseline-catch-up-interval-ms: ${MARKET_DATA_CRM_PRICE_STREAM_BASELINE_CATCH_UP_INTERVAL_MS:300000}  # Backfills today's baselines after deploys or a failed open run
+    baseline-retention-days: ${MARKET_DATA_CRM_PRICE_STREAM_BASELINE_RETENTION_DAYS:4}  # Baselines older than this are purged on each collection
+  daily-stock-state:
+    enabled: ${MARKET_DATA_DAILY_STOCK_STATE_ENABLED:true}  # Once-per-day stock-state pull (9:30 AM ET Mon-Fri) shared by Sectors + Market Overview / Mag 7 collectors
+    collection-schedule: "${MARKET_DATA_DAILY_STOCK_STATE_SCHEDULE:0 30 9 * * MON-FRI}"  # 9:30 AM ET Monday-Friday
+    catch-up-interval-ms: ${MARKET_DATA_DAILY_STOCK_STATE_CATCH_UP_INTERVAL_MS:300000}  # Backfills today's rows after deploys or a failed open run
+    initial-delay-ms: ${MARKET_DATA_DAILY_STOCK_STATE_INITIAL_DELAY_MS:10000}
+    tickers: ${MARKET_DATA_DAILY_STOCK_STATE_TICKERS:XLP,XLU,XLV,XLB,XLC,XLY,XLE,XLF,XLI,XLK,XLRE,SPY,QQQ,IWM,DIA,NVDA,META,MSFT,AAPL,GOOG,AMZN,TSLA}
+    retention-days: ${MARKET_DATA_DAILY_STOCK_STATE_RETENTION_DAYS:4}  # Rows older than this are purged on each collection
+  market-tide:
+    enabled: ${MARKET_DATA_MARKET_TIDE_ENABLED:true}  # Per-minute market tide snapshots powering the dashboard Mono Matrix chart (9:30-4:00 PM ET Mon-Fri)
+    interval-ms: ${MARKET_DATA_MARKET_TIDE_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_MARKET_TIDE_INITIAL_DELAY_MS:25000}
+    retention-days: ${MARKET_DATA_MARKET_TIDE_RETENTION_DAYS:4}  # Snapshots older than this are purged (and considered stale for serving)
+  top-net-impact:
+    enabled: ${MARKET_DATA_TOP_NET_IMPACT_ENABLED:true}  # Per-minute top net impact snapshots powering the Top Bullish/Bearish Net Premium widgets (9:30-4:00 PM ET Mon-Fri)
+    interval-ms: ${MARKET_DATA_TOP_NET_IMPACT_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_TOP_NET_IMPACT_INITIAL_DELAY_MS:30000}
+    retention-days: ${MARKET_DATA_TOP_NET_IMPACT_RETENTION_DAYS:4}  # Snapshots older than this are purged (and considered stale for serving)
+  dashboard-contracts:
+    enabled: ${MARKET_DATA_DASHBOARD_CONTRACTS_ENABLED:true}  # Per-minute screener snapshots powering Top Contracts / Top ETF Orders / Top Sweep Orders (9:30-4:00 PM ET Mon-Fri)
+    interval-ms: ${MARKET_DATA_DASHBOARD_CONTRACTS_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_DASHBOARD_CONTRACTS_INITIAL_DELAY_MS:35000}
+    retention-days: ${MARKET_DATA_DASHBOARD_CONTRACTS_RETENTION_DAYS:4}  # Snapshots older than this are purged (and considered stale for serving)
+  ticker-options-volume:
+    enabled: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_ENABLED:false}  # Sync of Market Premiums data into ticker_options_volume (every 10 min, 9:30-4:15 PM ET Mon-Fri)
+    interval-ms: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_INTERVAL_MS:600000}
+    initial-delay-ms: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_INITIAL_DELAY_MS:15000}
+    tickers: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_TICKERS:SPY,QQQ,IWM,DIA}
+    history-limit: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_HISTORY_LIMIT:30}  # Days of history per sync; covers the 5D/10D/15D/30D dashboard timeframes
+
+spot-gex:
+  collection:
+    source: ${SPOT_GEX_SOURCE:legacy}
+    stream-transport: ${SPOT_GEX_STREAM_TRANSPORT:websocket}
+    enabled: ${SPOT_GEX_ENABLED:false}
+    interval-ms: ${SPOT_GEX_INTERVAL_MS:60000}
+    initial-delay-ms: ${SPOT_GEX_INITIAL_DELAY_MS:30000}
+    rest-only-interval-ms: ${SPOT_GEX_REST_ONLY_INTERVAL_MS:180000}
+    inter-ticker-delay-ms: ${SPOT_GEX_INTER_TICKER_DELAY_MS:100}
+    inter-page-delay-ms: ${SPOT_GEX_INTER_PAGE_DELAY_MS:50}
+    abort-when-uw-budget-above-target: ${SPOT_GEX_ABORT_WHEN_UW_BUDGET_ABOVE_TARGET:true}
+    daily-projection-warning-threshold: ${SPOT_GEX_DAILY_PROJECTION_WARNING_THRESHOLD:120000}
+    daily-projection-stop-threshold: ${SPOT_GEX_DAILY_PROJECTION_STOP_THRESHOLD:150000}
+    max-tickers-per-cycle: ${SPOT_GEX_MAX_TICKERS_PER_CYCLE:4}
+    core-ticker-interval-ms: ${SPOT_GEX_CORE_TICKER_INTERVAL_MS:60000}
+    extended-ticker-interval-ms: ${SPOT_GEX_EXTENDED_TICKER_INTERVAL_MS:300000}
+    core-tickers: ${SPOT_GEX_CORE_TICKERS:}
+    fallback-tickers: ${SPOT_GEX_TICKERS:SPY,QQQ,IWM,DIA,AAPL,AMZN,META,MSFT,NVDA,TSLA,GOOG,GOOGL}
+    page-size: ${SPOT_GEX_PAGE_SIZE:500}
+    retention-days: ${SPOT_GEX_RETENTION_DAYS:90}
+    stream-stale-threshold-ms: ${SPOT_GEX_STREAM_STALE_THRESHOLD_MS:120000}
+    stream-max-pending-events: ${SPOT_GEX_STREAM_MAX_PENDING_EVENTS:10000}
+    stream-delta-rest-enrichment-enabled: ${SPOT_GEX_STREAM_DELTA_REST_ENRICHMENT_ENABLED:true}
+    fake-stream-interval-ms: ${SPOT_GEX_FAKE_STREAM_INTERVAL_MS:1000}
+    stream-owner-node-id: ${SPOT_GEX_STREAM_OWNER_NODE_ID:}
+    market-hours:
+      proxy-ticker: ${SPOT_GEX_MARKET_HOURS_PROXY_TICKER:SPY}
+      fallback-timezone: ${SPOT_GEX_FALLBACK_TIMEZONE:America/New_York}
+
+# Politician Trades Sync Configuration
+# Schedule: Daily at 2 AM EST (STOCK Act requires 45-day filing, daily checks are industry standard)
+politician:
+  sync:
+    enabled: true
+    retention-days: 90  # Keep 90 days of trade history
+    max-pages-per-sync: 10  # Max pages to fetch per sync (10 pages * 200 trades = 2,000 max trades)
+    congress-api:
+      enabled: true
+      interval-minutes: 30
+      initial-delay-minutes: 5
+      batch-size: 500
+    portfolio-api:
+      enabled: true
+      interval-minutes: 30
+      initial-delay-minutes: 20
+      batch-size: 500
+
+server:
+  shutdown: graceful
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  error:
+    include-message: always
+    include-binding-errors: always
+
+node:
+  id: ${NODE_ID:${HOSTNAME:${COMPUTERNAME:unknown}}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState,ping
+        readiness:
+          include: readinessState,db,diskSpace,ping
+  health:
+    diskspace:
+      enabled: true
+      threshold: 500MB
+    mail:
+      enabled: false  # Disable mail health check until mail server is configured
+
+logging:
+  level:
+    root: INFO
+    com.marketmono: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+
+# JWT Configuration
+# IMPORTANT: Override jwt.secret in production with a secure 256-bit key!
+jwt:
+  secret: ${JWT_SECRET:}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}  # 15 minutes
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days
+  issuer: marketmono
+
+# Congress.gov API configuration
+# API key obtained from https://api.data.gov/signup/
+# Rate limit: 1,000 requests/hour per key
+congress-gov:
+  api-key: ${CONGRESS_GOV_API_KEY:}
+  base-url: https://api.congress.gov/v3
+
+# hCaptcha Configuration
+# Privacy-focused CAPTCHA: https://dashboard.hcaptcha.com
+# Free tier: 1M+ verifications/month, GDPR compliant
+hcaptcha:
+  enabled: ${HCAPTCHA_ENABLED:false}  # Enable in production
+  site-key: ${HCAPTCHA_SITE_KEY:}
+  secret-key: ${HCAPTCHA_SECRET_KEY:}
+
+# Email Validation Configuration
+# Uses https://github.com/disposable/disposable-email-domains
+email:
+  validation:
+    enabled: ${EMAIL_VALIDATION_ENABLED:true}
+
+# Registration Rate Limiting Configuration
+registration:
+  rate-limit:
+    short-window-max: 5       # Max attempts in 10-minute window before blocking
+    long-window-max: 10       # Max attempts in 1-hour window before longer block
+    short-block-minutes: 15   # Block duration for short window violations
+    long-block-minutes: 60    # Block duration for long window violations
+
+# Subscription Configuration
+subscription:
+  past-due-grace-period-days: ${PAST_DUE_GRACE_PERIOD_DAYS:1}  # Days to allow access for PAST_DUE subscriptions (0 = immediate revocation)
+
+whop:
+  checkout:
+    api-key: ${WHOP_API_KEY:}
+    company-id: ${WHOP_COMPANY_ID:}
+    api-base-url: ${WHOP_API_BASE_URL:https://api.whop.com/api/v1}
+    redirect-url: ${WHOP_CHECKOUT_REDIRECT_URL:${APP_FRONTEND_URL:https://marketmono.com}/subscribe?checkout=success}
+    source-url: ${WHOP_CHECKOUT_SOURCE_URL:${APP_FRONTEND_URL:https://marketmono.com}/subscribe}
+    allow-promo-codes: ${WHOP_CHECKOUT_ALLOW_PROMO_CODES:true}
+    request-timeout: ${WHOP_CHECKOUT_REQUEST_TIMEOUT:PT15S}
+  webhook:
+    secret: ${WHOP_WEBHOOK_SECRET:}
+    signature-tolerance: ${WHOP_WEBHOOK_SIGNATURE_TOLERANCE:PT5M}
+
+internal:
+  admin-api:
+    shared-secret: ${INTERNAL_ADMIN_API_SHARED_SECRET:}

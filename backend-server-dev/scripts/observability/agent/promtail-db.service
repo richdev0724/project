@@ -1,0 +1,14 @@
+[Unit]
+Description=MarketMono DB Promtail log shipper
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/marketmono-promtail-db
+ExecStart=/usr/local/bin/promtail -config.file=/etc/promtail-db-config.yml -config.expand-env=true
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Collect MarketMono pgBackRest textfile metrics every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=15s
+Unit=pgbackrest-textfile-metrics.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,655 @@
+databaseChangeLog:
+  - changeSet:
+      id: baseline-001-market-reference-types
+      author: marketmono
+      validCheckSum:
+        - '9:82dce51a9a11504db9c84abba3eef41d'
+      comment: Create shared enums used by market cache, politician, and economic event tables.
+      changes:
+        - sql:
+            splitStatements: false
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'option_type_enum') THEN
+                  CREATE TYPE option_type_enum AS ENUM ('CALL', 'PUT');
+                END IF;
+                                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'data_source_enum') THEN
+                                    CREATE TYPE data_source_enum AS ENUM ('WEBSOCKET', 'REST');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'economic_event_type') THEN
+                  CREATE TYPE economic_event_type AS ENUM ('FED_SPEAKER', 'FOMC', 'REPORT', 'SEC_13F', 'INDEX_REBALANCE', 'INDEX_REBALANCE_ANNOUNCEMENT');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'economic_event_priority') THEN
+                  CREATE TYPE economic_event_priority AS ENUM ('HIGH', 'MEDIUM', 'LOW');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'transaction_type') THEN
+                  CREATE TYPE transaction_type AS ENUM ('BUY', 'SELL', 'EXCHANGE');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'issuer_type') THEN
+                  CREATE TYPE issuer_type AS ENUM ('SELF', 'SPOUSE', 'CHILD', 'JOINT', 'UNDISCLOSED');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'member_type') THEN
+                  CREATE TYPE member_type AS ENUM ('HOUSE', 'SENATE');
+                END IF;
+              END
+              $$;
+
+  - changeSet:
+      id: baseline-001-market-reference-and-cache
+      author: marketmono
+      validCheckSum:
+        - '9:80c0260f73e44e358655e9992c1f1731'
+      comment: Create the final consolidated shape for non-Timescale market cache and reference tables.
+      changes:
+        - createTable:
+            tableName: sectors
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: sector_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: industry
+                  type: VARCHAR(100)
+              - column:
+                  name: min_market_cap
+                  type: BIGINT
+              - column:
+                  name: max_market_cap
+                  type: BIGINT
+        - createIndex:
+            indexName: idx_sectors_name
+            tableName: sectors
+            columns:
+              - column:
+                  name: sector_name
+
+        - createTable:
+            tableName: option_contracts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: contract_symbol
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: ticker
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: strike
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contract_type
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: bid_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: ask_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: volume
+                  type: INTEGER
+              - column:
+                  name: open_interest
+                  type: INTEGER
+              - column:
+                  name: implied_volatility
+                  type: DECIMAL(10,6)
+              - column:
+                  name: delta
+                  type: DECIMAL(10,6)
+              - column:
+                  name: gamma
+                  type: DECIMAL(10,6)
+              - column:
+                  name: theta
+                  type: DECIMAL(10,6)
+              - column:
+                  name: vega
+                  type: DECIMAL(10,6)
+              - column:
+                  name: rho
+                  type: DECIMAL(10,6)
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - sql:
+            splitStatements: false
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (
+                  SELECT 1
+                  FROM pg_constraint
+                  WHERE conname = 'chk_option_contracts_type'
+                ) THEN
+                  ALTER TABLE option_contracts
+                    ADD CONSTRAINT chk_option_contracts_type
+                    CHECK (contract_type IN ('CALL', 'PUT'));
+                END IF;
+              END
+              $$;
+        - createIndex:
+            indexName: idx_contracts_ticker
+            tableName: option_contracts
+            columns:
+              - column:
+                  name: ticker
+        - createIndex:
+            indexName: idx_contracts_expiration
+            tableName: option_contracts
+            columns:
+              - column:
+                  name: expiration_date
+        - createIndex:
+            indexName: idx_contracts_symbol
+            tableName: option_contracts
+            columns:
+              - column:
+                  name: contract_symbol
+        - createIndex:
+            indexName: idx_contracts_ticker_expiration
+            tableName: option_contracts
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: expiration_date
+
+        - createTable:
+            tableName: api_rate_limits
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: api_key_hash
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: endpoint
+                  type: VARCHAR(200)
+              - column:
+                  name: request_count
+                  type: INTEGER
+                  defaultValueNumeric: 0
+              - column:
+                  name: window_start
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: window_end
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: limit_exceeded
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: daily_limit
+                  type: INTEGER
+              - column:
+                  name: minute_request_count
+                  type: INTEGER
+              - column:
+                  name: minute_limit_remaining
+                  type: INTEGER
+              - column:
+                  name: minute_limit
+                  type: INTEGER
+              - column:
+                  name: minute_reset_epoch
+                  type: BIGINT
+              - column:
+                  name: is_blocked
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: blocked_reason
+                  type: VARCHAR(500)
+              - column:
+                  name: http_status_code
+                  type: INTEGER
+        - createIndex:
+            indexName: idx_rate_limits_key_window
+            tableName: api_rate_limits
+            columns:
+              - column:
+                  name: api_key_hash
+              - column:
+                  name: window_start
+              - column:
+                  name: window_end
+
+        - createTable:
+            tableName: stock_prices
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_time
+                  type: TIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: open
+                  type: DECIMAL(12,4)
+              - column:
+                  name: high
+                  type: DECIMAL(12,4)
+              - column:
+                  name: low
+                  type: DECIMAL(12,4)
+              - column:
+                  name: close
+                  type: DECIMAL(12,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: volume
+                  type: BIGINT
+              - column:
+                  name: vwap
+                  type: DECIMAL(12,4)
+              - column:
+                  name: transactions
+                  type: INTEGER
+              - column:
+                  name: source
+                  type: VARCHAR(20)
+                  defaultValue: UW
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: stock_prices
+            columnNames: ticker, price_date, price_time
+            constraintName: uq_stock_prices_ticker_datetime
+        - createIndex:
+            indexName: idx_stock_prices_ticker_date
+            tableName: stock_prices
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: price_date
+                  descending: true
+        - createIndex:
+            indexName: idx_stock_prices_date
+            tableName: stock_prices
+            columns:
+              - column:
+                  name: price_date
+                  descending: true
+        - createIndex:
+            indexName: idx_stock_prices_ticker_time
+            tableName: stock_prices
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: price_date
+              - column:
+                  name: price_time
+
+        - createTable:
+            tableName: politicians
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+              - column:
+                  name: member_type
+                  type: member_type
+              - column:
+                  name: party
+                  type: VARCHAR(3)
+                  defaultValue: UNK
+                  constraints:
+                    nullable: false
+              - column:
+                  name: party_updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: politician_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(20)
+              - column:
+                  name: transaction_date
+                  type: DATE
+              - column:
+                  name: filed_at_date
+                  type: DATE
+              - column:
+                  name: txn_type
+                  type: transaction_type
+              - column:
+                  name: amounts
+                  type: VARCHAR(100)
+              - column:
+                  name: issuer
+                  type: issuer_type
+              - column:
+                  name: member_type
+                  type: member_type
+              - column:
+                  name: reporter
+                  type: VARCHAR(200)
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+              - column:
+                  name: notes
+                  type: TEXT
+              - column:
+                  name: source
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unique_key
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: synced_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_politician_id
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: politician_id
+        - createIndex:
+            indexName: idx_ticker
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: ticker
+        - createIndex:
+            indexName: idx_transaction_date
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: transaction_date
+        - createIndex:
+            indexName: idx_filed_at_date
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: filed_at_date
+        - createIndex:
+            indexName: idx_source
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: source
+        - createIndex:
+            indexName: idx_synced_at
+            tableName: politician_trades
+            columns:
+              - column:
+                  name: synced_at
+        - addForeignKeyConstraint:
+            baseTableName: politician_trades
+            baseColumnNames: politician_id
+            constraintName: fk_politician_trades_politician_id
+            referencedTableName: politicians
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createTable:
+            tableName: economic_events
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: event
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: forecast
+                  type: VARCHAR(100)
+              - column:
+                  name: prev
+                  type: VARCHAR(100)
+              - column:
+                  name: reported_period
+                  type: VARCHAR(100)
+              - column:
+                  name: event_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: economic_event_type
+                  constraints:
+                    nullable: false
+              - column:
+                  name: priority
+                  type: economic_event_priority
+                  defaultValue: LOW
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cache_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cached_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            constraintName: uq_economic_events_event_time_type
+            tableName: economic_events
+            columnNames: event, event_time, type, reported_period
+        - createIndex:
+            indexName: idx_economic_events_event_time
+            tableName: economic_events
+            columns:
+              - column:
+                  name: event_time
+        - createIndex:
+            indexName: idx_economic_events_cache_date
+            tableName: economic_events
+            columns:
+              - column:
+                  name: cache_date
+        - createIndex:
+            indexName: idx_economic_events_time_type
+            tableName: economic_events
+            columns:
+              - column:
+                  name: event_time
+              - column:
+                  name: type
+
+        - createTable:
+            tableName: sector_etf_prices
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: close_price
+                  type: DECIMAL(12,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: sector_etf_prices
+            columnNames: ticker, date
+            constraintName: uk_sector_etf_ticker_date
+        - createIndex:
+            tableName: sector_etf_prices
+            indexName: idx_sector_etf_ticker_date
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: date
+                  descending: true
+
+

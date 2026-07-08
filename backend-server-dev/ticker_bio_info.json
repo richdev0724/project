@@ -1,0 +1,1358 @@
+[
+  {
+    "Ticker": "NVDA",
+    "Name": "NVIDIA",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Designs GPUs and SoCs for gaming, data centers, and AI workloads; CUDA software ecosystem plus leading AI chips (H100/Blackwell) make it dominant in AI training/inference."
+  },
+  {
+    "Ticker": "AAPL",
+    "Name": "Apple",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Consumer electronics leader (iPhone, Mac, iPad, Watch, AirPods) with a large recurring Services segment (App Store, Music, iCloud, TV+); tightly integrated ecosystem drives loyalty."
+  },
+  {
+    "Ticker": "MSFT",
+    "Name": "Microsoft",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Cloud (Azure), productivity (Microsoft 365), and enterprise software (Teams/Dynamics) plus LinkedIn/GitHub; integrates AI broadly and runs major global cloud infrastructure; also Xbox gaming."
+  },
+  {
+    "Ticker": "GOOG",
+    "Name": "Alphabet",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Operates Google products (Search, YouTube, Maps, Chrome) primarily monetized via digital ads; Google Cloud is a major cloud provider; invests in moonshots like Waymo and DeepMind."
+  },
+  {
+    "Ticker": "GOOGL",
+    "Name": "Alphabet",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Operates Google products (Search, YouTube, Maps, Chrome) primarily monetized via digital ads; Google Cloud is a major cloud provider; invests in moonshots like Waymo and DeepMind."
+  },
+  {
+    "Ticker": "META",
+    "Name": "Meta Platforms",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Owns Facebook, Instagram, WhatsApp, Messenger; monetizes via targeted digital advertising powered by AI; investing heavily in Reality Labs for AR/VR hardware and software."
+  },
+  {
+    "Ticker": "AMZN",
+    "Name": "Amazon",
+    "Sector": "Mega-Cap Tech",
+    "Bio": "Global e-commerce leader plus AWS (leading cloud platform) driving most operating profit; also advertising, Prime Video, grocery (Whole Foods), and large logistics network."
+  },
+  {
+    "Ticker": "AVGO",
+    "Name": "Broadcom",
+    "Sector": "Semiconductors",
+    "Bio": "Supplies semiconductors and infrastructure software for data centers, networking, broadband, and wireless; builds custom AI accelerators for hyperscalers; expanded enterprise software via VMware."
+  },
+  {
+    "Ticker": "AMD",
+    "Name": "Advanced Micro Devices",
+    "Sector": "Semiconductors",
+    "Bio": "Designs CPUs/GPUs for PCs, servers, and consoles; EPYC gaining data-center share; Instinct MI GPUs target AI acceleration; supplies chips to PlayStation and Xbox."
+  },
+  {
+    "Ticker": "TSM",
+    "Name": "Taiwan Semiconductor Manufacturing Company",
+    "Sector": "Semiconductors",
+    "Bio": "World’s largest pure-play foundry manufacturing chips for Apple, NVIDIA, AMD and more; leads advanced nodes (e.g., 3nm/2nm); central to global semiconductor supply chain."
+  },
+  {
+    "Ticker": "AMAT",
+    "Name": "Applied Materials",
+    "Sector": "Semiconductors",
+    "Bio": "Provides equipment, services, and software used across chip manufacturing steps (deposition, etch, etc.) plus display/solar tools; leveraged to semiconductor capex cycles."
+  },
+  {
+    "Ticker": "KLAC",
+    "Name": "KLA Corporation",
+    "Sector": "Semiconductors",
+    "Bio": "Process control and yield management leader; inspection/metrology tools detect defects and improve yields; critical for enabling advanced nodes at foundries and IDMs."
+  },
+  {
+    "Ticker": "LRCX",
+    "Name": "Lam Research",
+    "Sector": "Semiconductors",
+    "Bio": "Wafer-fab equipment specialist in deposition and etch; essential for memory (DRAM/NAND) and logic at advanced nodes; highly tied to memory capex cycles."
+  },
+  {
+    "Ticker": "CDNS",
+    "Name": "Cadence Design Systems",
+    "Sector": "Semiconductors",
+    "Bio": "Electronic design automation (EDA) software/hardware used to design ICs and electronic systems; ubiquitous across major chip companies; also offers IP and system analysis tools."
+  },
+  {
+    "Ticker": "SNPS",
+    "Name": "Synopsys",
+    "Sector": "Semiconductors",
+    "Bio": "EDA software and semiconductor IP powering chip design workflows globally; competes closely with Cadence; also has a growing software integrity/security business."
+  },
+  {
+    "Ticker": "NXPI",
+    "Name": "NXP Semiconductors",
+    "Sector": "Semiconductors",
+    "Bio": "Automotive/industrial/IoT semiconductor leader (MCUs, processors, secure connectivity); strong presence in automotive-grade chips for ADAS and electrification."
+  },
+  {
+    "Ticker": "MCHP",
+    "Name": "Microchip Technology",
+    "Sector": "Semiconductors",
+    "Bio": "Microcontrollers and analog/mixed-signal devices for embedded control across industrial, auto, consumer, and comms; diversified base with long product lifecycles."
+  },
+  {
+    "Ticker": "TER",
+    "Name": "Teradyne",
+    "Sector": "Semiconductors",
+    "Bio": "Automated test equipment for semiconductors and systems; Universal Robots unit leads in collaborative robots; testing tools span consumer electronics through data centers."
+  },
+  {
+    "Ticker": "SWKS",
+    "Name": "Skyworks Solutions",
+    "Sector": "Semiconductors",
+    "Bio": "Analog/mixed-signal chips for wireless connectivity (Wi‑Fi/Bluetooth/cellular); heavily embedded in iPhones and other connected devices; leveraged to 5G/IoT."
+  },
+  {
+    "Ticker": "QRVO",
+    "Name": "Qorvo",
+    "Sector": "Semiconductors",
+    "Bio": "RF semiconductors for mobile, defense, and infrastructure; enables 5G connectivity across smartphones, base stations, and military communications; competes with Skyworks."
+  },
+  {
+    "Ticker": "AMKR",
+    "Name": "Amkor Technology",
+    "Sector": "Semiconductors",
+    "Bio": "Outsourced semiconductor packaging and test services (back-end); key partner to fabless designers that don’t own packaging facilities."
+  },
+  {
+    "Ticker": "ON",
+    "Name": "ON Semiconductor (onsemi)",
+    "Sector": "Semiconductors",
+    "Bio": "Power semiconductors and sensing for automotive/industrial/cloud power; growing silicon carbide (SiC) footprint for EV power conversion; positioned for EV/renewables transition."
+  },
+  {
+    "Ticker": "ARM",
+    "Name": "Arm Holdings",
+    "Sector": "Semiconductors",
+    "Bio": "Licenses CPU architectures used in most smartphones and many embedded/data-center chips; earns royalties/licensing from partners; expanding into data center CPUs and AI workloads."
+  },
+  {
+    "Ticker": "QCOM",
+    "Name": "Qualcomm",
+    "Sector": "Semiconductors",
+    "Bio": "Wireless tech leader; Snapdragon processors and 5G modems for phones, auto, and IoT; also earns royalties from large cellular patent portfolio."
+  },
+  {
+    "Ticker": "CRM",
+    "Name": "Salesforce",
+    "Sector": "Software & Cloud",
+    "Bio": "Leading CRM suite for sales/marketing/service/analytics; Einstein AI layer enhances automation; grew via acquisitions like Slack and MuleSoft."
+  },
+  {
+    "Ticker": "ORCL",
+    "Name": "Oracle",
+    "Sector": "Software & Cloud",
+    "Bio": "Enterprise software and databases plus Oracle Cloud infrastructure; competes with AWS/Azure/GCP with emphasis on database/ERP; NetSuite and Fusion Cloud are major ERP offerings."
+  },
+  {
+    "Ticker": "ADBE",
+    "Name": "Adobe",
+    "Sector": "Software & Cloud",
+    "Bio": "Creative and document software leader (Photoshop/Illustrator/Premiere/Acrobat) plus Experience Cloud; integrating generative AI via Firefly across the suite."
+  },
+  {
+    "Ticker": "INTU",
+    "Name": "Intuit",
+    "Sector": "Software & Cloud",
+    "Bio": "Financial software for consumers/SMBs (TurboTax, QuickBooks, Credit Karma); cloud platform for accounting/payroll/payments; embedding AI to automate workflows."
+  },
+  {
+    "Ticker": "NOW",
+    "Name": "ServiceNow",
+    "Sector": "Software & Cloud",
+    "Bio": "Enterprise workflow automation platform across IT/HR/legal/service ops; expanding AI and agentic automation to digitize and automate processes."
+  },
+  {
+    "Ticker": "SAP",
+    "Name": "SAP SE",
+    "Sector": "Software & Cloud",
+    "Bio": "Global enterprise software leader (ERP, supply chain, finance, HR); S/4HANA is flagship cloud ERP; expanding into AI and business network platforms."
+  },
+  {
+    "Ticker": "TTD",
+    "Name": "The Trade Desk",
+    "Sector": "Software & Cloud",
+    "Bio": "Independent programmatic advertising platform across CTV/mobile/display; Unified ID 2.0 positions it for privacy-safe targeting; major independent ad-tech player."
+  },
+  {
+    "Ticker": "DDOG",
+    "Name": "Datadog",
+    "Sector": "Software & Cloud",
+    "Bio": "Cloud monitoring/security/analytics platform (infra/APM/logs/security) delivering unified observability for complex cloud environments."
+  },
+  {
+    "Ticker": "SNOW",
+    "Name": "Snowflake",
+    "Sector": "Software & Cloud",
+    "Bio": "Cloud-native data warehousing/analytics with separated compute/storage; supports multi-cloud data sharing; expanding into AI/ML and Cortex AI capabilities."
+  },
+  {
+    "Ticker": "MDB",
+    "Name": "MongoDB",
+    "Sector": "Software & Cloud",
+    "Bio": "NoSQL document database platform; Atlas managed cloud service is key growth engine; enables flexible, scalable modern application development."
+  },
+  {
+    "Ticker": "CRWD",
+    "Name": "CrowdStrike",
+    "Sector": "Software & Cloud",
+    "Bio": "Cloud-native cybersecurity (EDR, threat intel, identity) via Falcon platform using AI to stop breaches across endpoints, cloud workloads, and identities."
+  },
+  {
+    "Ticker": "PANW",
+    "Name": "Palo Alto Networks",
+    "Sector": "Software & Cloud",
+    "Bio": "Broad security platform spanning network, cloud (Prisma), and SOC automation (Cortex); consolidating into an integrated, zero-trust security vendor."
+  },
+  {
+    "Ticker": "ZS",
+    "Name": "Zscaler",
+    "Sector": "Software & Cloud",
+    "Bio": "Zero-trust cloud security platform replacing VPNs/firewalls; routes traffic through cloud to securely connect users to apps; leader in SASE."
+  },
+  {
+    "Ticker": "OKTA",
+    "Name": "Okta",
+    "Sector": "Software & Cloud",
+    "Bio": "Identity and access management (SSO/MFA/lifecycle); secures access to cloud applications for employees and customers across enterprises."
+  },
+  {
+    "Ticker": "NET",
+    "Name": "Cloudflare",
+    "Sector": "Software & Cloud",
+    "Bio": "Global network for cybersecurity, CDN, and performance; protects against DDoS and provides zero-trust services; expanding edge compute and AI inference."
+  },
+  {
+    "Ticker": "FTNT",
+    "Name": "Fortinet",
+    "Sector": "Software & Cloud",
+    "Bio": "Network security hardware/software (FortiGate firewalls, secure SD‑WAN, endpoint) under Security Fabric platform; widely deployed globally."
+  },
+  {
+    "Ticker": "TEAM",
+    "Name": "Atlassian",
+    "Sector": "Software & Cloud",
+    "Bio": "Collaboration/dev tools (Jira, Confluence, Trello) for agile/DevOps; migrating customers to cloud-hosted products."
+  },
+  {
+    "Ticker": "HUBS",
+    "Name": "HubSpot",
+    "Sector": "Software & Cloud",
+    "Bio": "Inbound marketing/sales/service platform for SMBs; CRM plus automation across channels; integrating AI to improve marketing and sales workflows."
+  },
+  {
+    "Ticker": "DOCU",
+    "Name": "DocuSign",
+    "Sector": "Software & Cloud",
+    "Bio": "E-signature and agreement workflow automation; Intelligent Agreement Management extends into contract creation/negotiation/analysis using AI."
+  },
+  {
+    "Ticker": "ZM",
+    "Name": "Zoom Video Communications",
+    "Sector": "Software & Cloud",
+    "Bio": "Video conferencing/phone/collaboration platform; expanding with AI summaries, contact center, and chat; competes with Teams and Webex."
+  },
+  {
+    "Ticker": "PLTR",
+    "Name": "Palantir Technologies",
+    "Sector": "Software & Cloud",
+    "Bio": "Data analytics and AI platforms for government and enterprises; AIP drives commercial adoption for deploying AI on proprietary data; major U.S. government contractor."
+  },
+  {
+    "Ticker": "SHOP",
+    "Name": "Shopify",
+    "Sector": "Software & Cloud",
+    "Bio": "Commerce platform for online and physical retail; payments, logistics, and financing add-ons; powers millions of merchants and competes with Amazon seller ecosystem."
+  },
+  {
+    "Ticker": "V",
+    "Name": "Visa",
+    "Sector": "Payments & Fintech",
+    "Bio": "Global payments network processing trillions; earns fees on payment volume; expanding into B2B and real-time payment flows."
+  },
+  {
+    "Ticker": "MA",
+    "Name": "Mastercard",
+    "Sector": "Payments & Fintech",
+    "Bio": "Global payments network plus cybersecurity/loyalty/data services; investing in open banking and crypto payment infrastructure."
+  },
+  {
+    "Ticker": "AXP",
+    "Name": "American Express",
+    "Sector": "Payments & Fintech",
+    "Bio": "Closed-loop card issuer and network targeting premium consumers/SMBs; richer spend data and direct relationships support rewards-rich products."
+  },
+  {
+    "Ticker": "PYPL",
+    "Name": "PayPal",
+    "Sector": "Payments & Fintech",
+    "Bio": "Digital payments platform for consumers/merchants; Venmo, Braintree, Honey brands; focusing on profitable growth and checkout conversion."
+  },
+  {
+    "Ticker": "SQ",
+    "Name": "Block",
+    "Sector": "Payments & Fintech",
+    "Bio": "Merchant payments ecosystem (Square) plus consumer fintech (Cash App) including P2P, investing, and Bitcoin; includes Afterpay BNPL."
+  },
+  {
+    "Ticker": "COIN",
+    "Name": "Coinbase",
+    "Sector": "Payments & Fintech",
+    "Bio": "Largest U.S. crypto exchange; trading, custody, staking, and developer infrastructure; revenue tied to crypto volumes and prices."
+  },
+  {
+    "Ticker": "HOOD",
+    "Name": "Robinhood",
+    "Sector": "Payments & Fintech",
+    "Bio": "Commission-free investing app for stocks/ETFs/options/crypto; revenue from PFOF and subscriptions; expanding into retirement and banking products."
+  },
+  {
+    "Ticker": "SOFI",
+    "Name": "SoFi Technologies",
+    "Sector": "Payments & Fintech",
+    "Bio": "Digital personal finance platform (lending, investing, banking) plus fintech infrastructure via Galileo/Technisys serving other fintechs."
+  },
+  {
+    "Ticker": "AFRM",
+    "Name": "Affirm",
+    "Sector": "Payments & Fintech",
+    "Bio": "Buy-now-pay-later financing at checkout; no late fees and proprietary underwriting; major partnerships including Amazon and Shopify."
+  },
+  {
+    "Ticker": "FISV",
+    "Name": "Fiserv",
+    "Sector": "Payments & Fintech",
+    "Bio": "Fintech for banks and merchants (core systems, payments, digital banking); Clover POS platform is a major merchant ecosystem."
+  },
+  {
+    "Ticker": "ICE",
+    "Name": "Intercontinental Exchange",
+    "Sector": "Payments & Fintech",
+    "Bio": "Operates exchanges/clearing/data and owns NYSE; also major mortgage technology via Ellie Mae; provides market data and analytics."
+  },
+  {
+    "Ticker": "SPGI",
+    "Name": "S&P Global",
+    "Sector": "Payments & Fintech",
+    "Bio": "Financial intelligence via ratings, indices, market data, analytics; expanded coverage after IHS Markit merger across commodities and information markets."
+  },
+  {
+    "Ticker": "MCO",
+    "Name": "Moody's",
+    "Sector": "Payments & Fintech",
+    "Bio": "Credit ratings (Moody’s Investors Service) plus Moody’s Analytics for risk modeling, compliance, and research; global creditworthiness benchmark."
+  },
+  {
+    "Ticker": "SCHW",
+    "Name": "Charles Schwab",
+    "Sector": "Payments & Fintech",
+    "Bio": "Brokerage, banking, and advisory; became largest publicly traded U.S. brokerage by assets after TD Ameritrade; earns via net interest, fees, trading."
+  },
+  {
+    "Ticker": "GS",
+    "Name": "Goldman Sachs",
+    "Sector": "Payments & Fintech",
+    "Bio": "Global investment bank (IB, trading, asset mgmt); advises on M&A/IPOs and runs large institutional trading franchise; refocusing on core strengths."
+  },
+  {
+    "Ticker": "MS",
+    "Name": "Morgan Stanley",
+    "Sector": "Payments & Fintech",
+    "Bio": "Investment bank plus wealth and investment management; wealth management is largest contributor after E*Trade and Eaton Vance acquisitions."
+  },
+  {
+    "Ticker": "JPM",
+    "Name": "JPMorgan Chase",
+    "Sector": "Payments & Fintech",
+    "Bio": "Largest U.S. bank by assets; consumer and institutional banking, cards, asset mgmt; leader in payments infrastructure and fintech investment."
+  },
+  {
+    "Ticker": "BAC",
+    "Name": "Bank of America",
+    "Sector": "Payments & Fintech",
+    "Bio": "Major U.S. bank across retail, cards, mortgages, IB (Merrill), wealth; strong consumer/corporate lending footprint; Erica AI in mobile app."
+  },
+  {
+    "Ticker": "WFC",
+    "Name": "Wells Fargo",
+    "Sector": "Payments & Fintech",
+    "Bio": "U.S. consumer and commercial bank; mortgage/auto/wealth services; rebuilding after sales-practices scandal and regulatory remediation (including past Fed asset cap)."
+  },
+  {
+    "Ticker": "C",
+    "Name": "Citigroup",
+    "Sector": "Payments & Fintech",
+    "Bio": "Global bank serving consumers and institutions in many countries; institutional clients group is largest; multi-year simplification and reorganization underway."
+  },
+  {
+    "Ticker": "USB",
+    "Name": "U.S. Bancorp",
+    "Sector": "Payments & Fintech",
+    "Bio": "Large regional bank with retail/commercial lending, payments, and wealth; known for consistent profitability and relatively lower-risk model."
+  },
+  {
+    "Ticker": "PNC",
+    "Name": "PNC Financial Services",
+    "Sector": "Payments & Fintech",
+    "Bio": "Regional bank with broad retail and business services; expanded via BBVA USA acquisition; known for tech-forward initiatives in banking."
+  },
+  {
+    "Ticker": "BLK",
+    "Name": "BlackRock",
+    "Sector": "Payments & Fintech",
+    "Bio": "World’s largest asset manager; iShares ETFs and Aladdin risk platform; influential in passive investing and institutional portfolio analytics."
+  },
+  {
+    "Ticker": "TROW",
+    "Name": "T. Rowe Price",
+    "Sector": "Payments & Fintech",
+    "Bio": "Active asset manager offering mutual funds/ETFs and advisory; known for fundamental research and long-term approach; significant retirement assets."
+  },
+  {
+    "Ticker": "BX",
+    "Name": "Blackstone",
+    "Sector": "Payments & Fintech",
+    "Bio": "Largest alternative asset manager spanning private equity, real estate, credit, and hedge fund solutions; large global real estate portfolio."
+  },
+  {
+    "Ticker": "AFL",
+    "Name": "Aflac",
+    "Sector": "Payments & Fintech",
+    "Bio": "Supplemental health and life insurer (U.S. and Japan); policies pay cash benefits directly to policyholders to cover out-of-pocket expenses."
+  },
+  {
+    "Ticker": "MET",
+    "Name": "MetLife",
+    "Sector": "Payments & Fintech",
+    "Bio": "Global insurer and financial services firm (life, annuities, employee benefits, asset mgmt); focusing on higher-margin institutional/group benefits."
+  },
+  {
+    "Ticker": "PRU",
+    "Name": "Prudential Financial",
+    "Sector": "Payments & Fintech",
+    "Bio": "Insurance and retirement products plus investment management; sizable international business; pivoting toward growth markets and fee-based offerings."
+  },
+  {
+    "Ticker": "ALL",
+    "Name": "Allstate",
+    "Sector": "Payments & Fintech",
+    "Bio": "Large U.S. personal lines insurer (auto/home/life/commercial); distribution via agents and direct; raised premiums to restore underwriting profitability."
+  },
+  {
+    "Ticker": "CB",
+    "Name": "Chubb",
+    "Sector": "Payments & Fintech",
+    "Bio": "Global P&C insurer serving individuals (incl. high-net-worth) and corporates; known for underwriting discipline and broad international reach."
+  },
+  {
+    "Ticker": "PGR",
+    "Name": "Progressive",
+    "Sector": "Payments & Fintech",
+    "Bio": "Leading auto insurer with data-driven pricing and telematics; expanding in homeowners; leverages analytics to price risk competitively."
+  },
+  {
+    "Ticker": "AON",
+    "Name": "Aon",
+    "Sector": "Payments & Fintech",
+    "Bio": "Risk management and insurance brokerage plus HR consulting; helps clients transfer risk and design benefits/retirement programs; one of largest brokers."
+  },
+  {
+    "Ticker": "MMC",
+    "Name": "Marsh & McLennan",
+    "Sector": "Payments & Fintech",
+    "Bio": "Largest insurance broker and risk advisor (Marsh, Guy Carpenter, Mercer, Oliver Wyman); benefits from complex risk and advisory demand."
+  },
+  {
+    "Ticker": "UNH",
+    "Name": "UnitedHealth Group",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Largest U.S. health insurer (UnitedHealthcare) plus Optum services (PBM, care delivery, analytics); Optum is a major growth engine."
+  },
+  {
+    "Ticker": "LLY",
+    "Name": "Eli Lilly",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Pharma leader with GLP‑1 drugs (Mounjaro/Zepbound) driving growth; other franchises in diabetes, oncology, and Alzheimer’s; expanding manufacturing capacity."
+  },
+  {
+    "Ticker": "JNJ",
+    "Name": "Johnson & Johnson",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Pharma and medical devices company post-Kenvue spinoff; immunology/oncology/neuroscience drugs plus surgical/ortho/cardio devices."
+  },
+  {
+    "Ticker": "ABBV",
+    "Name": "AbbVie",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Pharma company transitioning from Humira to growth drugs Skyrizi/Rinvoq; oncology and neuroscience portfolio (incl. Botox via Allergan)."
+  },
+  {
+    "Ticker": "MRK",
+    "Name": "Merck",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Global medicines/vaccines/animal health; Keytruda is flagship oncology drug; investing in pipeline ahead of eventual patent expiries."
+  },
+  {
+    "Ticker": "PFE",
+    "Name": "Pfizer",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Large pharma across oncology/immunology/rare disease/infectious disease; post-COVID restructuring and pipeline refocus after normalization of vaccine/antiviral revenues."
+  },
+  {
+    "Ticker": "BMY",
+    "Name": "Bristol-Myers Squibb",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Biopharma with major oncology/cardiovascular/immunology drugs (e.g., Opdivo, Eliquis); expanded pipeline through acquisitions like Celgene and Mirati."
+  },
+  {
+    "Ticker": "AMGN",
+    "Name": "Amgen",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Biotech pioneer with osteoporosis, inflammation, oncology and biosimilars; building obesity/GLP‑1 pipeline; added rare disease assets via Horizon acquisition."
+  },
+  {
+    "Ticker": "GILD",
+    "Name": "Gilead Sciences",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Antiviral leader in HIV; expanded into oncology via Kite (CAR‑T) and Immunomedics; recurring revenue from HIV treatment and prevention."
+  },
+  {
+    "Ticker": "REGN",
+    "Name": "Regeneron Pharmaceuticals",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Innovative biotech behind Dupixent and Eylea; strong antibody discovery and expanding cardio/oncology pipeline."
+  },
+  {
+    "Ticker": "ZTS",
+    "Name": "Zoetis",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Largest pure-play animal health company (meds/vaccines/diagnostics for pets and livestock); growing companion animal portfolio with recurring demand."
+  },
+  {
+    "Ticker": "IDXX",
+    "Name": "IDEXX Laboratories",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Veterinary diagnostics leader (in-clinic analyzers, reference labs) plus practice software and water testing; recurring consumables model with strong market position."
+  },
+  {
+    "Ticker": "DHR",
+    "Name": "Danaher",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Life sciences and diagnostics conglomerate (Cytiva, Leica, Hach); operates with Danaher Business System to drive continuous improvement and acquisition integration."
+  },
+  {
+    "Ticker": "TMO",
+    "Name": "Thermo Fisher Scientific",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Largest life sciences tools company supplying instruments, reagents, consumables, and services; benefits from growth in genomics, proteomics, and biologics manufacturing."
+  },
+  {
+    "Ticker": "ALGN",
+    "Name": "Align Technology",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Invisalign clear aligners plus iTero scanners enabling digital orthodontics; expanding internationally and into general dentist channel."
+  },
+  {
+    "Ticker": "EW",
+    "Name": "Edwards Lifesciences",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Structural heart leader, especially TAVR heart valve replacement devices; also hemodynamic monitoring; premium franchise in minimally invasive valve care."
+  },
+  {
+    "Ticker": "IQV",
+    "Name": "IQVIA",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Life sciences analytics and clinical research (CRO) with large proprietary data assets; supports drug development, commercialization, and real-world evidence."
+  },
+  {
+    "Ticker": "NVO",
+    "Name": "Novo Nordisk",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Danish pharma with GLP‑1 blockbusters (Ozempic/Wegovy) plus insulin and rare disease therapies; investing heavily to expand manufacturing capacity."
+  },
+  {
+    "Ticker": "MDT",
+    "Name": "Medtronic",
+    "Sector": "Healthcare & Pharmaceuticals",
+    "Bio": "Large medical device maker across cardiac rhythm, spine, diabetes, and surgical robotics; focusing on innovation and regulatory approvals to reaccelerate growth."
+  },
+  {
+    "Ticker": "XOM",
+    "Name": "ExxonMobil",
+    "Sector": "Energy",
+    "Bio": "Integrated oil & gas major across upstream, refining, chemicals; expanded Permian position via Pioneer acquisition; investing in carbon capture, hydrogen, and lower-emissions tech."
+  },
+  {
+    "Ticker": "COP",
+    "Name": "ConocoPhillips",
+    "Sector": "Energy",
+    "Bio": "Independent E&P with diversified portfolio (Permian/Eagle Ford/Bakken/Alaska and international); focuses on capital discipline and shareholder returns."
+  },
+  {
+    "Ticker": "OXY",
+    "Name": "Occidental Petroleum",
+    "Sector": "Energy",
+    "Bio": "E&P with Permian and chemicals (OxyChem); expanded Permian footprint via CrownRock; investing in direct air capture via 1PointFive."
+  },
+  {
+    "Ticker": "EOG",
+    "Name": "EOG Resources",
+    "Sector": "Energy",
+    "Bio": "Efficient independent E&P with major shale positions; known for low-cost operations and strong free cash flow with disciplined capital allocation."
+  },
+  {
+    "Ticker": "FANG",
+    "Name": "Diamondback Energy",
+    "Sector": "Energy",
+    "Bio": "Permian-focused E&P; scaled significantly via Endeavor merger; emphasizes low-cost operations and capital returns through dividends/buybacks."
+  },
+  {
+    "Ticker": "DVN",
+    "Name": "Devon Energy",
+    "Sector": "Energy",
+    "Bio": "Multi-basin U.S. E&P; pioneered variable dividend model distributing excess free cash flow; diversified asset base with focus on low-cost production."
+  },
+  {
+    "Ticker": "HAL",
+    "Name": "Halliburton",
+    "Sector": "Energy",
+    "Bio": "Major oilfield services provider (drilling, completions, production, evaluation); benefits from high activity and tech that improves well economics."
+  },
+  {
+    "Ticker": "MPC",
+    "Name": "Marathon Petroleum",
+    "Sector": "Energy",
+    "Bio": "Large U.S. refiner; MPLX midstream unit adds pipelines/terminals; benefits from strong crack spreads and optimized regional logistics."
+  },
+  {
+    "Ticker": "VLO",
+    "Name": "Valero Energy",
+    "Sector": "Energy",
+    "Bio": "Large independent refiner; diversifying into renewable diesel via Diamond Green Diesel JV; operates refineries across U.S./Canada/U.K."
+  },
+  {
+    "Ticker": "PSX",
+    "Name": "Phillips 66",
+    "Sector": "Energy",
+    "Bio": "Refining, midstream, chemicals (CPChem), and marketing; shifting mix toward higher-return midstream and chemicals assets."
+  },
+  {
+    "Ticker": "WMB",
+    "Name": "Williams Companies",
+    "Sector": "Energy",
+    "Bio": "Natural gas midstream leader; Transco is largest U.S. gas pipeline by volume; fee-based gathering/processing/transport services."
+  },
+  {
+    "Ticker": "KMI",
+    "Name": "Kinder Morgan",
+    "Sector": "Energy",
+    "Bio": "Major energy infrastructure owner (gas pipelines, terminals, CO2); primarily fee-based contracts; positioned for LNG export and industrial gas demand."
+  },
+  {
+    "Ticker": "ETR",
+    "Name": "Entergy",
+    "Sector": "Energy",
+    "Bio": "Electric utility across Gulf South with nuclear generation; investing in renewables and grid modernization."
+  },
+  {
+    "Ticker": "DTE",
+    "Name": "DTE Energy",
+    "Sector": "Energy",
+    "Bio": "Michigan electric and gas utility plus energy trading/midstream; significant renewable development as part of clean energy transition."
+  },
+  {
+    "Ticker": "FE",
+    "Name": "FirstEnergy",
+    "Sector": "Energy",
+    "Bio": "Regulated electric utility focused on transmission and distribution in several states; investing in grid modernization; no generation assets."
+  },
+  {
+    "Ticker": "PEG",
+    "Name": "Public Service Enterprise Group",
+    "Sector": "Energy",
+    "Bio": "NJ utility (PSE&G) plus nuclear generation fleet; focusing on regulated utility operations and carbon-free nuclear power."
+  },
+  {
+    "Ticker": "PCG",
+    "Name": "PG&E",
+    "Sector": "Energy",
+    "Bio": "California’s largest electric/gas utility; investing in grid hardening/undergrounding and clean energy after wildfire liabilities and restructuring."
+  },
+  {
+    "Ticker": "CEG",
+    "Name": "Constellation Energy",
+    "Sector": "Energy",
+    "Bio": "Largest U.S. producer of carbon-free electricity with nuclear fleet; key supplier of 24/7 clean power for data centers; pursuing life extensions and potential new builds."
+  },
+  {
+    "Ticker": "NEE",
+    "Name": "NextEra Energy",
+    "Sector": "Energy",
+    "Bio": "Largest wind/solar generator via NextEra Energy Resources plus regulated Florida Power & Light; leading global utility-scale clean energy developer."
+  },
+  {
+    "Ticker": "DUK",
+    "Name": "Duke Energy",
+    "Sector": "Energy",
+    "Bio": "Large regulated utility serving multiple U.S. states; investing in renewables, storage, and grid modernization as coal retires."
+  },
+  {
+    "Ticker": "SO",
+    "Name": "Southern Company",
+    "Sector": "Energy",
+    "Bio": "Utility serving the Southeast; completed new Vogtle nuclear units; developing hydrogen and advanced nuclear initiatives."
+  },
+  {
+    "Ticker": "SRE",
+    "Name": "Sempra",
+    "Sector": "Energy",
+    "Bio": "Energy infrastructure with regulated utilities (CA/TX) plus LNG export development; bridges stable regulated ops with LNG growth."
+  },
+  {
+    "Ticker": "AEP",
+    "Name": "American Electric Power",
+    "Sector": "Energy",
+    "Bio": "Large U.S. utility with extensive transmission network across 11 states; transitioning generation toward renewables and divesting unregulated assets."
+  },
+  {
+    "Ticker": "EXC",
+    "Name": "Exelon",
+    "Sector": "Energy",
+    "Bio": "Pure-play regulated utility holding company after Constellation spinoff; serves multiple Mid-Atlantic regions via ComEd, PECO, BGE, Pepco."
+  },
+  {
+    "Ticker": "D",
+    "Name": "Dominion Energy",
+    "Sector": "Energy",
+    "Bio": "Regulated electric/gas utility (VA/SC); simplifying portfolio and investing in offshore wind, solar, and grid modernization to meet data-center demand."
+  },
+  {
+    "Ticker": "ED",
+    "Name": "Consolidated Edison",
+    "Sector": "Energy",
+    "Bio": "NYC-area electric, gas, and steam utility with complex urban infrastructure; notable for one of the last commercial district steam networks."
+  },
+  {
+    "Ticker": "ENPH",
+    "Name": "Enphase Energy",
+    "Sector": "Energy",
+    "Bio": "Microinverters and energy management for solar; improves panel-level efficiency and reliability; also sells home storage and EV charging products."
+  },
+  {
+    "Ticker": "SEDG",
+    "Name": "SolarEdge Technologies",
+    "Sector": "Energy",
+    "Bio": "DC-optimized inverter and power optimizer systems for solar with monitoring; expanding into storage, EV charging, and smart energy management."
+  },
+  {
+    "Ticker": "FSLR",
+    "Name": "First Solar",
+    "Sector": "Energy",
+    "Bio": "Largest U.S. thin-film solar panel maker (CdTe); strong utility-scale presence and benefits from U.S. domestic manufacturing incentives."
+  },
+  {
+    "Ticker": "RUN",
+    "Name": "Sunrun",
+    "Sector": "Energy",
+    "Bio": "Largest U.S. residential solar installer offering panels, batteries, and financing; building virtual power plants aggregating home energy assets."
+  },
+  {
+    "Ticker": "NOVA",
+    "Name": "Sunnova Energy",
+    "Sector": "Energy",
+    "Bio": "Residential/small commercial solar and storage services provider using dealer partner model; focused on growing service revenues and battery attachments."
+  },
+  {
+    "Ticker": "SPWR",
+    "Name": "SunPower",
+    "Sector": "Energy",
+    "Bio": "Residential solar and storage provider that faced major financial distress and restructuring in 2024–2025; operations have been winding down/restructured."
+  },
+  {
+    "Ticker": "BE",
+    "Name": "Bloom Energy",
+    "Sector": "Energy",
+    "Bio": "Solid oxide fuel cell systems providing reliable onsite power; used by data centers/hospitals/industry; developing hydrogen capabilities as supply matures."
+  },
+  {
+    "Ticker": "BLNK",
+    "Name": "Blink Charging",
+    "Sector": "Energy",
+    "Bio": "EV charging equipment and network operator; targets commercial sites and fleets; smaller player competing with ChargePoint and others."
+  },
+  {
+    "Ticker": "CHPT",
+    "Name": "ChargePoint",
+    "Sector": "Energy",
+    "Bio": "Large EV charging network with hardware plus recurring software/services; focused on improving financial performance amid adoption/competition headwinds."
+  },
+  {
+    "Ticker": "WMT",
+    "Name": "Walmart",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest retailer by revenue with massive store footprint; growing e-commerce, Walmart+ membership, advertising (Walmart Connect), and fintech initiatives."
+  },
+  {
+    "Ticker": "COST",
+    "Name": "Costco",
+    "Sector": "Consumer & Retail",
+    "Bio": "Membership warehouse model where fees drive predictable high-margin revenue subsidizing low prices; expanding internationally and in e-commerce/private label."
+  },
+  {
+    "Ticker": "HD",
+    "Name": "Home Depot",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest home improvement retailer; deepening Pro contractor business via acquisitions (e.g., SRS Distribution); benefits from renovation demand and aging housing stock."
+  },
+  {
+    "Ticker": "TGT",
+    "Name": "Target",
+    "Sector": "Consumer & Retail",
+    "Bio": "General merchandise retailer with strong private labels and omnichannel fulfillment (drive-up, pickup, same-day via Shipt); navigating inventory and spending cycles."
+  },
+  {
+    "Ticker": "LOW",
+    "Name": "Lowe's",
+    "Sector": "Consumer & Retail",
+    "Bio": "Second-largest home improvement retailer; focusing more on Pro customers to increase higher-ticket spend; competes closely with Home Depot."
+  },
+  {
+    "Ticker": "TJX",
+    "Name": "TJX Companies",
+    "Sector": "Consumer & Retail",
+    "Bio": "Off-price retailer (TJ Maxx, Marshalls, HomeGoods, etc.) buying excess inventory at discounts; benefits when consumers trade down for value."
+  },
+  {
+    "Ticker": "SBUX",
+    "Name": "Starbucks",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest coffeehouse chain; loyalty program drives U.S. engagement; working on operational efficiency and brand revitalization under evolving leadership."
+  },
+  {
+    "Ticker": "MCD",
+    "Name": "McDonald's",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global fast food leader; ~95% franchised, making it largely a real estate/brand licensing model; investing in digital ordering and menu innovation."
+  },
+  {
+    "Ticker": "BKNG",
+    "Name": "Booking Holdings",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest online travel group (Booking.com, Priceline, Kayak, Agoda, OpenTable); earns commissions on bookings; strong in Europe and growing in Asia."
+  },
+  {
+    "Ticker": "ABNB",
+    "Name": "Airbnb",
+    "Sector": "Consumer & Retail",
+    "Bio": "Marketplace connecting travelers with hosts for short-term rentals; earns service fees from guests and hosts; expanding experiences and long-term stays."
+  },
+  {
+    "Ticker": "UBER",
+    "Name": "Uber",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global ride-hailing, delivery (Eats), and freight platform; growing advertising and grocery; partnering on autonomous vehicles for future driverless mobility."
+  },
+  {
+    "Ticker": "LYFT",
+    "Name": "Lyft",
+    "Sector": "Consumer & Retail",
+    "Bio": "Ride-hailing focused on U.S./Canada passenger transport; no food delivery business; partnering with autonomous vehicle firms to develop driverless rides."
+  },
+  {
+    "Ticker": "ETSY",
+    "Name": "Etsy",
+    "Sector": "Consumer & Retail",
+    "Bio": "Marketplace for handmade/vintage/craft goods; owns Reverb and Depop; working to reaccelerate engagement after pandemic growth slowed."
+  },
+  {
+    "Ticker": "CHWY",
+    "Name": "Chewy",
+    "Sector": "Consumer & Retail",
+    "Bio": "Online pet supplies leader with high-retention Autoship subscriptions; expanding pet health via telehealth services."
+  },
+  {
+    "Ticker": "BBY",
+    "Name": "Best Buy",
+    "Sector": "Consumer & Retail",
+    "Bio": "Consumer electronics retailer plus Geek Squad services; expanding health tech and in-home advisory offerings amid cyclical electronics demand."
+  },
+  {
+    "Ticker": "KR",
+    "Name": "Kroger",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest U.S. grocer by revenue with multiple banners; revenue from fuel and pharmacies; growing private label; proposed Albertsons merger blocked."
+  },
+  {
+    "Ticker": "WBA",
+    "Name": "Walgreens Boots Alliance",
+    "Sector": "Consumer & Retail",
+    "Bio": "Major pharmacy retailer (Walgreens, Boots UK); restructuring and closing underperforming stores amid financial pressure."
+  },
+  {
+    "Ticker": "DG",
+    "Name": "Dollar General",
+    "Sector": "Consumer & Retail",
+    "Bio": "Small-format discount retailer serving rural/suburban markets; investing in supply chain and execution improvements including DG Fresh."
+  },
+  {
+    "Ticker": "CMG",
+    "Name": "Chipotle Mexican Grill",
+    "Sector": "Consumer & Retail",
+    "Bio": "Fast-casual Mexican chain with customizable menu; expanding digital ordering and Chipotlane format; consistent throughput supports scale."
+  },
+  {
+    "Ticker": "HSY",
+    "Name": "Hershey",
+    "Sector": "Consumer & Retail",
+    "Bio": "Leading confectionery/snacks maker (Hershey, Reese’s, etc.); facing margin pressure from elevated cocoa prices."
+  },
+  {
+    "Ticker": "KHC",
+    "Name": "Kraft Heinz",
+    "Sector": "Consumer & Retail",
+    "Bio": "Packaged foods and condiments (Heinz, Kraft, etc.); focusing on portfolio revitalization and growth categories after heavy cost-cutting era."
+  },
+  {
+    "Ticker": "GIS",
+    "Name": "General Mills",
+    "Sector": "Consumer & Retail",
+    "Bio": "Packaged foods including cereals and snacks plus Blue Buffalo pet food; managing volume pressure as consumer preferences shift."
+  },
+  {
+    "Ticker": "MDLZ",
+    "Name": "Mondelez International",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global snack leader (Oreo, Cadbury, etc.); strong in biscuits/chocolate; also impacted by cocoa inflation."
+  },
+  {
+    "Ticker": "KDP",
+    "Name": "Keurig Dr Pepper",
+    "Sector": "Consumer & Retail",
+    "Bio": "Beverages and single-serve coffee systems; extensive soft drink portfolio distributed via DSD network across the U.S."
+  },
+  {
+    "Ticker": "KO",
+    "Name": "Coca-Cola",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global beverage leader with franchise bottling model; diversifying beyond cola into premium beverages and adjacent categories."
+  },
+  {
+    "Ticker": "PEP",
+    "Name": "PepsiCo",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global food and beverage company with strong snacks (Frito-Lay) and beverages; focused on volume recovery after price increases."
+  },
+  {
+    "Ticker": "MO",
+    "Name": "Altria Group",
+    "Sector": "Consumer & Retail",
+    "Bio": "U.S. tobacco leader (Marlboro) plus smokeless/oral nicotine; manages for cash as cigarette volumes decline; holds e-vapor assets."
+  },
+  {
+    "Ticker": "PM",
+    "Name": "Philip Morris International",
+    "Sector": "Consumer & Retail",
+    "Bio": "International tobacco and smoke-free products; growing IQOS heated tobacco and Zyn pouches; acquired Swedish Match to accelerate transformation."
+  },
+  {
+    "Ticker": "MNST",
+    "Name": "Monster Beverage",
+    "Sector": "Consumer & Retail",
+    "Bio": "Energy drink leader distributed globally via Coca-Cola partnership; high-margin CPG model with expanding product portfolio."
+  },
+  {
+    "Ticker": "ORLY",
+    "Name": "O'Reilly Automotive",
+    "Sector": "Consumer & Retail",
+    "Bio": "Auto parts retailer serving DIY and professional installers; strong distribution network; benefits from aging vehicle fleet increasing maintenance demand."
+  },
+  {
+    "Ticker": "AZO",
+    "Name": "AutoZone",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest U.S. auto parts network; disciplined buybacks funded by strong free cash flow; competes with O’Reilly and others."
+  },
+  {
+    "Ticker": "FAST",
+    "Name": "Fastenal",
+    "Sector": "Consumer & Retail",
+    "Bio": "Industrial distributor with on-site vending/bin stocking model; reduces procurement friction for manufacturers; growing footprint organically."
+  },
+  {
+    "Ticker": "SYY",
+    "Name": "Sysco",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest foodservice distributor; scale and logistics network provide competitive advantage supplying restaurants, schools, hospitals, and more."
+  },
+  {
+    "Ticker": "RSG",
+    "Name": "Republic Services",
+    "Sector": "Consumer & Retail",
+    "Bio": "Major waste collection/recycling/disposal company; expanding environmental services; strong pricing discipline and free cash flow."
+  },
+  {
+    "Ticker": "ODFL",
+    "Name": "Old Dominion Freight Line",
+    "Sector": "Consumer & Retail",
+    "Bio": "Premium less-than-truckload (LTL) carrier known for high service quality; hub-and-spoke network supports fast delivery and premium pricing."
+  },
+  {
+    "Ticker": "FDX",
+    "Name": "FedEx",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global package delivery and logistics; restructuring to unify Ground and Express networks under a single operating company."
+  },
+  {
+    "Ticker": "UPS",
+    "Name": "United Parcel Service",
+    "Sector": "Consumer & Retail",
+    "Bio": "Global small parcel and supply chain network; focusing on higher-margin healthcare logistics and optimizing volume mix."
+  },
+  {
+    "Ticker": "DASH",
+    "Name": "DoorDash",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest U.S. food delivery marketplace; DashPass subscription drives loyalty; expanding grocery/retail delivery and international footprint."
+  },
+  {
+    "Ticker": "MAR",
+    "Name": "Marriott International",
+    "Sector": "Consumer & Retail",
+    "Bio": "Largest hotel company by property count; earns primarily franchise/management fees; Bonvoy loyalty program is a major strategic asset."
+  },
+  {
+    "Ticker": "CAT",
+    "Name": "Caterpillar",
+    "Sector": "Industrials & Defense",
+    "Bio": "Leading maker of construction/mining equipment and engines; also finances equipment; increasingly relevant for data-center backup generation."
+  },
+  {
+    "Ticker": "GE",
+    "Name": "GE Aerospace",
+    "Sector": "Industrials & Defense",
+    "Bio": "Commercial and defense jet engine manufacturer (LEAP/GEnx); major MRO services business; focused after spinning off healthcare and energy units."
+  },
+  {
+    "Ticker": "HON",
+    "Name": "Honeywell",
+    "Sector": "Industrials & Defense",
+    "Bio": "Industrial tech across aerospace, building automation, process controls, and safety; exploring portfolio simplification and potential separations."
+  },
+  {
+    "Ticker": "ETN",
+    "Name": "Eaton",
+    "Sector": "Industrials & Defense",
+    "Bio": "Power management across electrical and hydraulics; beneficiary of data center buildout, EV charging, and grid modernization; critical for safe power distribution."
+  },
+  {
+    "Ticker": "ITW",
+    "Name": "Illinois Tool Works",
+    "Sector": "Industrials & Defense",
+    "Bio": "Diversified manufacturer of engineered components and equipment; decentralized model and 80/20 focus drive strong margins."
+  },
+  {
+    "Ticker": "EMR",
+    "Name": "Emerson Electric",
+    "Sector": "Industrials & Defense",
+    "Bio": "Industrial automation tech and software for process industries; pivoting toward automation after portfolio reshaping and National Instruments acquisition."
+  },
+  {
+    "Ticker": "CMI",
+    "Name": "Cummins",
+    "Sector": "Industrials & Defense",
+    "Bio": "Engines and powertrain components for heavy-duty and industrial uses; investing in hydrogen and electrified powertrains via Accelera."
+  },
+  {
+    "Ticker": "RTX",
+    "Name": "RTX Corporation",
+    "Sector": "Industrials & Defense",
+    "Bio": "Aerospace and defense leader with Pratt & Whitney engines and Raytheon missiles/defense electronics; key U.S. contractor across commercial and military markets."
+  },
+  {
+    "Ticker": "LMT",
+    "Name": "Lockheed Martin",
+    "Sector": "Industrials & Defense",
+    "Bio": "Largest defense contractor; F‑35 fighter jet program plus helicopters, missiles, and space; long-duration production and sustainment revenue."
+  },
+  {
+    "Ticker": "NOC",
+    "Name": "Northrop Grumman",
+    "Sector": "Industrials & Defense",
+    "Bio": "Defense/aerospace company behind B‑21 bomber, space systems, missile defense, and cyber; key supplier for nuclear and space modernization."
+  },
+  {
+    "Ticker": "GD",
+    "Name": "General Dynamics",
+    "Sector": "Industrials & Defense",
+    "Bio": "Defense contractor building nuclear submarines, Abrams tanks, and IT services; also owns Gulfstream business jets competing at the premium end."
+  },
+  {
+    "Ticker": "LHX",
+    "Name": "L3Harris Technologies",
+    "Sector": "Industrials & Defense",
+    "Bio": "Defense electronics, ISR, communications, and space tech; formed from Harris/L3 merger; major supplier of tactical radios and electronic warfare."
+  },
+  {
+    "Ticker": "CARR",
+    "Name": "Carrier Global",
+    "Sector": "Industrials & Defense",
+    "Bio": "HVAC, refrigeration, and fire/security systems; acquired Viessmann Climate to expand heat pumps; central to building electrification trends."
+  },
+  {
+    "Ticker": "OTIS",
+    "Name": "Otis Worldwide",
+    "Sector": "Industrials & Defense",
+    "Bio": "Largest elevator/escalator maker; high-margin recurring service business maintaining a huge installed base globally."
+  },
+  {
+    "Ticker": "PH",
+    "Name": "Parker Hannifin",
+    "Sector": "Industrials & Defense",
+    "Bio": "Motion and control technologies across hydraulics/pneumatics/electromechanical for industrial/mobile/aerospace; expanded aerospace via Meggitt acquisition."
+  },
+  {
+    "Ticker": "ROP",
+    "Name": "Roper Technologies",
+    "Sector": "Industrials & Defense",
+    "Bio": "Serial acquirer of niche vertical software and engineered products; focuses on high-margin recurring-revenue software businesses."
+  },
+  {
+    "Ticker": "APD",
+    "Name": "Air Products and Chemicals",
+    "Sector": "Industrials & Defense",
+    "Bio": "Industrial gases supplier (oxygen, nitrogen, argon, hydrogen) for manufacturing and electronics; investing in large-scale green/blue hydrogen projects."
+  },
+  {
+    "Ticker": "ECL",
+    "Name": "Ecolab",
+    "Sector": "Industrials & Defense",
+    "Bio": "Cleaning/sanitation, water treatment, and pest control with service-based model; helps customers reduce water/energy use and improve hygiene."
+  },
+  {
+    "Ticker": "SHW",
+    "Name": "Sherwin-Williams",
+    "Sector": "Industrials & Defense",
+    "Bio": "Largest paints and coatings company; extensive company-owned store network serving professionals; leveraged to construction and remodeling activity."
+  },
+  {
+    "Ticker": "NSC",
+    "Name": "Norfolk Southern",
+    "Sector": "Industrials & Defense",
+    "Bio": "Major Eastern U.S. freight railroad; transports coal, chemicals, automotive, agriculture, and intermodal; pursuing efficiency via scheduled railroading."
+  },
+  {
+    "Ticker": "UNP",
+    "Name": "Union Pacific",
+    "Sector": "Industrials & Defense",
+    "Bio": "Largest U.S. freight railroad by revenue; serves Western U.S. and key ports; uses precision scheduled railroading to optimize asset utilization."
+  },
+  {
+    "Ticker": "IP",
+    "Name": "International Paper",
+    "Sector": "Industrials & Defense",
+    "Bio": "Paper and packaging producer focused on corrugated boxes/containerboard and fiber-based packaging; streamlined portfolio to focus on core operations."
+  },
+  {
+    "Ticker": "PKG",
+    "Name": "Packaging Corporation of America",
+    "Sector": "Industrials & Defense",
+    "Bio": "Vertically integrated corrugated packaging and linerboard producer; known for reliability and service in the box/packaging market."
+  },
+  {
+    "Ticker": "WY",
+    "Name": "Weyerhaeuser",
+    "Sector": "Industrials & Defense",
+    "Bio": "Large private timberland owner and wood products manufacturer (lumber, OSB, engineered wood); REIT structure; results are sensitive to housing and wood product cycles."
+  },
+  {
+    "Ticker": "VOO",
+    "Name": "Vanguard S&P 500 ETF",
+    "Sector": "Broad Market Index",
+    "Bio": "Tracks the S&P 500 index, giving exposure to ~500 of the largest U.S. companies across all sectors."
+  },
+  {
+    "Ticker": "IVV",
+    "Name": "iShares Core S&P 500 ETF",
+    "Sector": "Broad Market Index",
+    "Bio": "Low-cost ETF tracking the S&P 500 index; widely used by institutions for large-cap U.S. exposure."
+  },
+  {
+    "Ticker": "SPY",
+    "Name": "SPDR S&P 500 ETF Trust",
+    "Sector": "Broad Market Index",
+    "Bio": "The original S&P 500 ETF and one of the most liquid securities in the world, widely used for trading and hedging."
+  },
+  {
+    "Ticker": "VTI",
+    "Name": "Vanguard Total Stock Market ETF",
+    "Sector": "Total U.S. Market",
+    "Bio": "Tracks the entire U.S. equity market including large-, mid-, and small-cap stocks."
+  },
+  {
+    "Ticker": "QQQ",
+    "Name": "Invesco QQQ Trust",
+    "Sector": "Technology / Growth",
+    "Bio": "Tracks the Nasdaq-100 index, heavily weighted toward large technology and growth companies."
+  },
+  {
+    "Ticker": "BND",
+    "Name": "Vanguard Total Bond Market ETF",
+    "Sector": "Fixed Income",
+    "Bio": "Provides broad exposure to the U.S. investment-grade bond market including Treasuries and corporate bonds."
+  },
+  {
+    "Ticker": "AGG",
+    "Name": "iShares Core U.S. Aggregate Bond ETF",
+    "Sector": "Fixed Income",
+    "Bio": "Tracks the Bloomberg U.S. Aggregate Bond Index, offering diversified exposure to the U.S. bond market."
+  },
+  {
+    "Ticker": "VXUS",
+    "Name": "Vanguard Total International Stock ETF",
+    "Sector": "International Equity",
+    "Bio": "Provides exposure to developed and emerging market stocks outside the United States."
+  },
+  {
+    "Ticker": "IEMG",
+    "Name": "iShares Core MSCI Emerging Markets ETF",
+    "Sector": "Emerging Markets",
+    "Bio": "Tracks an index of large and mid-cap companies across emerging markets like China, India, and Brazil."
+  },
+  {
+    "Ticker": "VWO",
+    "Name": "Vanguard FTSE Emerging Markets ETF",
+    "Sector": "Emerging Markets",
+    "Bio": "Broad ETF tracking emerging market equities with large exposure to Asia and Latin America."
+  },
+  {
+    "Ticker": "IWF",
+    "Name": "iShares Russell 1000 Growth ETF",
+    "Sector": "Growth Stocks",
+    "Bio": "Tracks growth-oriented companies in the Russell 1000 index, including major tech leaders."
+  },
+  {
+    "Ticker": "VGT",
+    "Name": "Vanguard Information Technology ETF",
+    "Sector": "Technology",
+    "Bio": "Sector ETF focused on U.S. technology companies including software, semiconductors, and IT services."
+  },
+  {
+    "Ticker": "IJH",
+    "Name": "iShares Core S&P Mid-Cap ETF",
+    "Sector": "Mid Cap",
+    "Bio": "Tracks the S&P MidCap 400 index, providing exposure to mid-sized U.S. companies."
+  },
+  {
+    "Ticker": "VIG",
+    "Name": "Vanguard Dividend Appreciation ETF",
+    "Sector": "Dividend Growth",
+    "Bio": "Invests in companies with a long track record of increasing dividends."
+  },
+  {
+    "Ticker": "VO",
+    "Name": "Vanguard Mid-Cap ETF",
+    "Sector": "Mid Cap",
+    "Bio": "Tracks the CRSP U.S. Mid Cap Index, providing exposure to mid-sized U.S. companies."
+  },
+  {
+    "Ticker": "IJR",
+    "Name": "iShares Core S&P Small-Cap ETF",
+    "Sector": "Small Cap",
+    "Bio": "Tracks the S&P SmallCap 600 index, offering exposure to smaller U.S. companies."
+  },
+  {
+    "Ticker": "SCHD",
+    "Name": "Schwab U.S. Dividend Equity ETF",
+    "Sector": "Dividend / Value",
+    "Bio": "Focuses on high-quality U.S. dividend-paying companies with strong fundamentals."
+  },
+  {
+    "Ticker": "IAU",
+    "Name": "iShares Gold Trust",
+    "Sector": "Commodities",
+    "Bio": "Physically backed gold ETF designed to track the price of gold bullion."
+  },
+  {
+    "Ticker": "ITOT",
+    "Name": "iShares Core S&P Total U.S. Stock Market ETF",
+    "Sector": "Total U.S. Market",
+    "Bio": "Tracks the S&P Total Market Index, providing exposure to the entire U.S. stock market."
+  },
+  {
+    "Ticker": "EFA",
+    "Name": "iShares MSCI EAFE ETF",
+    "Sector": "International Developed Markets",
+    "Bio": "Tracks developed market equities outside the U.S. and Canada, including Europe and Japan."
+  },
+  {
+    "Ticker": "SLV",
+    "Name": "iShares Silver Trust",
+    "Sector": "Commodities",
+    "Bio": "Physically backed silver ETF designed to track the spot price of silver bullion."
+  },
+  {
+    "Ticker": "GLD",
+    "Name": "SPDR Gold Shares",
+    "Sector": "Commodities",
+    "Bio": "One of the largest gold ETFs in the world, designed to track the price performance of gold bullion."
+  },
+  {
+    "Ticker": "USO",
+    "Name": "United States Oil Fund",
+    "Sector": "Energy / Commodities",
+    "Bio": "Tracks near-term West Texas Intermediate (WTI) crude oil futures, giving exposure to oil price movements."
+  },
+  {
+    "Ticker": "JETS",
+    "Name": "U.S. Global Jets ETF",
+    "Sector": "Airlines / Transportation",
+    "Bio": "ETF focused on airline companies and related aviation businesses globally."
+  },
+  {
+    "Ticker": "TSLL",
+    "Name": "Direxion Daily TSLA Bull 2X Shares",
+    "Sector": "Leveraged Single Stock",
+    "Bio": "Provides 2x leveraged daily exposure to Tesla stock performance."
+  },
+  {
+    "Ticker": "SQQQ",
+    "Name": "ProShares UltraPro Short QQQ",
+    "Sector": "Leveraged / Inverse",
+    "Bio": "Provides 3x inverse daily exposure to the Nasdaq-100 index."
+  },
+  {
+    "Ticker": "TQQQ",
+    "Name": "ProShares UltraPro QQQ",
+    "Sector": "Leveraged / Growth",
+    "Bio": "Provides 3x leveraged daily exposure to the Nasdaq-100 index."
+  },
+  {
+    "Ticker": "UVIX",
+    "Name": "2x Long VIX Futures ETF",
+    "Sector": "Volatility",
+    "Bio": "Provides 2x leveraged exposure to short-term VIX futures, designed to track volatility spikes."
+  },
+  {
+    "Ticker": "UVXY",
+    "Name": "ProShares Ultra VIX Short-Term Futures ETF",
+    "Sector": "Volatility",
+    "Bio": "Provides leveraged exposure to short-term VIX futures contracts tracking market volatility."
+  },
+  {
+    "Ticker": "TLT",
+    "Name": "iShares 20+ Year Treasury Bond ETF",
+    "Sector": "Fixed Income",
+    "Bio": "Tracks long-term U.S. Treasury bonds with maturities of 20 years or more."
+  }
+]

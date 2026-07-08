@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/112-runtime-grants-admin-cross-service-tables.yaml
+
+  - changeSet:
+      id: 112-runtime-grants-admin-cross-service-tables
+      author: marketmono
+      comment: Grant the runtime app role access to admin-facing cross-service launch tables.
+      dbms: postgresql
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              BEGIN
+                  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                      GRANT SELECT ON TABLE public.subscriber_cap_reservations TO marketmono_app;
+                      GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.uw_api_call_logs TO marketmono_app;
+
+                      IF to_regclass('public.uw_api_call_logs_id_seq') IS NOT NULL THEN
+                          GRANT USAGE, SELECT ON SEQUENCE public.uw_api_call_logs_id_seq TO marketmono_app;
+                      END IF;
+                  END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              BEGIN
+                  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                      REVOKE SELECT ON TABLE public.subscriber_cap_reservations FROM marketmono_app;
+                      REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.uw_api_call_logs FROM marketmono_app;
+
+                      IF to_regclass('public.uw_api_call_logs_id_seq') IS NOT NULL THEN
+                          REVOKE USAGE, SELECT ON SEQUENCE public.uw_api_call_logs_id_seq FROM marketmono_app;
+                      END IF;
+                  END IF;
+              END
+              $$;

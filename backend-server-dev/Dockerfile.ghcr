@@ -1,0 +1,46 @@
+# Optimized Dockerfile for GitHub Actions deployment
+# Simple approach: Use pre-built JAR directly without layer extraction
+# Trade-off: Slightly larger layer changes for guaranteed compatibility
+
+FROM eclipse-temurin:25-jre-alpine AS production
+
+WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup -g 1001 spring && \
+    adduser -D -u 1001 -G spring spring && \
+    mkdir -p /app/logs && \
+    chown -R spring:spring /app
+
+# Install wget for health checks (lighter than curl)
+RUN apk add --no-cache wget
+
+# Copy the pre-built JAR from build context (GitHub Actions builds JAR in build/libs/)
+COPY --chown=spring:spring build/libs/*.jar app.jar
+
+# Switch to non-root user
+USER spring
+
+# Expose application port
+EXPOSE 8080
+
+# JVM options optimized for container environment with monitoring.
+# Keep heap sizing separate so production can increase memory without dropping
+# heap dumps, GC logs, metaspace cap, or OOM-exit behavior.
+ENV JAVA_HEAP_MAX="2048m" \
+    JAVA_MAX_METASPACE_SIZE="512m" \
+    JAVA_OPTS_EXTRA=""
+
+# Health check using actuator endpoint
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=90s \
+  CMD wget --spider -q http://localhost:8080/actuator/health/liveness || exit 1
+
+# Run the Spring Boot application directly from JAR
+ENTRYPOINT ["sh", "-c"]
+CMD ["exec java -Xmx${JAVA_HEAP_MAX:-2048m} -XX:MaxMetaspaceSize=${JAVA_MAX_METASPACE_SIZE:-512m} -XX:+UseG1GC -XX:+UseContainerSupport -Djava.security.egd=file:/dev/./urandom -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/logs -Xlog:gc*:file=/app/logs/gc.log:time,uptime,level,tags:filecount=5,filesize=10M ${JAVA_OPTS_EXTRA:-} -jar app.jar"]
+
+# Metadata labels for GHCR
+LABEL org.opencontainers.image.source="https://github.com/Market-Mono/backend-server" \
+      org.opencontainers.image.description="Market Mono Backend - Spring Boot 3.5.3 API" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.title="marketmono-backend"

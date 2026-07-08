@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/117-user-email-lifecycle-controls.yaml
+  - changeSet:
+      id: 117-user-email-lifecycle-controls
+      author: marketmono
+      comment: Allow retired same-email restart and add normalized email-level ban metadata.
+      preConditions:
+        - onFail: HALT
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: |
+              SELECT COUNT(*)
+              FROM (
+                SELECT email_lowercase
+                FROM users
+                WHERE deleted_at IS NULL
+                GROUP BY email_lowercase
+                HAVING COUNT(*) > 1
+              ) duplicate_active_email_lowercase
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: true
+            stripComments: true
+            sql: |
+              ALTER TABLE users DROP CONSTRAINT IF EXISTS users_email_key;
+              ALTER TABLE users DROP CONSTRAINT IF EXISTS uq_users_email_lowercase;
+
+              CREATE UNIQUE INDEX IF NOT EXISTS uq_users_email_lowercase_active
+                ON users (email_lowercase)
+                WHERE deleted_at IS NULL;
+
+              ALTER TABLE users ADD COLUMN IF NOT EXISTS banned_at timestamp;
+              ALTER TABLE users ADD COLUMN IF NOT EXISTS banned_email_lowercase varchar(255);
+              ALTER TABLE users ADD COLUMN IF NOT EXISTS banned_reason varchar(500);
+              ALTER TABLE users ADD COLUMN IF NOT EXISTS banned_by_admin_id uuid;
+
+              CREATE INDEX IF NOT EXISTS idx_users_banned_email_lowercase
+                ON users (banned_email_lowercase)
+                WHERE banned_at IS NOT NULL;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: true
+            stripComments: true
+            sql: |
+              DROP INDEX IF EXISTS idx_users_banned_email_lowercase;
+              ALTER TABLE users DROP COLUMN IF EXISTS banned_by_admin_id;
+              ALTER TABLE users DROP COLUMN IF EXISTS banned_reason;
+              ALTER TABLE users DROP COLUMN IF EXISTS banned_email_lowercase;
+              ALTER TABLE users DROP COLUMN IF EXISTS banned_at;
+
+              DROP INDEX IF EXISTS uq_users_email_lowercase_active;
+              ALTER TABLE users ADD CONSTRAINT users_email_key UNIQUE (email);
+              ALTER TABLE users ADD CONSTRAINT uq_users_email_lowercase UNIQUE (email_lowercase);

@@ -1,0 +1,32 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/lib/promtail/positions.yaml
+
+clients:
+  - url: ${LOKI_URL}
+
+scrape_configs:
+  - job_name: postgres
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: postgres
+          host: ${HOST_ALIAS}
+          role: ${HOST_ROLE}
+          source: postgresql-file
+          __path__: /var/log/postgresql/*.log
+
+  - job_name: pgbackrest
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: pgbackrest
+          host: ${HOST_ALIAS}
+          role: ${HOST_ROLE}
+          source: pgbackrest-file
+          __path__: /var/log/pgbackrest/*.log

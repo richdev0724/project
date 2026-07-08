@@ -1,0 +1,135 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/123-beta-waitlist-invite-direct-whop-link.yaml
+
+  - changeSet:
+      id: 123-beta-waitlist-invite-direct-whop-link
+      author: marketmono
+      comment: Point beta waitlist invite template at direct Whop Beta checkout link.
+      changes:
+        - update:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 30px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Market Mono Beta</h1>
+                        </div>
+                        <div class="content">
+                          <h2>Welcome, {{user.firstName}}!</h2>
+                          <p>Your beta access is ready for {{user.email}}.</p>
+                          <p>Create your Market Mono account with the link below. No temporary password is required.</p>
+                          <p style="text-align: center;">
+                            <a href="{{app.signUpUrl}}" class="button">Create your beta account</a>
+                          </p>
+                          <p>Beta members receive {{beta.trialDays}} days free and {{beta.discountText}}.</p>
+                          <p style="text-align: center;">
+                            <a href="{{beta.checkoutUrl}}" class="button">Start beta checkout</a>
+                          </p>
+                        </div>
+                        <div class="footer">
+                          <p>(c) {{app.year}} Market Mono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Market Mono Beta Access
+
+                    Hi {{user.firstName}},
+
+                    Your beta access is ready for {{user.email}}.
+
+                    Create your Market Mono account with this link. No temporary password is required:
+                    {{app.signUpUrl}}
+
+                    Beta members receive {{beta.trialDays}} days free and {{beta.discountText}}.
+
+                    Start beta checkout:
+                    {{beta.checkoutUrl}}
+
+                    (c) {{app.year}} Market Mono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"Beta invite recipient first name parsed from display name","example":"Alex"},{"key":"user.lastName","description":"Beta invite recipient last name parsed from display name","example":"Trader"},{"key":"user.displayName","description":"Beta invite recipient display name","example":"Alex Trader"},{"key":"user.email","description":"Beta invite recipient email address","example":"alex@example.com"},{"key":"beta.trialDays","description":"Configured beta trial days","example":"3"},{"key":"beta.discountText","description":"Human-readable beta discount","example":"10% off your first 3 months"},{"key":"beta.checkoutUrl","description":"Direct Whop Beta checkout URL","example":"https://whop.com/checkout/plan_beta"},{"key":"app.betaSubscribeUrl","description":"Direct Whop Beta checkout URL","example":"https://whop.com/checkout/plan_beta"},{"key":"app.frontendUrl","description":"Public Market Mono frontend URL","example":"https://marketmono.com"},{"key":"app.signInUrl","description":"Public Market Mono sign-in URL","example":"https://marketmono.com/sign-in"},{"key":"app.signUpUrl","description":"Public Market Mono sign-up URL","example":"https://marketmono.com/sign-up"},{"key":"app.subscribeUrl","description":"Legacy Market Mono subscribe URL with beta code","example":"https://marketmono.com/subscribe?promoCode=BETAMM2026"},{"key":"app.year","description":"Current year","example":"2026"}]'
+            where: slug = 'beta-waitlist-invite'
+      rollback:
+        - update:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 30px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Market Mono Beta</h1>
+                        </div>
+                        <div class="content">
+                          <h2>Welcome, {{user.firstName}}!</h2>
+                          <p>Your beta access is ready for {{user.email}}.</p>
+                          <p>Create your Market Mono account with the link below. No temporary password is required.</p>
+                          <p style="text-align: center;">
+                            <a href="{{app.signUpUrl}}" class="button">Create your beta account</a>
+                          </p>
+                          <p>Beta members receive {{beta.trialDays}} days free and {{beta.discountText}} with code {{beta.promoCode}}.</p>
+                          <p>After verifying your account, choose a subscription at {{app.subscribeUrl}}.</p>
+                        </div>
+                        <div class="footer">
+                          <p>(c) {{app.year}} Market Mono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Market Mono Beta Access
+
+                    Hi {{user.firstName}},
+
+                    Your beta access is ready for {{user.email}}.
+
+                    Create your Market Mono account with this link. No temporary password is required:
+                    {{app.signUpUrl}}
+
+                    Beta members receive {{beta.trialDays}} days free and {{beta.discountText}} with code {{beta.promoCode}}.
+
+                    After verifying your account, choose a subscription:
+                    {{app.subscribeUrl}}
+
+                    (c) {{app.year}} Market Mono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"Beta invite recipient first name parsed from display name","example":"Alex"},{"key":"user.lastName","description":"Beta invite recipient last name parsed from display name","example":"Trader"},{"key":"user.displayName","description":"Beta invite recipient display name","example":"Alex Trader"},{"key":"user.email","description":"Beta invite recipient email address","example":"alex@example.com"},{"key":"beta.promoCode","description":"Public beta promotion code","example":"BETAMM2026"},{"key":"beta.trialDays","description":"Configured beta trial days","example":"3"},{"key":"beta.discountText","description":"Human-readable beta discount","example":"10% off your first 3 months"},{"key":"app.frontendUrl","description":"Public Market Mono frontend URL","example":"https://marketmono.com"},{"key":"app.signInUrl","description":"Public Market Mono sign-in URL","example":"https://marketmono.com/sign-in"},{"key":"app.signUpUrl","description":"Public Market Mono sign-up URL","example":"https://marketmono.com/sign-up"},{"key":"app.subscribeUrl","description":"Public Market Mono subscribe URL with beta code","example":"https://marketmono.com/subscribe?promoCode=BETAMM2026"},{"key":"app.year","description":"Current year","example":"2026"}]'
+            where: slug = 'beta-waitlist-invite'

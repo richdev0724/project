@@ -1,0 +1,109 @@
+{
+  "totalTrades": 18947,
+  "uniquePoliticians": 182,
+  "uniqueTickers": 2055,
+  "dateRange": {
+    "earliest": "2012-09-13",
+    "latest": "2024-06-06"
+  },
+  "topPoliticians": [
+    {
+      "politician": "Josh Gottheimer",
+      "tradeCount": 1874
+    },
+    {
+      "politician": "Thomas Tuberville",
+      "tradeCount": 1183
+    },
+    {
+      "politician": "Susie Lee",
+      "tradeCount": 1011
+    },
+    {
+      "politician": "Daniel Goldman",
+      "tradeCount": 962
+    },
+    {
+      "politician": "Gilbert Cisneros",
+      "tradeCount": 850
+    },
+    {
+      "politician": "Kathy Manning",
+      "tradeCount": 617
+    },
+    {
+      "politician": "Shelley Capito",
+      "tradeCount": 571
+    },
+    {
+      "politician": "Lois Frankel",
+      "tradeCount": 555
+    },
+    {
+      "politician": "Sheldon Whitehouse",
+      "tradeCount": 550
+    },
+    {
+      "politician": "Sternoff Beyer",
+      "tradeCount": 547
+    }
+  ],
+  "topTickers": [
+    {
+      "ticker": "AAPL",
+      "tradeCount": 339
+    },
+    {
+      "ticker": "MSFT",
+      "tradeCount": 286
+    },
+    {
+      "ticker": "NVDA",
+      "tradeCount": 189
+    },
+    {
+      "ticker": "AMZN",
+      "tradeCount": 161
+    },
+    {
+      "ticker": "DIS",
+      "tradeCount": 154
+    },
+    {
+      "ticker": "PYPL",
+      "tradeCount": 141
+    },
+    {
+      "ticker": "GOOG",
+      "tradeCount": 138
+    },
+    {
+      "ticker": "XOM",
+      "tradeCount": 124
+    },
+    {
+      "ticker": "INTC",
+      "tradeCount": 121
+    },
+    {
+      "ticker": "JNJ",
+      "tradeCount": 121
+    }
+  ],
+  "tradesByYear": {
+    "2012": 2,
+    "2013": 4,
+    "2014": 38,
+    "2015": 256,
+    "2016": 404,
+    "2017": 533,
+    "2018": 798,
+    "2019": 2906,
+    "2020": 3848,
+    "2021": 3012,
+    "2022": 2618,
+    "2023": 3667,
+    "2024": 861
+  },
+  "lastUpdated": "2025-10-11T19:58:23.283Z"
+}

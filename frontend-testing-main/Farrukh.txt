@@ -1,0 +1,53 @@
+==============================================
+COMPLETE ENVIRONMENT SETUP
+==============================================
+⚠️  SEND THIS FILE PRIVATELY - DO NOT UPLOAD TO GITHUB! ⚠️
+
+Tell your friend to create these two .env files:
+
+==============================================
+FILE 1: Create ".env" in ROOT directory
+==============================================
+
+# Application URL
+VITE_APP_URL=http://localhost:5173
+
+# Backend API URL
+VITE_BASE_URL=http://localhost:3001
+
+# Cookie-based authentication
+VITE_COOKIE_BASED_AUTHENTICATION=false
+
+# Google OAuth Client ID
+VITE_GOOGLE_CLIENT_ID=297412522027-lu1vbak5gu7hf5uq8cnhp5b5val49thg.apps.googleusercontent.com
+
+
+==============================================
+FILE 2: Create ".env" in BACKEND directory
+==============================================
+
+FMP_API_KEY=WN4hbW37gEkgCYoND0c9LKTHN3qsehK0
+CLICKHOUSE_URL=http://localhost:8123
+CLICKHOUSE_USER=default
+CLICKHOUSE_PASSWORD=
+CLICKHOUSE_DATABASE=options
+POLYGON_API_KEY=p_MWsJKX9K5FpW0pkfEysOphM9gmkTsv
+
+
+==============================================
+SETUP INSTRUCTIONS FOR YOUR FRIEND:
+==============================================
+
+1. Clone the GitHub repository
+2. Create .env file in root directory (copy FILE 1 content above)
+3. Create .env file in backend directory (copy FILE 2 content above)
+4. Install dependencies:
+   - Root directory: npm install
+   - Backend: cd backend && npm install
+5. Start the backend: cd backend && npm run dev
+6. Start the frontend (in new terminal): npm run dev
+7. Open http://localhost:5173 in browser
+
+Note: Some services like ClickHouse may need to be set up separately
+if your friend wants the full database functionality.
+

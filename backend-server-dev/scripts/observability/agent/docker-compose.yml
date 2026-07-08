@@ -1,0 +1,45 @@
+services:
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:v1.8.1
+    container_name: marketmono-node-exporter
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    command:
+      - --path.rootfs=/host
+      - --collector.textfile.directory=/var/lib/node_exporter/textfile_collector
+    volumes:
+      - /:/host:ro,rslave
+      - /var/lib/node_exporter/textfile_collector:/var/lib/node_exporter/textfile_collector:ro
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
+    container_name: marketmono-postgres-exporter
+    restart: unless-stopped
+    network_mode: host
+    profiles:
+      - database
+    environment:
+      DATA_SOURCE_NAME: ${POSTGRES_EXPORTER_DATA_SOURCE_NAME:-}
+      PG_EXPORTER_EXTEND_QUERY_PATH: /etc/postgres-exporter/queries.yml
+      PG_EXPORTER_AUTO_DISCOVER_DATABASES: "false"
+    volumes:
+      - ./postgres-exporter-queries.yml:/etc/postgres-exporter/queries.yml:ro
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: marketmono-promtail
+    restart: unless-stopped
+    network_mode: host
+    command:
+      - -config.file=/etc/promtail/config.yml
+      - -config.expand-env=true
+    environment:
+      HOST_ALIAS: ${HOST_ALIAS}
+      HOST_ROLE: ${HOST_ROLE}
+      LOKI_URL: ${LOKI_URL}
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - ./promtail:/tmp
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro

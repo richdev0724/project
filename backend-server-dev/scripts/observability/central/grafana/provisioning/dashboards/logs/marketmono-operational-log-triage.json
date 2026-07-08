@@ -1,0 +1,228 @@
+{
+  "id": null,
+  "uid": "operational-log-triage",
+  "title": "MarketMono - Operational Log Triage",
+  "tags": [
+    "logs",
+    "operations",
+    "triage"
+  ],
+  "timezone": "browser",
+  "refresh": "10s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "type": "query",
+        "datasource": {
+          "type": "loki",
+          "uid": "afisr480c5af4e"
+        },
+        "query": "label_values(host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "backend-a-prod|backend-admin-prod|backend-b-prod|frontend-edge-prod|pg18-tsdb-a|pg18-tsdb-b",
+        "current": {
+          "text": "All app/runtime hosts",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": {
+          "type": "loki",
+          "uid": "afisr480c5af4e"
+        },
+        "query": "label_values(job)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "search",
+        "type": "textbox",
+        "current": {
+          "text": "",
+          "value": ""
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Error Volume by Host",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](error|crit|alert|emerg)[]]|level=(error|fatal|panic))\" [5m])) by (host)",
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Error Volume by Job",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](error|crit|alert|emerg)[]]|level=(error|fatal|panic))\" [5m])) by (job)",
+          "legendFormat": "{{job}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Security / Auth Warnings",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(WARN|WARNING|ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](warn|warning|error|crit|alert|emerg)[]]|level=(warn|warning|error|fatal|panic))\" |~ \"(?i)(access denied|authentication failed|bad credentials|unauthorized|forbidden|csrf|spring security|AccessDeniedException|AuthenticationException|BadCredentialsException)\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 4,
+      "title": "Upstream / External Failures",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(WARN|WARNING|ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](warn|warning|error|crit|alert|emerg)[]]|level=(warn|warning|error|fatal|panic))\" |~ \"(?i)(timeout|timed out|connection refused|connection reset|bad gateway|gateway timeout|upstream|failed to call|failed to fetch|error fetching|WebClientRequestException|RestClientException|SocketTimeoutException|ConnectException)\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 5,
+      "title": "Recent Warn / Error Stream",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(WARN|WARNING|ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](warn|warning|error|crit|alert|emerg)[]]|level=(warn|warning|error|fatal|panic))\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 6,
+      "title": "Provider Quota / Payment Noise",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 38
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"(?i)(NewsAPI|Marketaux|MarketAux|upstream market data API|market data provider)\" |~ \"(?i)(429|402|422|rate limit|Payment Required|access blocked|validation error)\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    }
+  ],
+  "schemaVersion": 39
+}

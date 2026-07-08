@@ -1,0 +1,117 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/101-seed-admin-welcome-template.yaml
+  - changeSet:
+      id: seed-101-admin-welcome-template
+      author: marketmono
+      comment: Seed the admin-welcome template used for temporary password invites.
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: id
+                  valueComputed: gen_random_uuid()
+              - column:
+                  name: slug
+                  value: admin-welcome
+              - column:
+                  name: name
+                  value: Admin Welcome - Temporary Password
+              - column:
+                  name: subject
+                  value: Welcome to {{appName}} - Your Temporary Password
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                            .header { background-color: #4F46E5; color: white; padding: 20px; text-align: center; }
+                            .content { background-color: #f9fafb; padding: 30px; border-radius: 8px; margin: 20px 0; }
+                            .password-box { background-color: #fff; border: 2px solid #4F46E5; padding: 15px; font-size: 18px; text-align: center; font-weight: bold; margin: 20px 0; border-radius: 4px; }
+                            .warning { background-color: #FEF3C7; border-left: 4px solid #F59E0B; padding: 12px; margin: 20px 0; }
+                            .button { display: inline-block; background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+                            .footer { text-align: center; color: #6B7280; font-size: 12px; margin-top: 40px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <h1>Welcome to {{appName}}</h1>
+                            </div>
+                            <div class="content">
+                                <h2>Hello {{displayName}},</h2>
+                                <p>Your admin account has been created. To get started, please log in using the temporary password below:</p>
+                                <div class="password-box">{{temporaryPassword}}</div>
+                                <div class="warning"><strong>⚠️ Important:</strong> This temporary password expires in {{expiresIn}}. You will be required to change it on your first login.</div>
+                                <p>After changing your password, you'll be guided through setting up two-factor authentication for enhanced security.</p>
+                                <a href="{{loginUrl}}" class="button">Log In Now</a>
+                                <p><strong>Next Steps:</strong></p>
+                                <ol>
+                                    <li>Log in with your temporary password</li>
+                                    <li>Create a strong new password (8+ characters, uppercase, lowercase, special character)</li>
+                                    <li>Set up two-factor authentication (2FA)</li>
+                                    <li>Access the admin dashboard</li>
+                                </ol>
+                            </div>
+                            <div class="footer">
+                                <p>If you didn't expect this email or have questions, please contact your system administrator.</p>
+                                <p>&copy; 2025 {{appName}}. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Welcome to {{appName}}
+
+                    Hello {{displayName}},
+
+                    Your admin account has been created. To get started, please log in using the temporary password below:
+
+                    TEMPORARY PASSWORD: {{temporaryPassword}}
+
+                    ⚠️ IMPORTANT: This temporary password expires in {{expiresIn}}. You will be required to change it on your first login.
+
+                    After changing your password, you'll be guided through setting up two-factor authentication (2FA) for enhanced security.
+
+                    Log in here: {{loginUrl}}
+
+                    Next Steps:
+                    1. Log in with your temporary password
+                    2. Create a strong new password (8+ characters, uppercase, lowercase, special character)
+                    3. Set up two-factor authentication (2FA)
+                    4. Access the admin dashboard
+
+                    If you didn't expect this email or have questions, please contact your system administrator.
+
+                    © 2025 {{appName}}. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"appName","description":"Application name","example":"MarketMono Admin"},{"key":"displayName","description":"Admin user display name","example":"John Doe"},{"key":"temporaryPassword","description":"Auto-generated temporary password","example":"Ab12!@Xyz789$#Pq"},{"key":"loginUrl","description":"Admin login page URL","example":"http://localhost:3000/login"},{"key":"expiresIn","description":"Password expiry duration","example":"24 hours"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+              - column:
+                  name: created_at
+                  valueComputed: NOW()
+              - column:
+                  name: updated_at
+                  valueComputed: NOW()
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: slug = 'admin-welcome'

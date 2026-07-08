@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/125-runtime-grants-whop-checkout-attempts.yaml
+
+  - changeSet:
+      id: 125-runtime-grants-whop-checkout-attempts
+      author: marketmono
+      comment: Grant runtime role access to Whop checkout attempt tracking.
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.whop_checkout_attempts TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE public.whop_checkout_attempts FROM marketmono_app;
+                END IF;
+              END
+              $$;

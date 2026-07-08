@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/133-flow-alert-ingest-keys.yaml
+
+  - changeSet:
+      id: 133-flow-alert-ingest-keys
+      author: marketmono
+      comment: Create regular dedupe ledger table for id-only Flow Alert REST ingestion.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS flow_alert_ingest_keys (
+                  alert_id               UUID PRIMARY KEY,
+                  first_trade_start_time TIMESTAMPTZ NOT NULL,
+                  source                 VARCHAR(20) NOT NULL,
+                  created_at             TIMESTAMPTZ NOT NULL DEFAULT NOW()
+              );
+
+              CREATE INDEX IF NOT EXISTS idx_flow_alert_ingest_keys_created_at
+                  ON flow_alert_ingest_keys (created_at);
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, DELETE ON TABLE public.flow_alert_ingest_keys TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS flow_alert_ingest_keys;

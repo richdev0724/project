@@ -1,0 +1,175 @@
+databaseChangeLog:
+  - changeSet:
+      id: spot-gex-131-current-snapshot-table
+      author: marketmono
+      comment: >-
+        Maintain one current Spot GEX stream row per ticker, expiry, and strike
+        so Strata latest snapshots do not scan compressed 1-minute history
+        buckets on every request.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS spot_gex_strike_expiry_current (
+                  ticker                  VARCHAR(10)    NOT NULL,
+                  expiry                  DATE           NOT NULL,
+                  strike_price            DECIMAL(12,4)  NOT NULL,
+                  strike_price_cents      INTEGER        NOT NULL,
+                  bucket_start            TIMESTAMPTZ    NOT NULL,
+                  latest_timestamp_ms     BIGINT         NOT NULL,
+                  underlying_price        DECIMAL(12,4),
+
+                  call_delta_oi           DECIMAL(24,4),
+                  put_delta_oi            DECIMAL(24,4),
+                  net_delta_oi            DECIMAL(24,4),
+                  call_gamma_oi           DECIMAL(24,4),
+                  put_gamma_oi            DECIMAL(24,4),
+                  net_gamma_oi            DECIMAL(24,4),
+                  call_charm_oi           DECIMAL(24,4),
+                  put_charm_oi            DECIMAL(24,4),
+                  net_charm_oi            DECIMAL(24,4),
+                  call_vanna_oi           DECIMAL(24,4),
+                  put_vanna_oi            DECIMAL(24,4),
+                  net_vanna_oi            DECIMAL(24,4),
+
+                  call_delta_vol          DECIMAL(24,4),
+                  put_delta_vol           DECIMAL(24,4),
+                  net_delta_vol           DECIMAL(24,4),
+                  call_gamma_vol          DECIMAL(24,4),
+                  put_gamma_vol           DECIMAL(24,4),
+                  net_gamma_vol           DECIMAL(24,4),
+                  call_charm_vol          DECIMAL(24,4),
+                  put_charm_vol           DECIMAL(24,4),
+                  net_charm_vol           DECIMAL(24,4),
+                  call_vanna_vol          DECIMAL(24,4),
+                  put_vanna_vol           DECIMAL(24,4),
+                  net_vanna_vol           DECIMAL(24,4),
+
+                  call_gamma_ask          DECIMAL(24,4),
+                  call_gamma_bid          DECIMAL(24,4),
+                  put_gamma_ask           DECIMAL(24,4),
+                  put_gamma_bid           DECIMAL(24,4),
+                  call_charm_ask          DECIMAL(24,4),
+                  call_charm_bid          DECIMAL(24,4),
+                  put_charm_ask           DECIMAL(24,4),
+                  put_charm_bid           DECIMAL(24,4),
+                  call_vanna_ask          DECIMAL(24,4),
+                  call_vanna_bid          DECIMAL(24,4),
+                  put_vanna_ask           DECIMAL(24,4),
+                  put_vanna_bid           DECIMAL(24,4),
+
+                  source                  VARCHAR(64)    NOT NULL,
+                  raw_channel_name        VARCHAR(64),
+                  ingested_at             TIMESTAMPTZ    NOT NULL,
+                  inserted_at             TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at              TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+
+                  PRIMARY KEY (ticker, expiry, strike_price_cents)
+              );
+
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_current_ticker_bucket
+                  ON spot_gex_strike_expiry_current (ticker, bucket_start DESC);
+
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_current_ticker_expiry_strike
+                  ON spot_gex_strike_expiry_current (ticker, expiry, strike_price_cents);
+
+              INSERT INTO spot_gex_strike_expiry_current (
+                  ticker, expiry, strike_price, strike_price_cents, bucket_start,
+                  latest_timestamp_ms, underlying_price,
+                  call_delta_oi, put_delta_oi, net_delta_oi,
+                  call_gamma_oi, put_gamma_oi, net_gamma_oi,
+                  call_charm_oi, put_charm_oi, net_charm_oi,
+                  call_vanna_oi, put_vanna_oi, net_vanna_oi,
+                  call_delta_vol, put_delta_vol, net_delta_vol,
+                  call_gamma_vol, put_gamma_vol, net_gamma_vol,
+                  call_charm_vol, put_charm_vol, net_charm_vol,
+                  call_vanna_vol, put_vanna_vol, net_vanna_vol,
+                  call_gamma_ask, call_gamma_bid, put_gamma_ask, put_gamma_bid,
+                  call_charm_ask, call_charm_bid, put_charm_ask, put_charm_bid,
+                  call_vanna_ask, call_vanna_bid, put_vanna_ask, put_vanna_bid,
+                  source, raw_channel_name, ingested_at, inserted_at, updated_at
+              )
+              SELECT
+                  ticker, expiry, strike_price, strike_price_cents, bucket_start,
+                  latest_timestamp_ms, underlying_price,
+                  call_delta_oi, put_delta_oi, net_delta_oi,
+                  call_gamma_oi, put_gamma_oi, net_gamma_oi,
+                  call_charm_oi, put_charm_oi, net_charm_oi,
+                  call_vanna_oi, put_vanna_oi, net_vanna_oi,
+                  call_delta_vol, put_delta_vol, net_delta_vol,
+                  call_gamma_vol, put_gamma_vol, net_gamma_vol,
+                  call_charm_vol, put_charm_vol, net_charm_vol,
+                  call_vanna_vol, put_vanna_vol, net_vanna_vol,
+                  call_gamma_ask, call_gamma_bid, put_gamma_ask, put_gamma_bid,
+                  call_charm_ask, call_charm_bid, put_charm_ask, put_charm_bid,
+                  call_vanna_ask, call_vanna_bid, put_vanna_ask, put_vanna_bid,
+                  source, raw_channel_name, ingested_at, NOW(), NOW()
+              FROM (
+                  SELECT DISTINCT ON (ticker, expiry, strike_price_cents)
+                      *
+                  FROM spot_gex_strike_expiry_1m
+                  WHERE bucket_start >= NOW() - INTERVAL '1 day'
+                  ORDER BY ticker, expiry, strike_price_cents, bucket_start DESC, latest_timestamp_ms DESC
+              ) latest_rows
+              ON CONFLICT (ticker, expiry, strike_price_cents) DO UPDATE SET
+                  strike_price = EXCLUDED.strike_price,
+                  bucket_start = EXCLUDED.bucket_start,
+                  latest_timestamp_ms = EXCLUDED.latest_timestamp_ms,
+                  underlying_price = EXCLUDED.underlying_price,
+                  call_delta_oi = EXCLUDED.call_delta_oi,
+                  put_delta_oi = EXCLUDED.put_delta_oi,
+                  net_delta_oi = EXCLUDED.net_delta_oi,
+                  call_gamma_oi = EXCLUDED.call_gamma_oi,
+                  put_gamma_oi = EXCLUDED.put_gamma_oi,
+                  net_gamma_oi = EXCLUDED.net_gamma_oi,
+                  call_charm_oi = EXCLUDED.call_charm_oi,
+                  put_charm_oi = EXCLUDED.put_charm_oi,
+                  net_charm_oi = EXCLUDED.net_charm_oi,
+                  call_vanna_oi = EXCLUDED.call_vanna_oi,
+                  put_vanna_oi = EXCLUDED.put_vanna_oi,
+                  net_vanna_oi = EXCLUDED.net_vanna_oi,
+                  call_delta_vol = EXCLUDED.call_delta_vol,
+                  put_delta_vol = EXCLUDED.put_delta_vol,
+                  net_delta_vol = EXCLUDED.net_delta_vol,
+                  call_gamma_vol = EXCLUDED.call_gamma_vol,
+                  put_gamma_vol = EXCLUDED.put_gamma_vol,
+                  net_gamma_vol = EXCLUDED.net_gamma_vol,
+                  call_charm_vol = EXCLUDED.call_charm_vol,
+                  put_charm_vol = EXCLUDED.put_charm_vol,
+                  net_charm_vol = EXCLUDED.net_charm_vol,
+                  call_vanna_vol = EXCLUDED.call_vanna_vol,
+                  put_vanna_vol = EXCLUDED.put_vanna_vol,
+                  net_vanna_vol = EXCLUDED.net_vanna_vol,
+                  call_gamma_ask = EXCLUDED.call_gamma_ask,
+                  call_gamma_bid = EXCLUDED.call_gamma_bid,
+                  put_gamma_ask = EXCLUDED.put_gamma_ask,
+                  put_gamma_bid = EXCLUDED.put_gamma_bid,
+                  call_charm_ask = EXCLUDED.call_charm_ask,
+                  call_charm_bid = EXCLUDED.call_charm_bid,
+                  put_charm_ask = EXCLUDED.put_charm_ask,
+                  put_charm_bid = EXCLUDED.put_charm_bid,
+                  call_vanna_ask = EXCLUDED.call_vanna_ask,
+                  call_vanna_bid = EXCLUDED.call_vanna_bid,
+                  put_vanna_ask = EXCLUDED.put_vanna_ask,
+                  put_vanna_bid = EXCLUDED.put_vanna_bid,
+                  source = EXCLUDED.source,
+                  raw_channel_name = EXCLUDED.raw_channel_name,
+                  ingested_at = EXCLUDED.ingested_at,
+                  updated_at = NOW()
+              WHERE spot_gex_strike_expiry_current.latest_timestamp_ms <= EXCLUDED.latest_timestamp_ms;
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.spot_gex_strike_expiry_current TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS spot_gex_strike_expiry_current;

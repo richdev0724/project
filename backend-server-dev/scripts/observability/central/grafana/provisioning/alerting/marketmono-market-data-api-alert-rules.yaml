@@ -1,0 +1,377 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: marketmono_market_data_api_1m
+    folder: MarketMono Alerts
+    interval: 1m
+    rules:
+      - uid: mm_market_data_daily_projection_warning
+        title: MarketMono Market Data Daily Projection Warning
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max(marketmono_market_data_budget_daily_projected_usage)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 120000
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Market data daily projection is above the rollout warning gate.
+          description: The projected daily market data reservation count has stayed above 120k for 10 minutes. Pause expansion activity and compare source/tier panels.
+        labels:
+          severity: warning
+          service: backend-server
+          category: market-data-budget
+        isPaused: false
+      - uid: mm_market_data_daily_projection_stop
+        title: MarketMono Market Data Daily Projection Stop
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max(marketmono_market_data_budget_daily_projected_usage)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 150000
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: Market data daily projection is above the rollout stop gate.
+          description: The projected daily market data reservation count has stayed above 150k. Stop extended ticker rollout and verify scheduler governor state.
+        labels:
+          severity: critical
+          service: backend-server
+          category: market-data-budget
+        isPaused: false
+      - uid: mm_market_data_spot_gex_spike
+        title: MarketMono Market Data Spot-GEX Rolling Spike
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: sum(increase(marketmono_market_data_requests_reserved_total{source="scheduler_spot_gex",operation=~"option chains|spot exposure by strike|spot exposure by expiry strike"}[5m]))
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 2500
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: Scheduled Spot-GEX market data usage spiked in the last 5 minutes.
+          description: Spot-GEX scheduler reservations exceeded the 5-minute spike gate. Check ticker/tier panels before enabling more tickers.
+        labels:
+          severity: warning
+          service: backend-server
+          category: market-data-budget
+        isPaused: false
+      - uid: mm_market_data_cache_errors
+        title: MarketMono Market Data Cache Error Spike
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: sum(rate(marketmono_cache_requests_total{cache=~"sectorPerformance|gammaExposureCache|spotExposureCache|marketTideCache|ohlcCache|marketStatus|volumePriceLevelsCache",result="error"}[5m])) + sum(rate(marketmono_market_data_news_cache_requests_total{result="error"}[5m])) + sum(rate(marketmono_spot_gex_expiration_cache_requests_total{result="error"}[5m]))
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.1
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: Market data related caches are reporting errors.
+          description: Cache errors can turn cached surfaces back into upstream market data calls. Check cache panels before relying on quota reductions.
+        labels:
+          severity: warning
+          service: backend-server
+          category: cache
+        isPaused: false
+      - uid: mm_market_data_ext_tier_stop
+        title: MarketMono Market Data Extended Tier Collecting Over Stop Gate
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: sum(increase(marketmono_spot_gex_collection_calls_total{tier="extended"}[5m])) * on() group_left() (max(marketmono_market_data_budget_daily_projected_usage) > bool 150000)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 2m
+        annotations:
+          summary: Extended Spot-GEX collection continued while the market data stop gate was exceeded.
+          description: Extended-tier collection should pause above the 150k projected daily usage stop gate.
+        labels:
+          severity: critical
+          service: backend-server
+          category: market-data-budget
+        isPaused: false

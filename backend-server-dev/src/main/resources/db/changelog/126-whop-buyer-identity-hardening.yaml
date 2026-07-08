@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/126-whop-buyer-identity-hardening.yaml
+
+  - changeSet:
+      id: 126-whop-buyer-identity-hardening
+      author: marketmono
+      comment: Add durable buyer identity lock evidence for Whop checkout attempts.
+      changes:
+        - modifyDataType:
+            tableName: whop_checkout_attempts
+            columnName: whop_purchase_url
+            newDataType: VARCHAR(2048)
+        - addColumn:
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: buyer_identity_locked
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: locked_buyer_email
+                  type: VARCHAR(255)
+              - column:
+                  name: buyer_identity_lock_method
+                  type: VARCHAR(50)
+      rollback:
+        - dropColumn:
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: buyer_identity_locked
+              - column:
+                  name: locked_buyer_email
+              - column:
+                  name: buyer_identity_lock_method
+        - modifyDataType:
+            tableName: whop_checkout_attempts
+            columnName: whop_purchase_url
+            newDataType: VARCHAR(500)

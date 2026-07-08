@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "client/decimal-client.proto";
+
+option java_package = "com.marketmono.proto.client";
+option java_outer_classname = "TransactionsProto";
+
+// Represents a single options trade from the "all-option-trades" Kafka topic.
+// Field numbers match the official Unusual Whales protobuf schema:
+//   https://github.com/unusual-whales/api-examples/blob/main/examples/kafka-stream-flow-alerts/protos/client/options-client.proto
+// Field #8 (option_chain) is present in the live wire format but not in the published proto.
+// Each message is a raw protobuf byte payload (no schema registry).
+message OptionTrade {
+    string id = 1;                              // UUID of the trade
+    string underlying_symbol = 2;               // Ticker symbol, e.g. "SPY"
+    int64 executed_at = 3;                      // Epoch milliseconds of execution
+    string nbbo_bid = 4;                        // National best bid (string decimal)
+    string nbbo_ask = 5;                        // National best ask (string decimal)
+    int32 size = 6;                             // Trade size (number of contracts)
+    string price = 7;                           // Trade price per contract (string decimal)
+    string option_chain = 8;                    // OSI symbol e.g. SPY241227C00480000 (not in published proto, present on wire)
+    // field 9 unused
+    int64 created_at = 10;                      // Secondary timestamp — creation/processing time (epoch ms)
+    repeated string report_flags = 11;          // Trade condition flags (e.g. "intermarket_sweep")
+    repeated string tags = 12;                  // Side/sentiment/type tags: ["ask_side", "bearish", "etf"]
+    string expiry = 13;                         // Expiration date string "YYYY-MM-DD"
+    string option_type = 14;                    // "call" or "put"
+    int32 open_interest = 15;                   // Open interest (int32 per official schema)
+    string strike = 16;                         // Strike price (string decimal)
+    string premium = 17;                        // Total premium in dollars (string decimal)
+    // field 18 unused
+    int64 volume = 19;                          // Volume
+    string underlying_price = 20;               // Current underlying stock price (string decimal)
+    string ewma_nbbo_ask = 21;                  // EWMA-smoothed ask price (string decimal)
+    string ewma_nbbo_bid = 22;                  // EWMA-smoothed bid price (string decimal)
+    string implied_volatility = 23;             // IV (string decimal)
+    string delta = 24;                          // Delta greek (string decimal)
+    string theta = 25;                          // Theta greek (string decimal)
+    string gamma = 26;                          // Gamma greek (string decimal)
+    string vega = 27;                           // Vega greek (string decimal)
+    string rho = 28;                            // Rho greek (string decimal)
+    string theo = 29;                           // Theoretical value (string decimal)
+    string upstream_cond_details = 30;          // Upstream OPRA trade code / condition details
+    // field 31 unused
+    string exchange = 32;                       // Exchange code (e.g., "XPHO", "MPRL", "BATO")
+    int64 ask_vol = 33;                         // Ask-side volume
+    int64 bid_vol = 34;                         // Bid-side volume
+    int64 no_side_vol = 35;                     // No-side volume
+    int64 mid_vol = 36;                         // Mid volume
+    int64 multi_vol = 37;                       // Multi-leg volume
+    int64 stock_multi_vol = 38;                 // Stock multi-leg volume
+    int32 option_symbol_id = 39;                // Internal UW option symbol ID
+    int32 ticker_id = 40;                       // Internal UW ticker ID
+    int32 root_ticker_id = 41;                  // Internal UW root ticker ID
+}

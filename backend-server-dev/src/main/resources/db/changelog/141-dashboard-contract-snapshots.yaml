@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: dashboard-contract-snapshots-141-table
+      author: marketmono
+      comment: >-
+        Store option contract screener snapshots for the dashboard Top
+        Contracts, Top ETF Orders, and Top Sweep Orders widgets. One row per
+        (widget, sort order, trading day) holding the raw upstream contract
+        list fetched with that widget's exact screener parameters. The current
+        day's rows are replaced in place every minute during market hours;
+        rows older than 4 days are purged. Serving always returns the latest
+        stored trading day only.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS dashboard_contract_snapshots (
+                  id             BIGSERIAL      PRIMARY KEY,
+                  widget         VARCHAR(32)    NOT NULL,
+                  sort_order     VARCHAR(32)    NOT NULL,
+                  trading_date   DATE           NOT NULL,
+                  data           JSONB          NOT NULL,
+                  fetched_at     TIMESTAMPTZ    NOT NULL,
+                  created_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  CONSTRAINT uq_dashboard_contract_snapshots UNIQUE (widget, sort_order, trading_date)
+              );
+
+              CREATE INDEX IF NOT EXISTS idx_dashboard_contract_snapshots_widget_date
+                  ON dashboard_contract_snapshots (widget, trading_date DESC);
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.dashboard_contract_snapshots TO marketmono_app;
+                  GRANT USAGE, SELECT ON SEQUENCE public.dashboard_contract_snapshots_id_seq TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS dashboard_contract_snapshots;

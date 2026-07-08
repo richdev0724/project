@@ -1,0 +1,976 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-100-system-email-templates
+      author: marketmono
+      comment: Seed the default system email templates used by user and billing workflows.
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: welcome-registration
+              - column:
+                  name: name
+                  value: Welcome Email
+              - column:
+                  name: subject
+                  value: "Welcome to MarketMono, {{user.firstName}}!"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Welcome to MarketMono</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>Thank you for joining MarketMono! We're excited to have you on board.</p>
+                          <p>With your new account, you can:</p>
+                          <ul>
+                            <li>Track real-time options flow alerts</li>
+                            <li>Analyze dark pool activity</li>
+                            <li>Access market data and analytics</li>
+                          </ul>
+                          <p>Get started by exploring your dashboard:</p>
+                          <a href="{{app.dashboardUrl}}" class="button">Go to Dashboard</a>
+                        </div>
+                        <div class="footer">
+                          <p>If you have any questions, contact us at {{app.supportEmail}}</p>
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Welcome to MarketMono, {{user.firstName}}!
+
+                    Thank you for joining MarketMono! We're excited to have you on board.
+
+                    With your new account, you can:
+                    - Track real-time options flow alerts
+                    - Analyze dark pool activity
+                    - Access market data and analytics
+
+                    Get started by visiting your dashboard: {{app.dashboardUrl}}
+
+                    If you have any questions, contact us at {{app.supportEmail}}
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"user.email","description":"User''s email address","example":"john@example.com"},{"key":"app.dashboardUrl","description":"Dashboard URL","example":"https://app.marketmono.com/dashboard"},{"key":"app.supportEmail","description":"Support email address","example":"support@marketmono.com"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: email-verification
+              - column:
+                  name: name
+                  value: Email Verification
+              - column:
+                  name: subject
+                  value: "Verify your email address"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .code { background: #e5e7eb; padding: 10px 20px; font-size: 24px; font-weight: bold; letter-spacing: 4px; display: inline-block; margin: 10px 0; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Verify Your Email</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>Please verify your email address by clicking the button below:</p>
+                          <a href="{{verification.url}}" class="button">Verify Email</a>
+                          <p>Or use this verification code:</p>
+                          <div class="code">{{verification.code}}</div>
+                          <p><small>This link expires in {{verification.expiryHours}} hours.</small></p>
+                          <p>If you didn't create an account, please ignore this email.</p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Verify Your Email
+
+                    Hi {{user.firstName}},
+
+                    Please verify your email address by clicking the link below:
+                    {{verification.url}}
+
+                    Or use this verification code: {{verification.code}}
+
+                    This link expires in {{verification.expiryHours}} hours.
+
+                    If you didn't create an account, please ignore this email.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"verification.url","description":"Verification link URL","example":"https://app.marketmono.com/verify?token=abc123"},{"key":"verification.code","description":"Verification code","example":"123456"},{"key":"verification.expiryHours","description":"Hours until link expires","example":"48"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: password-reset
+              - column:
+                  name: name
+                  value: Password Reset
+              - column:
+                  name: subject
+                  value: "Reset your password"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 10px 15px; margin: 15px 0; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Reset Your Password</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>We received a request to reset your password. Click the button below to create a new password:</p>
+                          <a href="{{reset.url}}" class="button">Reset Password</a>
+                          <p><small>This link expires in {{reset.expiryMinutes}} minutes.</small></p>
+                          <div class="warning">
+                            <strong>Security Notice:</strong> If you didn't request this password reset, please ignore this email or contact support if you're concerned about your account security.
+                          </div>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Reset Your Password
+
+                    Hi {{user.firstName}},
+
+                    We received a request to reset your password. Click the link below to create a new password:
+                    {{reset.url}}
+
+                    This link expires in {{reset.expiryMinutes}} minutes.
+
+                    Security Notice: If you didn't request this password reset, please ignore this email or contact support if you're concerned about your account security.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"reset.url","description":"Password reset link URL","example":"https://app.marketmono.com/reset-password?token=abc123"},{"key":"reset.expiryMinutes","description":"Minutes until link expires","example":"60"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: subscription-confirmation
+              - column:
+                  name: name
+                  value: Subscription Confirmation
+              - column:
+                  name: subject
+                  value: "Welcome to {{subscription.planName}} - Subscription Confirmed"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .plan-box { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                        .plan-name { font-size: 24px; font-weight: bold; color: #4f46e5; }
+                        .plan-price { font-size: 18px; color: #666; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Subscription Confirmed!</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>Thank you for subscribing to MarketMono!</p>
+                          <div class="plan-box">
+                            <div class="plan-name">{{subscription.planName}} Plan</div>
+                            <div class="plan-price">{{subscription.amount}} / {{subscription.interval}}</div>
+                            <p>Next billing date: {{subscription.nextBillingDate}}</p>
+                          </div>
+                          <p>You now have access to all {{subscription.planName}} features. Start exploring:</p>
+                          <a href="{{app.dashboardUrl}}" class="button">Go to Dashboard</a>
+                          <p>Manage your subscription anytime from your account settings.</p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Subscription Confirmed!
+
+                    Hi {{user.firstName}},
+
+                    Thank you for subscribing to MarketMono!
+
+                    Plan: {{subscription.planName}}
+                    Price: {{subscription.amount}} / {{subscription.interval}}
+                    Next billing date: {{subscription.nextBillingDate}}
+
+                    You now have access to all {{subscription.planName}} features.
+
+                    Go to Dashboard: {{app.dashboardUrl}}
+
+                    Manage your subscription anytime from your account settings.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"subscription.planName","description":"Subscription plan name","example":"Pro"},{"key":"subscription.amount","description":"Formatted price with currency","example":"$49.99"},{"key":"subscription.interval","description":"Billing interval","example":"month"},{"key":"subscription.nextBillingDate","description":"Next billing date","example":"January 15, 2025"},{"key":"app.dashboardUrl","description":"Dashboard URL","example":"https://app.marketmono.com/dashboard"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: payment-receipt
+              - column:
+                  name: name
+                  value: Payment Receipt
+              - column:
+                  name: subject
+                  value: "Payment Receipt - {{invoice.number}}"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .receipt { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                        .receipt-header { border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 15px; }
+                        .receipt-row { display: flex; justify-content: space-between; padding: 8px 0; }
+                        .receipt-total { border-top: 2px solid #1a1a2e; padding-top: 15px; margin-top: 15px; font-weight: bold; font-size: 18px; }
+                        .success { color: #10b981; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Payment Receipt</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p class="success">✓ Payment successful!</p>
+                          <div class="receipt">
+                            <div class="receipt-header">
+                              <strong>Invoice #{{invoice.number}}</strong><br>
+                              Date: {{invoice.date}}
+                            </div>
+                            <div class="receipt-row">
+                              <span>{{subscription.planName}} ({{subscription.interval}})</span>
+                              <span>{{invoice.amount}}</span>
+                            </div>
+                            <div class="receipt-total">
+                              <div class="receipt-row">
+                                <span>Total Paid</span>
+                                <span>{{invoice.amount}}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <p>Payment method: {{payment.method}} ending in {{payment.last4}}</p>
+                          <p><a href="{{invoice.downloadUrl}}">Download PDF Receipt</a></p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Payment Receipt
+
+                    Hi {{user.firstName}},
+
+                    ✓ Payment successful!
+
+                    Invoice #{{invoice.number}}
+                    Date: {{invoice.date}}
+
+                    {{subscription.planName}} ({{subscription.interval}}): {{invoice.amount}}
+
+                    Total Paid: {{invoice.amount}}
+
+                    Payment method: {{payment.method}} ending in {{payment.last4}}
+
+                    Download PDF Receipt: {{invoice.downloadUrl}}
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"invoice.number","description":"Invoice number","example":"INV-2025-001234"},{"key":"invoice.date","description":"Invoice date","example":"December 5, 2025"},{"key":"invoice.amount","description":"Invoice amount with currency","example":"$49.99"},{"key":"invoice.downloadUrl","description":"PDF download URL","example":"https://app.marketmono.com/invoices/INV-2025-001234.pdf"},{"key":"subscription.planName","description":"Plan name","example":"Pro"},{"key":"subscription.interval","description":"Billing interval","example":"month"},{"key":"payment.method","description":"Payment method type","example":"Visa"},{"key":"payment.last4","description":"Last 4 digits of card","example":"4242"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: payment-failed
+              - column:
+                  name: name
+                  value: Payment Failed
+              - column:
+                  name: subject
+                  value: "Action Required: Payment Failed"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .alert { background: #fef2f2; border-left: 4px solid #dc2626; padding: 15px; margin: 15px 0; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Payment Failed</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <div class="alert">
+                            <strong>Your payment of {{payment.amount}} for {{subscription.planName}} was unsuccessful.</strong>
+                            <p>Reason: {{payment.failureReason}}</p>
+                          </div>
+                          <p>To avoid service interruption, please update your payment method:</p>
+                          <a href="{{billing.updateUrl}}" class="button">Update Payment Method</a>
+                          <p><small>We'll automatically retry the payment in {{payment.retryDays}} days.</small></p>
+                          <p>If you have any questions, please contact our support team.</p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Payment Failed
+
+                    Hi {{user.firstName}},
+
+                    Your payment of {{payment.amount}} for {{subscription.planName}} was unsuccessful.
+                    Reason: {{payment.failureReason}}
+
+                    To avoid service interruption, please update your payment method:
+                    {{billing.updateUrl}}
+
+                    We'll automatically retry the payment in {{payment.retryDays}} days.
+
+                    If you have any questions, please contact our support team.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"payment.amount","description":"Failed payment amount","example":"$49.99"},{"key":"payment.failureReason","description":"Reason for failure","example":"Card declined"},{"key":"payment.retryDays","description":"Days until retry","example":"3"},{"key":"subscription.planName","description":"Plan name","example":"Pro"},{"key":"billing.updateUrl","description":"URL to update payment method","example":"https://app.marketmono.com/billing"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: subscription-cancelled
+              - column:
+                  name: name
+                  value: Subscription Cancelled
+              - column:
+                  name: subject
+                  value: "Your subscription has been cancelled"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .info-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 15px 0; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Subscription Cancelled</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>Your {{subscription.planName}} subscription has been cancelled.</p>
+                          <div class="info-box">
+                            <p><strong>Access until:</strong> {{subscription.endDate}}</p>
+                            <p>You'll continue to have full access to {{subscription.planName}} features until this date.</p>
+                          </div>
+                          <p>We're sorry to see you go! If you change your mind, you can resubscribe anytime:</p>
+                          <a href="{{billing.resubscribeUrl}}" class="button">Resubscribe</a>
+                          <p>If you have any feedback on how we can improve, we'd love to hear from you at {{app.supportEmail}}.</p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Subscription Cancelled
+
+                    Hi {{user.firstName}},
+
+                    Your {{subscription.planName}} subscription has been cancelled.
+
+                    Access until: {{subscription.endDate}}
+                    You'll continue to have full access to {{subscription.planName}} features until this date.
+
+                    We're sorry to see you go! If you change your mind, you can resubscribe anytime:
+                    {{billing.resubscribeUrl}}
+
+                    If you have any feedback on how we can improve, we'd love to hear from you at {{app.supportEmail}}.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"subscription.planName","description":"Plan name","example":"Pro"},{"key":"subscription.endDate","description":"Date access ends","example":"January 15, 2025"},{"key":"billing.resubscribeUrl","description":"URL to resubscribe","example":"https://app.marketmono.com/pricing"},{"key":"app.supportEmail","description":"Support email","example":"support@marketmono.com"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: plan-changed
+              - column:
+                  name: name
+                  value: Plan Changed
+              - column:
+                  name: subject
+                  value: "Your plan has been updated to {{subscription.newPlanName}}"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .change-box { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; display: flex; align-items: center; justify-content: center; }
+                        .plan { text-align: center; padding: 0 20px; }
+                        .plan-name { font-size: 18px; font-weight: bold; }
+                        .arrow { font-size: 24px; color: #4f46e5; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Plan Updated</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>Your subscription plan has been successfully updated!</p>
+                          <div class="change-box">
+                            <div class="plan">
+                              <div class="plan-name">{{subscription.oldPlanName}}</div>
+                              <div>{{subscription.oldAmount}}</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="plan">
+                              <div class="plan-name">{{subscription.newPlanName}}</div>
+                              <div>{{subscription.newAmount}}</div>
+                            </div>
+                          </div>
+                          <p><strong>Effective:</strong> {{subscription.effectiveDate}}</p>
+                          <p>{{subscription.prorationNote}}</p>
+                          <a href="{{app.dashboardUrl}}" class="button">View Your Account</a>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Plan Updated
+
+                    Hi {{user.firstName}},
+
+                    Your subscription plan has been successfully updated!
+
+                    {{subscription.oldPlanName}} ({{subscription.oldAmount}}) → {{subscription.newPlanName}} ({{subscription.newAmount}})
+
+                    Effective: {{subscription.effectiveDate}}
+
+                    {{subscription.prorationNote}}
+
+                    View Your Account: {{app.dashboardUrl}}
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"subscription.oldPlanName","description":"Previous plan name","example":"Basic"},{"key":"subscription.oldAmount","description":"Previous plan price","example":"$29.99/month"},{"key":"subscription.newPlanName","description":"New plan name","example":"Pro"},{"key":"subscription.newAmount","description":"New plan price","example":"$49.99/month"},{"key":"subscription.effectiveDate","description":"When change takes effect","example":"Immediately"},{"key":"subscription.prorationNote","description":"Proration details","example":"A prorated credit of $15.00 has been applied to your next invoice."},{"key":"app.dashboardUrl","description":"Dashboard URL","example":"https://app.marketmono.com/dashboard"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: account-suspended
+              - column:
+                  name: name
+                  value: Account Suspended
+              - column:
+                  name: subject
+                  value: "Your account has been suspended"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .alert { background: #fef2f2; border-left: 4px solid #dc2626; padding: 15px; margin: 15px 0; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Account Suspended</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <div class="alert">
+                            <p>Your MarketMono account has been suspended.</p>
+                            <p><strong>Reason:</strong> {{suspension.reason}}</p>
+                          </div>
+                          <p>If you believe this was done in error, or if you have questions about this action, please contact our support team:</p>
+                          <a href="mailto:{{app.supportEmail}}" class="button">Contact Support</a>
+                          <p>Please include your account email ({{user.email}}) in your message.</p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Account Suspended
+
+                    Hi {{user.firstName}},
+
+                    Your MarketMono account has been suspended.
+
+                    Reason: {{suspension.reason}}
+
+                    If you believe this was done in error, or if you have questions about this action, please contact our support team at {{app.supportEmail}}.
+
+                    Please include your account email ({{user.email}}) in your message.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"user.email","description":"User''s email address","example":"john@example.com"},{"key":"suspension.reason","description":"Reason for suspension","example":"Payment failure after multiple attempts"},{"key":"app.supportEmail","description":"Support email","example":"support@marketmono.com"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: admin-invitation
+              - column:
+                  name: name
+                  value: Admin Invitation
+              - column:
+                  name: subject
+                  value: "You've been invited to MarketMono Admin"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .role-badge { display: inline-block; background: #4f46e5; color: white; padding: 4px 12px; border-radius: 4px; font-size: 14px; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Admin Invitation</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi,</p>
+                          <p>You've been invited by <strong>{{invitation.invitedBy}}</strong> to join the MarketMono admin team.</p>
+                          <p>Your role: <span class="role-badge">{{invitation.role}}</span></p>
+                          <p>Click below to set up your admin account:</p>
+                          <a href="{{invitation.acceptUrl}}" class="button">Accept Invitation</a>
+                          <p><small>This invitation expires in {{invitation.expiryHours}} hours.</small></p>
+                          <p>If you weren't expecting this invitation, you can safely ignore this email.</p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Admin Invitation
+
+                    Hi,
+
+                    You've been invited by {{invitation.invitedBy}} to join the MarketMono admin team.
+
+                    Your role: {{invitation.role}}
+
+                    Click below to set up your admin account:
+                    {{invitation.acceptUrl}}
+
+                    This invitation expires in {{invitation.expiryHours}} hours.
+
+                    If you weren't expecting this invitation, you can safely ignore this email.
+
+                    © {{app.year}} MarketMono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"invitation.invitedBy","description":"Name of admin who sent invitation","example":"Sarah Admin"},{"key":"invitation.role","description":"Admin role being granted","example":"ADMIN"},{"key":"invitation.acceptUrl","description":"URL to accept invitation","example":"https://admin.marketmono.com/accept-invite?token=abc123"},{"key":"invitation.expiryHours","description":"Hours until invitation expires","example":"48"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: trial-ending-soon
+              - column:
+                  name: name
+                  value: Trial Ending Soon
+              - column:
+                  name: subject
+                  value: "Your trial ends in {{trial.daysRemaining}} days"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #f59e0b; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .countdown { font-size: 48px; font-weight: bold; color: #f59e0b; text-align: center; margin: 20px 0; }
+                        .features { background: white; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                        .feature { padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+                        .feature:last-child { border-bottom: none; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Trial Ending Soon!</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <div class="countdown">{{trial.daysRemaining}} days left</div>
+                          <p>Your free trial ends on <strong>{{trial.endDate}}</strong>. Don't lose access to:</p>
+                          <div class="features">
+                            <div class="feature">✓ Real-time options flow alerts</div>
+                            <div class="feature">✓ Dark pool activity tracking</div>
+                            <div class="feature">✓ Advanced market analytics</div>
+                            <div class="feature">✓ Custom watchlists & alerts</div>
+                          </div>
+                          <p>Subscribe now and keep your data and settings:</p>
+                          <a href="{{billing.subscribeUrl}}" class="button">Subscribe Now</a>
+                          <p><small>Questions? Reply to this email or contact {{app.supportEmail}}</small></p>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} MarketMono. All rights reserved.</p>
+                          <p><a href="{{email.unsubscribeUrl}}">Unsubscribe from marketing emails</a></p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Trial Ending Soon!
+
+                    Hi {{user.firstName}},
+
+                    Your free trial ends in {{trial.daysRemaining}} days ({{trial.endDate}}).
+
+                    Don't lose access to:
+                    - Real-time options flow alerts
+                    - Dark pool activity tracking
+                    - Advanced market analytics
+                    - Custom watchlists & alerts
+
+                    Subscribe now and keep your data and settings:
+                    {{billing.subscribeUrl}}
+
+                    Questions? Contact us at {{app.supportEmail}}
+
+                    © {{app.year}} MarketMono. All rights reserved.
+
+                    Unsubscribe: {{email.unsubscribeUrl}}
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"User''s first name","example":"John"},{"key":"trial.daysRemaining","description":"Days until trial ends","example":"3"},{"key":"trial.endDate","description":"Trial end date","example":"December 8, 2025"},{"key":"billing.subscribeUrl","description":"URL to subscribe","example":"https://app.marketmono.com/pricing"},{"key":"app.supportEmail","description":"Support email","example":"support@marketmono.com"},{"key":"email.unsubscribeUrl","description":"Unsubscribe URL","example":"https://app.marketmono.com/unsubscribe?token=abc123"},{"key":"app.year","description":"Current year","example":"2025"}]'
+              - column:
+                  name: category
+                  value: MARKETING
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: is_system = true

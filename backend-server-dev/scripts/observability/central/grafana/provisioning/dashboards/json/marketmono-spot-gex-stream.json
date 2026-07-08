@@ -1,0 +1,211 @@
+{
+  "id": null,
+  "uid": "spot-gex-stream",
+  "title": "MarketMono - Spot GEX Stream",
+  "tags": ["spot-gex", "stream", "kafka", "operations"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(up{job=\"backend-server\"}, host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Live-GEX Records Received",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum(rate(spot_gex_live_gex_records_received_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "records"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 2,
+      "title": "Canonical Events Accepted",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum(rate(spot_gex_stream_events_accepted_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "accepted"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 3,
+      "title": "Pending Handoff Queue",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max(spot_gex_stream_pending_events{host=~\"$host\"})",
+          "legendFormat": "pending"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 4,
+      "title": "Expected Outside-Stream Fallbacks",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum(increase(marketmono_spot_gex_latest_requests_total{host=~\"$host\",coverage_class=\"live_fallback\",fallback_reason=\"outside_stream_coverage\"}[$__range]))",
+          "legendFormat": "expected fallback"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Live-GEX Record Outcomes",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (rate(spot_gex_live_gex_records_dispatched_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} dispatched"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_live_gex_records_decode_skipped_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} decode skipped"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_live_gex_records_ignored_ticker_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} ignored ticker"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_live_gex_records_handoff_failed_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} handoff failed"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 6,
+      "title": "Canonical Event Outcomes",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_events_accepted_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} accepted"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_events_invalid_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} invalid"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_events_coalesced_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} coalesced"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_events_dropped_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} dropped"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 7,
+      "title": "Bucket Persistence",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_buckets_upserted_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} upserted"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_buckets_replays_skipped_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} replay skipped"
+        },
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_buckets_failed_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} failed"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 8,
+      "title": "Bucket Persist Average Latency",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (rate(spot_gex_stream_buckets_batch_persist_seconds_sum{host=~\"$host\"}[$__rate_interval])) / clamp_min(sum by (host) (rate(spot_gex_stream_buckets_batch_persist_seconds_count{host=~\"$host\"}[$__rate_interval])), 0.001)",
+          "legendFormat": "{{host}} avg"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 9,
+      "title": "Decoded Charm OI Presence",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host, charm_oi) (rate(spot_gex_live_gex_records_decoded_total{host=~\"$host\"}[$__rate_interval]))",
+          "legendFormat": "{{host}} {{charm_oi}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 10,
+      "title": "Latest Snapshot Coverage",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (coverage_class, fallback_reason, result) (increase(marketmono_spot_gex_latest_requests_total{host=~\"$host\"}[$__range]))",
+          "legendFormat": "{{coverage_class}} {{fallback_reason}} {{result}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

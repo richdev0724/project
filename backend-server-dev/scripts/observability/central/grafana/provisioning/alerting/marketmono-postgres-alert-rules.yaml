@@ -1,0 +1,821 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: marketmono_postgres_1m
+    folder: MarketMono Alerts
+    interval: 1m
+    rules:
+      - uid: mm_pg_exporter_down
+        title: MarketMono PostgreSQL Exporter Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: up{job="postgres-exporter"}
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: PostgreSQL exporter is down.
+          description: A PostgreSQL exporter target has been unreachable for at least 5 minutes.
+        labels:
+          severity: critical
+          service: postgres
+          category: availability
+        isPaused: false
+      - uid: mm_pg_replication_disconnected
+        title: MarketMono PostgreSQL Replication Disconnected
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max by (host) (marketmono_pg_replication_standby_streaming{job="postgres-exporter",role="database-primary"})
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Error
+        for: 2m
+        annotations:
+          summary: PostgreSQL standby is not streaming from the primary.
+          description: The primary exporter does not report any streaming standby for at least 2 minutes.
+        labels:
+          severity: critical
+          service: postgres
+          category: replication
+        isPaused: false
+      - uid: mm_pg_replication_lag_high
+        title: MarketMono PostgreSQL Replication Lag High
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max by (host) (marketmono_pg_replication_replay_lag_bytes{job="postgres-exporter",role="database-primary"})
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 268435456
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: PostgreSQL standby replay lag is above 256 MiB.
+          description: The primary reports sustained standby replay lag above the warning threshold.
+        labels:
+          severity: warning
+          service: postgres
+          category: replication
+        isPaused: false
+      - uid: mm_pg_wal_archive_failures
+        title: MarketMono PostgreSQL WAL Archive Failures
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: increase(marketmono_pg_archiver_failed_count{job="postgres-exporter",role="database-primary"}[15m])
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: PostgreSQL WAL archive failures detected.
+          description: pg_stat_archiver failed_count increased on the primary during the last 15 minutes.
+        labels:
+          severity: critical
+          service: postgres
+          category: wal-archive
+        isPaused: false
+      - uid: mm_pg_backup_too_old
+        title: MarketMono pgBackRest Backup Too Old
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: time() - max(marketmono_pgbackrest_latest_backup_timestamp_seconds)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 93600
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Error
+        for: 15m
+        annotations:
+          summary: Latest pgBackRest backup is older than 26 hours.
+          description: The node_exporter textfile backup metric reports stale or missing backup freshness evidence.
+        labels:
+          severity: critical
+          service: pgbackrest
+          category: backup
+        isPaused: false
+      - uid: mm_pg_restore_test_too_old
+        title: MarketMono Restore Rehearsal Evidence Too Old
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: time() - max(marketmono_restore_rehearsal_last_success_timestamp_seconds)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 2592000
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 15m
+        annotations:
+          summary: Restore rehearsal proof is older than 30 days.
+          description: No recent restore rehearsal success timestamp is available from node_exporter textfile metrics.
+        labels:
+          severity: warning
+          service: pgbackrest
+          category: restore
+        isPaused: false
+      - uid: mm_pg_connection_pressure
+        title: MarketMono PostgreSQL Connection Pressure
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: 100 * sum by (host) (pg_stat_activity_count{job="postgres-exporter"}) / clamp_min(max by (host) (pg_settings_max_connections{job="postgres-exporter"}), 1)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 80
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: PostgreSQL connection usage is above 80% of max_connections.
+          description: The database is sustaining high connection pressure.
+        labels:
+          severity: warning
+          service: postgres
+          category: connections
+        isPaused: false
+      - uid: mm_pg_slow_query_regression
+        title: MarketMono PostgreSQL Slow Query Regression
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max by (host) (marketmono_pg_stat_statements_max_mean_exec_seconds{job="postgres-exporter"})
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 15m
+        annotations:
+          summary: pg_stat_statements mean execution time has crossed the warning threshold.
+          description: At least one tracked statement has sustained mean execution time above 1 second.
+        labels:
+          severity: warning
+          service: postgres
+          category: slow-query
+        isPaused: false
+      - uid: mm_pg_lock_waits
+        title: MarketMono PostgreSQL Lock Waits
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max by (host) (marketmono_pg_activity_max_blocked_seconds{job="postgres-exporter"})
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: PostgreSQL lock wait has exceeded 60 seconds.
+          description: A database session has been waiting on a lock longer than the warning threshold.
+        labels:
+          severity: warning
+          service: postgres
+          category: locks
+        isPaused: false
+      - uid: mm_pg_dead_tuple_pressure
+        title: MarketMono PostgreSQL Dead Tuple Pressure
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: 100 * pg_stat_user_tables_n_dead_tup{job="postgres-exporter"} / clamp_min(pg_stat_user_tables_n_live_tup{job="postgres-exporter"} + pg_stat_user_tables_n_dead_tup{job="postgres-exporter"}, 1)
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 20
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 30m
+        annotations:
+          summary: PostgreSQL dead tuple ratio is elevated.
+          description: A table has sustained dead tuple ratio above 20%; review autovacuum and table churn.
+        labels:
+          severity: warning
+          service: postgres
+          category: autovacuum
+        isPaused: false
+      - uid: mm_timescaledb_job_failures
+        title: MarketMono TimescaleDB Job Failures
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: increase(marketmono_timescaledb_job_stats_total_failures{job="postgres-exporter"}[15m])
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: TimescaleDB background job failures increased.
+          description: A compression, retention, or other TimescaleDB background job reported new failures.
+        labels:
+          severity: warning
+          service: timescaledb
+          category: jobs
+        isPaused: false

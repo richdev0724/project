@@ -1,0 +1,54 @@
+package com.marketmono.repository;
+
+import com.marketmono.entity.TopNetImpactSnapshot;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Optional;
+
+@Repository
+public interface TopNetImpactSnapshotRepository extends JpaRepository<TopNetImpactSnapshot, Long> {
+
+    Optional<TopNetImpactSnapshot> findTopByOrderByTradingDateDesc();
+
+    boolean existsByFetchedAtAfter(Instant cutoff);
+
+    /**
+     * Replace-on-write: each collection cycle overwrites the current trading
+     * day's snapshot.
+     */
+    @Transactional
+    @Modifying
+    @Query(
+        value = """
+            INSERT INTO top_net_impact_snapshots (
+                trading_date, bullish, bearish, fetched_at, created_at, updated_at
+            ) VALUES (
+                :tradingDate, CAST(:bullish AS jsonb), CAST(:bearish AS jsonb), :fetchedAt, NOW(), NOW()
+            )
+            ON CONFLICT (trading_date) DO UPDATE SET
+                bullish    = EXCLUDED.bullish,
+                bearish    = EXCLUDED.bearish,
+                fetched_at = EXCLUDED.fetched_at,
+                updated_at = NOW()
+            """,
+        nativeQuery = true
+    )
+    void upsert(
+        @Param("tradingDate") LocalDate tradingDate,
+        @Param("bullish") String bullish,
+        @Param("bearish") String bearish,
+        @Param("fetchedAt") Instant fetchedAt
+    );
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM TopNetImpactSnapshot s WHERE s.tradingDate < :cutoff")
+    int deleteByTradingDateBefore(@Param("cutoff") LocalDate cutoff);
+}

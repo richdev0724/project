@@ -1,0 +1,214 @@
+{
+  "id": null,
+  "uid": "loki-logs",
+  "title": "MarketMono - Logs",
+  "tags": [
+    "logs",
+    "loki"
+  ],
+  "timezone": "browser",
+  "refresh": "10s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "type": "query",
+        "datasource": {
+          "type": "loki",
+          "uid": "afisr480c5af4e"
+        },
+        "query": "label_values(host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "backend-a-prod|backend-admin-prod|backend-b-prod|frontend-edge-prod|pg18-tsdb-a|pg18-tsdb-b",
+        "current": {
+          "text": "All app/runtime hosts",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": {
+          "type": "loki",
+          "uid": "afisr480c5af4e"
+        },
+        "query": "label_values(job)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "level",
+        "type": "custom",
+        "query": "info,warn,error,debug",
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "search",
+        "type": "textbox",
+        "current": {
+          "text": "",
+          "value": ""
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Log Volume",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({host=~\"$host\", job=~\"$job\"} |~ \"$search\" [1m])) by (host)",
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Error Logs",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](error|crit|alert|emerg)[]]|level=(error|fatal|panic))\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 3,
+      "title": "All Logs",
+      "type": "logs",
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 4,
+      "title": "Error Rate by Host",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({host=~\"$host\", job=~\"$job\"} |~ \"(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](error|crit|alert|emerg)[]]|level=(error|fatal|panic))\" [5m])) by (host)",
+          "legendFormat": "{{host}} errors"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Kafka Logs",
+      "type": "logs",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "datasource": {
+        "type": "loki",
+        "uid": "afisr480c5af4e"
+      },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=~\"$job\"} |~ \"\\\\[KAFKA\\\\]\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    }
+  ],
+  "schemaVersion": 39
+}

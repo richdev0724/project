@@ -1,0 +1,8 @@
+[Unit]
+Description=MarketMono pgBackRest node_exporter textfile metrics
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PGBACKREST_STANZA=marketmono
+ExecStart=/opt/marketmono/observability/pgbackrest-textfile-metrics.sh

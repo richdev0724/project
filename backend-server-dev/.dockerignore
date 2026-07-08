@@ -1,0 +1,42 @@
+# Build artifacts - EXCEPT the JAR we need for Docker build
+build/
+!build/libs/*.jar
+.gradle/
+bin/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+application-local.yml
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+
+# Docker files
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Test files
+src/test/
+
+# Reports
+reports/

@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-109-customer-invite-template
+      author: marketmono
+      comment: Seed the editable customer invite email template used by backend-server.
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM email_templates WHERE slug = 'customer-invite'
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: customer-invite
+              - column:
+                  name: name
+                  value: Customer Invite - Temporary Password
+              - column:
+                  name: subject
+                  value: "You've been invited to Market Mono"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 30px; background: #f9f9f9; }
+                        .password { font-family: monospace; font-size: 18px; background: white; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Market Mono</h1>
+                        </div>
+                        <div class="content">
+                          <h2>Welcome, {{user.firstName}}!</h2>
+                          <p>You have been invited to Market Mono with the email {{user.email}}.</p>
+                          <p>Your temporary password is:</p>
+                          <p class="password">{{invite.temporaryPassword}}</p>
+                          <p>This temporary password expires in {{invite.expiresIn}}. Change it immediately after your first login.</p>
+                          <a href="{{app.signInUrl}}" class="button">Sign in to Market Mono</a>
+                          <p>If you were not expecting this invite, contact Market Mono support.</p>
+                        </div>
+                        <div class="footer">
+                          <p>(c) {{app.year}} Market Mono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Market Mono Invite
+
+                    Hi {{user.firstName}},
+
+                    You have been invited to Market Mono with the email {{user.email}}.
+
+                    Temporary password: {{invite.temporaryPassword}}
+
+                    This temporary password expires in {{invite.expiresIn}}. Change it immediately after your first login.
+
+                    Sign in: {{app.signInUrl}}
+
+                    If you were not expecting this invite, contact Market Mono support.
+
+                    (c) {{app.year}} Market Mono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"Invited customer first name parsed from display name","example":"Alex"},{"key":"user.lastName","description":"Invited customer last name parsed from display name","example":"Trader"},{"key":"user.displayName","description":"Invited customer display name","example":"Alex Trader"},{"key":"user.email","description":"Invited customer email address","example":"alex@example.com"},{"key":"invite.temporaryPassword","description":"Generated one-time temporary password","example":"Ab12cd34Ef56"},{"key":"invite.expiresIn","description":"Human-readable temporary password expiry window","example":"48 hours"},{"key":"app.frontendUrl","description":"Public Market Mono frontend URL","example":"https://marketmono.com"},{"key":"app.signInUrl","description":"Public Market Mono sign-in URL","example":"https://marketmono.com/sign-in"},{"key":"app.year","description":"Current year","example":"2026"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: slug = 'customer-invite'

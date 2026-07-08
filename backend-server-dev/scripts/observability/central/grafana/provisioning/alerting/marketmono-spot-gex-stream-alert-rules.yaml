@@ -1,0 +1,377 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: marketmono_spot_gex_stream_1m
+    folder: MarketMono Alerts
+    interval: 1m
+    rules:
+      - uid: mm_spot_gex_stream_disconnected
+        title: MarketMono Spot GEX Stream Disconnected
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max(spot_gex_stream_owner{job="backend-server"} * spot_gex_stream_connected{job="backend-server"})
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: Spot GEX stream owner is disconnected.
+          description: No backend-server node is both the Spot GEX stream owner and connected for at least 5 minutes. Non-owner standby nodes do not trigger this alert.
+        labels:
+          severity: warning
+          service: backend-server
+          category: spot-gex-stream
+        isPaused: false
+      - uid: mm_spot_gex_stream_handoff_failures
+        title: MarketMono Spot GEX Stream Handoff Failures
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: sum(increase(spot_gex_live_gex_records_handoff_failed_total[5m]))
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 2m
+        annotations:
+          summary: Spot GEX live-gex handoff failures were observed.
+          description: The live-gex consumer failed to hand off decoded Spot GEX records to canonical ingestion.
+        labels:
+          severity: warning
+          service: backend-server
+          category: spot-gex-stream
+        isPaused: false
+      - uid: mm_spot_gex_bucket_persist_failures
+        title: MarketMono Spot GEX Bucket Persistence Failures
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: sum(increase(spot_gex_stream_buckets_failed_total[5m]))
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 2m
+        annotations:
+          summary: Spot GEX bucket persistence failed.
+          description: One or more stream-derived Spot GEX bucket batches failed to persist.
+        labels:
+          severity: critical
+          service: backend-server
+          category: spot-gex-stream
+        isPaused: false
+      - uid: mm_spot_gex_pending_queue_high
+        title: MarketMono Spot GEX Pending Queue High
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: max(spot_gex_stream_pending_events{job="backend-server"})
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 8000
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: Spot GEX stream pending queue is near capacity.
+          description: Pending canonical Spot GEX handoff events stayed above 8000 for 5 minutes.
+        labels:
+          severity: warning
+          service: backend-server
+          category: spot-gex-stream
+        isPaused: false
+      - uid: mm_spot_gex_rest_calls_stream_mode
+        title: MarketMono Spot GEX REST Calls In Stream Mode
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              editorMode: code
+              expr: sum(increase(marketmono_spot_gex_latest_requests_total{source_mode="stream",coverage_class="live_fallback",fallback_reason!="outside_stream_coverage"}[5m]))
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: Unexpected Spot GEX live fallback occurred while stream mode was active.
+          description: Stream-mode latest snapshot requests used live fallback for a reason other than expected outside-stream coverage.
+        labels:
+          severity: critical
+          service: backend-server
+          category: spot-gex-no-rest
+        isPaused: false

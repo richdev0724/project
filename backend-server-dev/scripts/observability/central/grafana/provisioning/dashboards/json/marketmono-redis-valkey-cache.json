@@ -1,0 +1,163 @@
+{
+  "id": null,
+  "uid": "redis-valkey-cache",
+  "title": "MarketMono - Redis / Valkey & Cache",
+  "tags": ["redis", "valkey", "cache", "lettuce"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(lettuce_command_completion_seconds_count, host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "cache",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(marketmono_cache_requests_total{host=~\"$host\"}, cache)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "command",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(lettuce_command_completion_seconds_count{host=~\"$host\"}, command)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "search",
+        "type": "textbox",
+        "current": { "text": "", "value": "" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Cache Hit Ratio %",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "100 * (sum by (host, cache) (rate(marketmono_cache_requests_total{host=~\"$host\",cache=~\"$cache\",result=\"hit\"}[5m])) / clamp_min(sum by (host, cache) (rate(marketmono_cache_requests_total{host=~\"$host\",cache=~\"$cache\",result=~\"hit|miss|error\"}[5m])), 0.001))",
+          "legendFormat": "{{host}} {{cache}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 } }
+    },
+    {
+      "id": 2,
+      "title": "Cache Gets (Hit / Miss)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host, cache, result) (rate(marketmono_cache_requests_total{host=~\"$host\",cache=~\"$cache\",result=~\"hit|miss|error\"}[5m]))",
+          "legendFormat": "{{host}} {{cache}} {{result}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 3,
+      "title": "Cache Writes / Evictions",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host, cache, operation) (rate(marketmono_cache_writes_total{host=~\"$host\",cache=~\"$cache\"}[5m]))",
+          "legendFormat": "{{host}} {{cache}} {{operation}}"
+        },
+        {
+          "expr": "sum by (host, cache, operation) (rate(marketmono_cache_evictions_total{host=~\"$host\",cache=~\"$cache\"}[5m]))",
+          "legendFormat": "{{host}} {{cache}} {{operation}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 4,
+      "title": "Redis / Valkey Command Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host, command) (rate(lettuce_command_completion_seconds_count{host=~\"$host\",command=~\"$command\"}[5m]))",
+          "legendFormat": "{{host}} {{command}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 5,
+      "title": "Avg Command Completion Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host, command) (rate(lettuce_command_completion_seconds_sum{host=~\"$host\",command=~\"$command\"}[5m])) / clamp_min(sum by (host, command) (rate(lettuce_command_completion_seconds_count{host=~\"$host\",command=~\"$command\"}[5m])), 0.001)",
+          "legendFormat": "{{host}} {{command}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 6,
+      "title": "Avg First Response Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host, command) (rate(lettuce_command_firstresponse_seconds_sum{host=~\"$host\",command=~\"$command\"}[5m])) / clamp_min(sum by (host, command) (rate(lettuce_command_firstresponse_seconds_count{host=~\"$host\",command=~\"$command\"}[5m])), 0.001)",
+          "legendFormat": "{{host}} {{command}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 7,
+      "title": "Redis / Cache Logs",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 24 },
+      "datasource": { "type": "loki", "uid": "afisr480c5af4e" },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\", job=\"docker\"} |~ \"(?i)(redis|valkey|lettuce|cache)\" |~ \"$search\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

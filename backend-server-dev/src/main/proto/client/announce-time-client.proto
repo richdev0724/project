@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "com.marketmono.proto.client";
+option java_outer_classname = "AnnounceTimeProto";
+
+enum AnnounceTime {
+    Premarket = 0;
+    Postmarket = 1;
+    Unknown = 2;
+}

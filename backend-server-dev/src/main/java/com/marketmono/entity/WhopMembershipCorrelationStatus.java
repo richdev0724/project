@@ -1,0 +1,15 @@
+package com.marketmono.entity;
+
+public enum WhopMembershipCorrelationStatus {
+    MATCHED,
+    PENDING_NO_USER,
+    PENDING_EMAIL_UNAVAILABLE,
+    UNAUTHORIZED_EMAIL,
+    BUYER_EMAIL_MISMATCH,
+    UNMAPPED_PRODUCT,
+    UNMAPPED_PLAN,
+    REJECTED_PRODUCT,
+    PUBLIC_NO_ATTEMPT,
+    REVOKED,
+    RESOLVED_NO_ACTION
+}

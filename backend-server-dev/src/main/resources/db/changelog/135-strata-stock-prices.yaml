@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: strata-stock-prices-135-table
+      author: marketmono
+      comment: >-
+        Store Strata-specific Unusual Whales stock-state snapshots for close,
+        previous close, OHLC, volume, source/display ticker mapping, and latest
+        UI price lookups.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS strata_stock_prices (
+                  id                BIGSERIAL      PRIMARY KEY,
+                  display_ticker    VARCHAR(10)    NOT NULL,
+                  source_ticker     VARCHAR(10)    NOT NULL,
+                  close_price       DECIMAL(18,6)  NOT NULL,
+                  prev_close_price  DECIMAL(18,6)  NOT NULL,
+                  change_percent    DECIMAL(18,6),
+                  open_price        DECIMAL(18,6),
+                  high_price        DECIMAL(18,6),
+                  low_price         DECIMAL(18,6),
+                  volume            BIGINT,
+                  total_volume      BIGINT,
+                  market_time       VARCHAR(32),
+                  tape_time         TIMESTAMPTZ,
+                  fetched_at        TIMESTAMPTZ    NOT NULL,
+                  raw_response      JSONB,
+                  created_at        TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at        TIMESTAMPTZ    NOT NULL DEFAULT NOW()
+              );
+
+              CREATE UNIQUE INDEX IF NOT EXISTS uq_strata_stock_prices_display_source_tape
+                  ON strata_stock_prices (display_ticker, source_ticker, tape_time)
+                  WHERE tape_time IS NOT NULL;
+
+              CREATE INDEX IF NOT EXISTS idx_strata_stock_prices_display_latest
+                  ON strata_stock_prices (display_ticker, tape_time DESC, fetched_at DESC);
+
+              CREATE INDEX IF NOT EXISTS idx_strata_stock_prices_source_latest
+                  ON strata_stock_prices (source_ticker, tape_time DESC, fetched_at DESC);
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.strata_stock_prices TO marketmono_app;
+                  GRANT USAGE, SELECT ON SEQUENCE public.strata_stock_prices_id_seq TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS strata_stock_prices;
+
+  - changeSet:
+      id: strata-stock-prices-135-drop-tape-unique-index
+      author: marketmono
+      comment: >-
+        Allow every successful 30-second Strata stock-state poll to be stored
+        even when upstream tape_time repeats; latest selection already orders by
+        tape_time, fetched_at, and id.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DROP INDEX IF EXISTS uq_strata_stock_prices_display_source_tape;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              CREATE UNIQUE INDEX IF NOT EXISTS uq_strata_stock_prices_display_source_tape
+                  ON strata_stock_prices (display_ticker, source_ticker, tape_time)
+                  WHERE tape_time IS NOT NULL;

@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/111-admin-uw-api-call-log.yaml
+
+  - changeSet:
+      id: 111-admin-uw-api-call-log
+      author: marketmono
+      comment: Create backend-admin Market Data API usage log table from the canonical runtime changelog.
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: uw_api_call_logs
+      changes:
+        - createTable:
+            tableName: uw_api_call_logs
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_uw_api_call_logs
+                    nullable: false
+              - column:
+                  name: called_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+              - column:
+                  name: http_method
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: endpoint
+                  type: VARCHAR(512)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: source
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trigger_name
+                  type: VARCHAR(100)
+              - column:
+                  name: http_status
+                  type: INT
+              - column:
+                  name: duration_ms
+                  type: INT
+              - column:
+                  name: error_message
+                  type: VARCHAR(500)
+              - column:
+                  name: daily_req_count
+                  type: INT
+              - column:
+                  name: daily_req_limit
+                  type: INT
+        - createIndex:
+            tableName: uw_api_call_logs
+            indexName: idx_uw_api_call_logs_called_at
+            columns:
+              - column:
+                  name: called_at
+                  descending: true
+        - createIndex:
+            tableName: uw_api_call_logs
+            indexName: idx_uw_api_call_logs_endpoint
+            columns:
+              - column:
+                  name: endpoint
+        - createIndex:
+            tableName: uw_api_call_logs
+            indexName: idx_uw_api_call_logs_source
+            columns:
+              - column:
+                  name: source
+      rollback:
+        - dropTable:
+            tableName: uw_api_call_logs

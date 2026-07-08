@@ -1,0 +1,115 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/103-collection-config.yaml
+  - changeSet:
+      id: collection-config-103-create-tables
+      author: marketmono
+      comment: Create collection_config and collection_config_audit_log tables for scheduled collection settings.
+      changes:
+        - createTable:
+            tableName: collection_config
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: config_key
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: config_value
+                  type: JSONB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: updated_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_collection_config_key
+            tableName: collection_config
+            columns:
+              - column:
+                  name: config_key
+        - createTable:
+            tableName: collection_config_audit_log
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: admin_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: config_key
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: old_value
+                  type: JSONB
+              - column:
+                  name: new_value
+                  type: JSONB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: changed_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ip_address
+                  type: VARCHAR(45)
+        - createIndex:
+            indexName: idx_collection_config_audit_key_changed_at
+            tableName: collection_config_audit_log
+            columns:
+              - column:
+                  name: config_key
+              - column:
+                  name: changed_at
+
+  - changeSet:
+      id: collection-config-103-seed-spot-gex-tickers
+      author: marketmono
+      comment: Seed default ticker list for scheduled spot GEX collection.
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              INSERT INTO collection_config (config_key, config_value, description, updated_by)
+              VALUES (
+                  'spot_gex_tickers',
+                  '["SPY","QQQ","IWM","DIA","AAPL","AMZN","META","MSFT","NVDA","TSLA","GOOG","GOOGL"]'::jsonb,
+                  'List of tickers for scheduled Spot GEX collection (1-minute cadence during market hours)',
+                  'system'
+              )
+              ON CONFLICT (config_key) DO NOTHING;

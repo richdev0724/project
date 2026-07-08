@@ -1,0 +1,115 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "min(up{job=\"postgres-exporter\"})", "legendFormat": "postgres exporters", "range": true, "refId": "A" }],
+      "title": "Postgres exporter up",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }] }, "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "100 * sum by (host) (pg_stat_activity_count{job=\"postgres-exporter\"}) / clamp_min(max by (host) (pg_settings_max_connections{job=\"postgres-exporter\"}), 1)", "legendFormat": "{{host}}", "range": true, "refId": "A" }],
+      "title": "Connection pressure",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 268435456 }, { "color": "red", "value": 1073741824 }] }, "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "max by (host) (marketmono_pg_replication_replay_lag_bytes{job=\"postgres-exporter\",role=\"database-primary\"})", "legendFormat": "{{host}}", "range": true, "refId": "A" }],
+      "title": "Replication replay lag",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 86400 }, { "color": "red", "value": 93600 }] }, "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto", "wideLayout": true },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "time() - max(marketmono_pgbackrest_latest_backup_timestamp_seconds)", "legendFormat": "backup age", "range": true, "refId": "A" }],
+      "title": "Latest backup age",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "lineInterpolation": "linear", "barAlignment": 0, "lineWidth": 1, "fillOpacity": 8, "gradientMode": "none", "spanNulls": false, "insertNulls": false, "showPoints": "never", "pointSize": 5, "stacking": { "mode": "none", "group": "A" }, "axisPlacement": "auto", "axisLabel": "", "axisColorMode": "text", "scaleDistribution": { "type": "linear" }, "axisCenteredZero": false, "hideFrom": { "tooltip": false, "viz": false, "legend": false }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 4 },
+      "id": 5,
+      "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "sum by (host, state) (pg_stat_activity_count{job=\"postgres-exporter\"})", "legendFormat": "{{host}} {{state}}", "range": true, "refId": "A" }],
+      "title": "Connections by state",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "lineInterpolation": "linear", "barAlignment": 0, "lineWidth": 1, "fillOpacity": 8, "gradientMode": "none", "spanNulls": false, "insertNulls": false, "showPoints": "never", "pointSize": 5, "stacking": { "mode": "none", "group": "A" }, "axisPlacement": "auto", "axisLabel": "", "axisColorMode": "text", "scaleDistribution": { "type": "linear" }, "axisCenteredZero": false, "hideFrom": { "tooltip": false, "viz": false, "legend": false }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 2 }] }, "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 4 },
+      "id": 6,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "max by (host) (marketmono_pg_stat_statements_max_mean_exec_seconds{job=\"postgres-exporter\"})", "legendFormat": "{{host}} max mean", "range": true, "refId": "A" }, { "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "max by (host) (marketmono_pg_stat_statements_max_exec_seconds{job=\"postgres-exporter\"})", "legendFormat": "{{host}} max", "range": true, "refId": "B" }],
+      "title": "Slow query regression",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "lineInterpolation": "linear", "barAlignment": 0, "lineWidth": 1, "fillOpacity": 8, "gradientMode": "none", "spanNulls": false, "insertNulls": false, "showPoints": "never", "pointSize": 5, "stacking": { "mode": "none", "group": "A" }, "axisPlacement": "auto", "axisLabel": "", "axisColorMode": "text", "scaleDistribution": { "type": "linear" }, "axisCenteredZero": false, "hideFrom": { "tooltip": false, "viz": false, "legend": false }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 4 },
+      "id": 7,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "max by (host) (marketmono_pg_activity_blocked_queries{job=\"postgres-exporter\"})", "legendFormat": "{{host}} blocked", "range": true, "refId": "A" }],
+      "title": "Blocked queries",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "lineInterpolation": "linear", "barAlignment": 0, "lineWidth": 1, "fillOpacity": 8, "gradientMode": "none", "spanNulls": false, "insertNulls": false, "showPoints": "never", "pointSize": 5, "stacking": { "mode": "none", "group": "A" }, "axisPlacement": "auto", "axisLabel": "", "axisColorMode": "text", "scaleDistribution": { "type": "linear" }, "axisCenteredZero": false, "hideFrom": { "tooltip": false, "viz": false, "legend": false }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 15 }, { "color": "red", "value": 25 }] }, "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "id": 8,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "100 * sum by (host, relname) (pg_stat_user_tables_n_dead_tup{job=\"postgres-exporter\"}) / clamp_min(sum by (host, relname) (pg_stat_user_tables_n_live_tup{job=\"postgres-exporter\"} + pg_stat_user_tables_n_dead_tup{job=\"postgres-exporter\"}), 1)", "legendFormat": "{{host}} {{relname}}", "range": true, "refId": "A" }],
+      "title": "Dead tuple ratio by table",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "line", "lineInterpolation": "linear", "barAlignment": 0, "lineWidth": 1, "fillOpacity": 8, "gradientMode": "none", "spanNulls": false, "insertNulls": false, "showPoints": "never", "pointSize": 5, "stacking": { "mode": "none", "group": "A" }, "axisPlacement": "auto", "axisLabel": "", "axisColorMode": "text", "scaleDistribution": { "type": "linear" }, "axisCenteredZero": false, "hideFrom": { "tooltip": false, "viz": false, "legend": false }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "id": 9,
+      "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "marketmono_timescaledb_hypertable_chunks_chunks{job=\"postgres-exporter\"}", "legendFormat": "{{host}} {{hypertable_name}} chunks", "range": true, "refId": "A" }, { "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" }, "editorMode": "code", "expr": "marketmono_timescaledb_hypertable_chunks_compressed_chunks{job=\"postgres-exporter\"}", "legendFormat": "{{host}} {{hypertable_name}} compressed", "range": true, "refId": "B" }],
+      "title": "Timescale chunks and compression",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["marketmono", "postgresql", "timescaledb", "pg18"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "MarketMono PostgreSQL / TimescaleDB Overview",
+  "uid": "marketmono-postgres-timescaledb",
+  "version": 1,
+  "weekStart": ""
+}

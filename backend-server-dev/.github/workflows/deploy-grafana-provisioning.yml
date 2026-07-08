@@ -1,0 +1,218 @@
+name: Deploy Grafana Provisioning
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'scripts/observability/central/grafana/provisioning/**'
+      - '.github/workflows/deploy-grafana-provisioning.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-grafana-provisioning-dev
+  cancel-in-progress: false
+
+env:
+  PROVISIONING_DIR: scripts/observability/central/grafana/provisioning
+  REMOTE_PROVISIONING_DIR: /home/ubuntu/marketmono/observability/central/grafana/provisioning
+
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - backend-deploy
+    if: github.ref == 'refs/heads/dev'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate Grafana provisioning files
+        run: |
+          set -euo pipefail
+
+          test -d "$PROVISIONING_DIR"
+          test -f "$PROVISIONING_DIR/dashboards/dashboards.yml"
+          test -f "$PROVISIONING_DIR/datasources/datasources.yml"
+
+          python3 - <<'PY'
+          import glob
+          import json
+          import os
+          import re
+          import sys
+
+          base = os.environ["PROVISIONING_DIR"]
+          dashboard_paths = sorted(glob.glob(os.path.join(base, "dashboards", "**", "*.json"), recursive=True))
+          if not dashboard_paths:
+              raise SystemExit("No Grafana dashboard JSON files found")
+
+          seen_uids = set()
+          for path in dashboard_paths:
+              with open(path, "r", encoding="utf-8") as handle:
+                  dashboard = json.load(handle)
+              uid = dashboard.get("uid")
+              title = dashboard.get("title")
+              if not uid or not title:
+                  raise SystemExit(f"{path} must define dashboard uid and title")
+              if uid in seen_uids:
+                  raise SystemExit(f"Duplicate Grafana dashboard uid: {uid}")
+              seen_uids.add(uid)
+              print(f"validated {os.path.basename(path)}: {uid} - {title}")
+
+          alert_uid_pattern = re.compile(r"^\s*-\s*uid:\s*(\S+)\s*$", re.MULTILINE)
+          alert_paths = sorted(glob.glob(os.path.join(base, "alerting", "*.y*ml")))
+          for path in alert_paths:
+              for uid in alert_uid_pattern.findall(open(path, "r", encoding="utf-8").read()):
+                  if len(uid) > 40:
+                      raise SystemExit(f"{path} alert rule uid is longer than Grafana's 40-character limit: {uid}")
+                  print(f"validated alert rule uid: {uid}")
+          PY
+
+          tar -czf grafana-provisioning.tgz -C scripts/observability/central/grafana provisioning
+
+      - name: Setup observability SSH
+        env:
+          OBSERVABILITY_DEPLOY_HOSTKEY: ${{ secrets.OBSERVABILITY_DEPLOY_HOSTKEY }}
+          OBSERVABILITY_DEPLOY_SSH_KEY: ${{ secrets.OBSERVABILITY_DEPLOY_SSH_KEY || secrets.DEPLOY_SERVER_SSH_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$OBSERVABILITY_DEPLOY_HOSTKEY" ]; then
+            echo "OBSERVABILITY_DEPLOY_HOSTKEY secret is not configured."
+            exit 1
+          fi
+          if [ -z "$OBSERVABILITY_DEPLOY_SSH_KEY" ]; then
+            echo "Neither OBSERVABILITY_DEPLOY_SSH_KEY nor DEPLOY_SERVER_SSH_KEY is configured."
+            exit 1
+          fi
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          SSH_KEY_FILE="$HOME/.ssh/observability_deploy_key_${GITHUB_RUN_ID}"
+          echo "$SSH_KEY_FILE" > /tmp/.observability_ssh_key_path_${GITHUB_RUN_ID}
+          echo "$OBSERVABILITY_DEPLOY_SSH_KEY" | base64 -d > "$SSH_KEY_FILE"
+          chmod 600 "$SSH_KEY_FILE"
+          printf '%s\n' "$OBSERVABILITY_DEPLOY_HOSTKEY" > ~/.ssh/known_hosts_observability_${GITHUB_RUN_ID}
+          chmod 644 ~/.ssh/known_hosts_observability_${GITHUB_RUN_ID}
+          cat > ~/.ssh/config_observability_${GITHUB_RUN_ID} << SSHCONF
+          Host *
+            UserKnownHostsFile ~/.ssh/known_hosts_observability_${GITHUB_RUN_ID}
+            StrictHostKeyChecking yes
+            ServerAliveInterval 30
+            ServerAliveCountMax 3
+            ConnectTimeout 10
+          SSHCONF
+          chmod 600 ~/.ssh/config_observability_${GITHUB_RUN_ID}
+
+      - name: Sync provisioning to observability Grafana
+        env:
+          OBSERVABILITY_DEPLOY_HOST: ${{ secrets.OBSERVABILITY_DEPLOY_HOST }}
+          OBSERVABILITY_DEPLOY_USER: ${{ secrets.OBSERVABILITY_DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$OBSERVABILITY_DEPLOY_HOST" ]; then
+            echo "OBSERVABILITY_DEPLOY_HOST secret is not configured."
+            exit 1
+          fi
+          if [ -z "$OBSERVABILITY_DEPLOY_USER" ]; then
+            echo "OBSERVABILITY_DEPLOY_USER secret is not configured."
+            exit 1
+          fi
+
+          SSH_KEY_FILE=$(cat /tmp/.observability_ssh_key_path_${GITHUB_RUN_ID})
+          REMOTE_ARCHIVE="/tmp/marketmono-grafana-provisioning-${GITHUB_RUN_ID}.tgz"
+
+          scp -i "$SSH_KEY_FILE" -F ~/.ssh/config_observability_${GITHUB_RUN_ID} \
+            grafana-provisioning.tgz \
+            "$OBSERVABILITY_DEPLOY_USER@$OBSERVABILITY_DEPLOY_HOST:$REMOTE_ARCHIVE"
+
+          ssh -T -i "$SSH_KEY_FILE" -F ~/.ssh/config_observability_${GITHUB_RUN_ID} \
+            "$OBSERVABILITY_DEPLOY_USER@$OBSERVABILITY_DEPLOY_HOST" \
+            "REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_PROVISIONING_DIR='$REMOTE_PROVISIONING_DIR' bash -s" <<'EOF'
+          set -euo pipefail
+
+          if [ "$REMOTE_PROVISIONING_DIR" != "/home/ubuntu/marketmono/observability/central/grafana/provisioning" ]; then
+            echo "Refusing to deploy to unexpected provisioning path: $REMOTE_PROVISIONING_DIR"
+            exit 1
+          fi
+
+          WORK_DIR="/tmp/marketmono-grafana-provisioning-${RANDOM}-$$"
+          rm -rf "$WORK_DIR"
+          mkdir -p "$WORK_DIR"
+          tar -xzf "$REMOTE_ARCHIVE" -C "$WORK_DIR"
+
+          python3 - "$WORK_DIR/provisioning" <<'PY'
+          import glob
+          import json
+          import os
+          import sys
+
+          base = sys.argv[1]
+          dashboard_paths = sorted(glob.glob(os.path.join(base, "dashboards", "**", "*.json"), recursive=True))
+          if not dashboard_paths:
+              raise SystemExit("No dashboard JSON files found in uploaded provisioning bundle")
+          for path in dashboard_paths:
+              with open(path, "r", encoding="utf-8") as handle:
+                  dashboard = json.load(handle)
+              if not dashboard.get("uid") or not dashboard.get("title"):
+                  raise SystemExit(f"{path} must define uid and title")
+          PY
+
+          sudo mkdir -p "$REMOTE_PROVISIONING_DIR"
+          sudo rm -rf "$REMOTE_PROVISIONING_DIR/dashboards" "$REMOTE_PROVISIONING_DIR/datasources" "$REMOTE_PROVISIONING_DIR/alerting"
+          sudo cp -a "$WORK_DIR/provisioning/." "$REMOTE_PROVISIONING_DIR/"
+          sudo chown -R root:root "$REMOTE_PROVISIONING_DIR"
+          sudo find "$REMOTE_PROVISIONING_DIR" -type d -exec chmod 0755 {} \;
+          sudo find "$REMOTE_PROVISIONING_DIR" -type f -exec chmod 0644 {} \;
+
+          docker restart marketmono-grafana >/dev/null
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/api/health >/dev/null; then
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "Grafana did not become healthy after restart"
+              docker logs marketmono-grafana --tail 200 || true
+              exit 1
+            fi
+            sleep 2
+          done
+
+          GRAFANA_USER="$(docker inspect marketmono-grafana --format '{{range .Config.Env}}{{println .}}{{end}}' | awk -F= '$1=="GF_SECURITY_ADMIN_USER"{print $2}')"
+          GRAFANA_PASSWORD="$(docker inspect marketmono-grafana --format '{{range .Config.Env}}{{println .}}{{end}}' | awk -F= '$1=="GF_SECURITY_ADMIN_PASSWORD"{print $2}')"
+          GRAFANA_USER="${GRAFANA_USER:-admin}"
+          if [ -z "$GRAFANA_PASSWORD" ]; then
+            echo "Unable to read GF_SECURITY_ADMIN_PASSWORD from marketmono-grafana."
+            exit 1
+          fi
+
+          python3 - "$REMOTE_PROVISIONING_DIR" <<'PY' | while IFS= read -r uid; do
+          import glob
+          import json
+          import os
+          import sys
+
+          base = sys.argv[1]
+          for path in sorted(glob.glob(os.path.join(base, "dashboards", "**", "*.json"), recursive=True)):
+              with open(path, "r", encoding="utf-8") as handle:
+                  print(json.load(handle)["uid"])
+          PY
+            curl -fsS -u "$GRAFANA_USER:$GRAFANA_PASSWORD" "http://127.0.0.1:3000/api/dashboards/uid/$uid" >/dev/null
+            echo "Verified Grafana dashboard uid: $uid"
+          done
+
+          rm -rf "$WORK_DIR" "$REMOTE_ARCHIVE"
+          EOF
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f grafana-provisioning.tgz
+          rm -f "$HOME/.ssh/observability_deploy_key_${GITHUB_RUN_ID}"
+          rm -f "$HOME/.ssh/config_observability_${GITHUB_RUN_ID}"
+          rm -f "$HOME/.ssh/known_hosts_observability_${GITHUB_RUN_ID}"
+          rm -f /tmp/.observability_ssh_key_path_${GITHUB_RUN_ID}

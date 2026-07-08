@@ -1,0 +1,22 @@
+columns substreams version: 1
+10 columns:
+1 substreams for column `ticker`:
+	ticker
+1 substreams for column `date`:
+	date
+1 substreams for column `total_call_premium`:
+	total_call_premium
+1 substreams for column `total_put_premium`:
+	total_put_premium
+1 substreams for column `net_call_premium`:
+	net_call_premium
+1 substreams for column `net_put_premium`:
+	net_put_premium
+1 substreams for column `calculated_net_premium`:
+	calculated_net_premium
+1 substreams for column `total_ticks`:
+	total_ticks
+1 substreams for column `created_at`:
+	created_at
+1 substreams for column `updated_at`:
+	updated_at

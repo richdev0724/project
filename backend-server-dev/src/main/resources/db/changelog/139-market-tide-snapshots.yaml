@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: market-tide-snapshots-139-table
+      author: marketmono
+      comment: >-
+        Store one market tide series snapshot per trading day for the Mono
+        Matrix dashboard chart. Each row holds the chart-ready series
+        (timestamp, premiums, net volume, SPY close) merged from one upstream
+        market-tide call plus SPY prices reused from dashboard_ohlc_snapshots.
+        The current day's row is replaced in place every minute during market
+        hours; rows older than 4 days are purged.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS market_tide_snapshots (
+                  id             BIGSERIAL      PRIMARY KEY,
+                  trading_date   DATE           NOT NULL,
+                  series         JSONB          NOT NULL,
+                  fetched_at     TIMESTAMPTZ    NOT NULL,
+                  created_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  CONSTRAINT uq_market_tide_snapshots_trading_date UNIQUE (trading_date)
+              );
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.market_tide_snapshots TO marketmono_app;
+                  GRANT USAGE, SELECT ON SEQUENCE public.market_tide_snapshots_id_seq TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS market_tide_snapshots;

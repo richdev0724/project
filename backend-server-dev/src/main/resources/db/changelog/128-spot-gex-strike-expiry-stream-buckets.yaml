@@ -1,0 +1,118 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/128-spot-gex-strike-expiry-stream-buckets.yaml
+
+  - changeSet:
+      id: 128-spot-gex-strike-expiry-stream-buckets
+      author: marketmono
+      comment: Create the dedicated 1-minute Spot GEX stream bucket table with seven-day retention.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS spot_gex_strike_expiry_1m (
+                  ticker                  VARCHAR(10)    NOT NULL,
+                  expiry                  DATE           NOT NULL,
+                  strike_price            DECIMAL(12,4)  NOT NULL,
+                  strike_price_cents      INTEGER        NOT NULL,
+                  bucket_start            TIMESTAMPTZ    NOT NULL,
+                  latest_timestamp_ms     BIGINT         NOT NULL,
+                  underlying_price        DECIMAL(12,4),
+
+                  call_delta_oi           DECIMAL(24,4),
+                  put_delta_oi            DECIMAL(24,4),
+                  net_delta_oi            DECIMAL(24,4),
+                  call_gamma_oi           DECIMAL(24,4),
+                  put_gamma_oi            DECIMAL(24,4),
+                  net_gamma_oi            DECIMAL(24,4),
+                  call_charm_oi           DECIMAL(24,4),
+                  put_charm_oi            DECIMAL(24,4),
+                  net_charm_oi            DECIMAL(24,4),
+                  call_vanna_oi           DECIMAL(24,4),
+                  put_vanna_oi            DECIMAL(24,4),
+                  net_vanna_oi            DECIMAL(24,4),
+
+                  call_delta_vol          DECIMAL(24,4),
+                  put_delta_vol           DECIMAL(24,4),
+                  net_delta_vol           DECIMAL(24,4),
+                  call_gamma_vol          DECIMAL(24,4),
+                  put_gamma_vol           DECIMAL(24,4),
+                  net_gamma_vol           DECIMAL(24,4),
+                  call_charm_vol          DECIMAL(24,4),
+                  put_charm_vol           DECIMAL(24,4),
+                  net_charm_vol           DECIMAL(24,4),
+                  call_vanna_vol          DECIMAL(24,4),
+                  put_vanna_vol           DECIMAL(24,4),
+                  net_vanna_vol           DECIMAL(24,4),
+
+                  call_gamma_ask          DECIMAL(24,4),
+                  call_gamma_bid          DECIMAL(24,4),
+                  put_gamma_ask           DECIMAL(24,4),
+                  put_gamma_bid           DECIMAL(24,4),
+                  call_charm_ask          DECIMAL(24,4),
+                  call_charm_bid          DECIMAL(24,4),
+                  put_charm_ask           DECIMAL(24,4),
+                  put_charm_bid           DECIMAL(24,4),
+                  call_vanna_ask          DECIMAL(24,4),
+                  call_vanna_bid          DECIMAL(24,4),
+                  put_vanna_ask           DECIMAL(24,4),
+                  put_vanna_bid           DECIMAL(24,4),
+
+                  source                  VARCHAR(64)    NOT NULL,
+                  raw_channel_name        VARCHAR(64),
+                  ingested_at             TIMESTAMPTZ    NOT NULL,
+                  inserted_at             TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at              TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+
+                  PRIMARY KEY (ticker, expiry, strike_price_cents, bucket_start)
+              );
+
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_1m_ticker_bucket
+                  ON spot_gex_strike_expiry_1m (ticker, bucket_start DESC);
+
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_1m_ticker_expiry_bucket
+                  ON spot_gex_strike_expiry_1m (ticker, expiry, bucket_start DESC);
+
+              DO $$
+              BEGIN
+                IF EXISTS (
+                  SELECT 1
+                  FROM pg_extension
+                  WHERE extname = 'timescaledb'
+                ) THEN
+                  PERFORM create_hypertable('spot_gex_strike_expiry_1m', 'bucket_start',
+                    chunk_time_interval => INTERVAL '1 day',
+                    if_not_exists => true
+                  );
+
+                  ALTER TABLE spot_gex_strike_expiry_1m SET (
+                    timescaledb.compress,
+                    timescaledb.compress_segmentby = 'ticker, expiry',
+                    timescaledb.compress_orderby = 'bucket_start DESC'
+                  );
+
+                  IF COALESCE(current_setting('timescaledb.license', true), '') <> 'apache' THEN
+                    PERFORM add_compression_policy('spot_gex_strike_expiry_1m', INTERVAL '2 hours', if_not_exists => true);
+                    PERFORM add_retention_policy('spot_gex_strike_expiry_1m', INTERVAL '7 days', if_not_exists => true);
+                  END IF;
+                END IF;
+              EXCEPTION
+                WHEN feature_not_supported OR undefined_function THEN
+                  RAISE NOTICE 'Skipping Timescale policy helpers for spot_gex_strike_expiry_1m';
+              END
+              $$;
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.spot_gex_strike_expiry_1m TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS spot_gex_strike_expiry_1m;

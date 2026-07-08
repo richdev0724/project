@@ -1,0 +1,584 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/006-option-flow-and-bookmarks.yaml
+  - changeSet:
+      id: baseline-006-market-data-types
+      author: marketmono
+      comment: Create enums used by dark-pool and aggregate market-data tables.
+      changes:
+        - sql:
+            splitStatements: false
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'venue_type') THEN
+                  CREATE TYPE venue_type AS ENUM ('DARK', 'LIT');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'bucket_size') THEN
+                  CREATE TYPE bucket_size AS ENUM ('ONE_MINUTE', 'FIVE_MINUTES', 'ONE_HOUR', 'ONE_DAY');
+                END IF;
+              END
+              $$;
+
+  - changeSet:
+      id: baseline-006-option-flow-and-bookmarks
+      author: marketmono
+      validCheckSum:
+        - '9:69cda89b30044e83907dba5a5d5eb432'
+      comment: >-
+                Create the canonical consolidated schema for flow alerts, dark-pool tables,
+                option trades, and bookmarks. Approved repo cleanup 2026-03-15:
+                standardize `flow_alerts` temporal columns to TIMESTAMP WITH TIME ZONE
+                directly in the consolidated baseline.
+      changes:
+        - createTable:
+            tableName: flow_alerts
+            columns:
+              - column:
+                  name: alert_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_symbol
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: strike
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiry_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: bid
+                  type: DECIMAL(12,4)
+              - column:
+                  name: ask
+                  type: DECIMAL(12,4)
+              - column:
+                  name: underlying_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: total_size
+                  type: INTEGER
+              - column:
+                  name: total_premium
+                  type: DECIMAL(15,2)
+              - column:
+                  name: trade_count
+                  type: INTEGER
+              - column:
+                  name: volume
+                  type: INTEGER
+              - column:
+                  name: open_interest
+                  type: INTEGER
+              - column:
+                  name: volume_oi_ratio
+                  type: DECIMAL(15,2)
+              - column:
+                  name: implied_volatility_start
+                  type: DECIMAL(10,6)
+              - column:
+                  name: implied_volatility_end
+                  type: DECIMAL(10,6)
+              - column:
+                  name: alert_rule
+                  type: VARCHAR(50)
+              - column:
+                  name: has_sweep
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: has_floor
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: has_singleleg
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: has_multileg
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: all_opening_trades
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: sector_id
+                  type: INTEGER
+              - column:
+                  name: market_cap
+                  type: BIGINT
+              - column:
+                  name: next_earnings_date
+                  type: DATE
+              - column:
+                  name: trade_start_time
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trade_end_time
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: total_ask_side_premium
+                  type: DECIMAL(15,2)
+              - column:
+                  name: total_bid_side_premium
+                  type: DECIMAL(15,2)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_type
+                  type: option_type_enum
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data_source
+                  type: data_source_enum
+                  defaultValue: REST
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: flow_alerts
+            columnNames: alert_id, trade_start_time
+            constraintName: flow_alerts_pkey
+        - createIndex:
+            indexName: idx_flow_alerts_ticker_expiry
+            tableName: flow_alerts
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: expiry_date
+        - createIndex:
+            indexName: idx_flow_alerts_trade_time
+            tableName: flow_alerts
+            columns:
+              - column:
+                  name: trade_start_time
+                  descending: true
+        - createIndex:
+            indexName: idx_flow_alerts_created_at
+            tableName: flow_alerts
+            columns:
+              - column:
+                  name: created_at
+                  descending: true
+        - createIndex:
+            indexName: idx_flow_alerts_sector_id
+            tableName: flow_alerts
+            columns:
+              - column:
+                  name: sector_id
+        - createIndex:
+            indexName: idx_flow_alerts_alert_rule
+            tableName: flow_alerts
+            columns:
+              - column:
+                  name: alert_rule
+
+        - createTable:
+            tableName: dp_lp_trades
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: venue_type
+                  type: venue_type
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(12,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: size
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ts
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: venue
+                  type: VARCHAR(50)
+              - column:
+                  name: flags
+                  type: JSONB
+              - column:
+                  name: ingest_source
+                  type: VARCHAR(50)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: dp_lp_trades
+            columnNames: id, ts
+            constraintName: dp_lp_trades_pkey
+        - createIndex:
+            indexName: idx_dp_lp_trades_ticker_ts
+            tableName: dp_lp_trades
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: ts
+        - createIndex:
+            indexName: idx_dp_lp_trades_venue_type_ts
+            tableName: dp_lp_trades
+            columns:
+              - column:
+                  name: venue_type
+              - column:
+                  name: ts
+        - createIndex:
+            indexName: idx_dp_lp_trades_ticker_venue_ts
+            tableName: dp_lp_trades
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: venue_type
+              - column:
+                  name: ts
+
+        - createTable:
+            tableName: dp_lp_aggregates
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: venue_type
+                  type: venue_type
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bucket_start
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bucket_size
+                  type: bucket_size
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trade_count
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_volume
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vwap
+                  type: DECIMAL(12,4)
+              - column:
+                  name: min_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: max_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: net_imbalance
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: dp_lp_aggregates
+            columnNames: id, bucket_start
+            constraintName: dp_lp_aggregates_pkey
+        - addUniqueConstraint:
+            tableName: dp_lp_aggregates
+            columnNames: ticker, venue_type, bucket_start, bucket_size
+            constraintName: uq_dp_lp_aggregates_ticker_venue_bucket
+        - createIndex:
+            indexName: idx_dp_lp_aggregates_ticker_venue_bucket
+            tableName: dp_lp_aggregates
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: venue_type
+              - column:
+                  name: bucket_start
+
+        - createTable:
+            tableName: option_trades
+            columns:
+              - column:
+                  name: trade_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(12,4)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: size
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nbbo_bid
+                  type: DECIMAL(12,4)
+              - column:
+                  name: nbbo_ask
+                  type: DECIMAL(12,4)
+              - column:
+                  name: underlying_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: exchange
+                  type: VARCHAR(50)
+              - column:
+                  name: executed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_chain
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: condition
+                  type: VARCHAR(50)
+              - column:
+                  name: is_multileg
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_floor_trade
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_sweep
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: aggressor
+                  type: VARCHAR(50)
+              - column:
+                  name: premium
+                  type: DECIMAL(15,2)
+              - column:
+                  name: side
+                  type: VARCHAR(50)
+              - column:
+                  name: expiry
+                  type: DATE
+              - column:
+                  name: option_type
+                  type: VARCHAR(10)
+              - column:
+                  name: open_interest
+                  type: INT
+              - column:
+                  name: strike
+                  type: DECIMAL(12,4)
+              - column:
+                  name: volume
+                  type: BIGINT
+              - column:
+                  name: ewma_nbbo_ask
+                  type: DECIMAL(12,4)
+              - column:
+                  name: ewma_nbbo_bid
+                  type: DECIMAL(12,4)
+              - column:
+                  name: implied_volatility
+                  type: DECIMAL(12,6)
+              - column:
+                  name: delta
+                  type: DECIMAL(12,6)
+              - column:
+                  name: theta
+                  type: DECIMAL(12,6)
+              - column:
+                  name: gamma
+                  type: DECIMAL(12,6)
+              - column:
+                  name: vega
+                  type: DECIMAL(12,6)
+              - column:
+                  name: rho
+                  type: DECIMAL(12,6)
+              - column:
+                  name: theo
+                  type: DECIMAL(12,4)
+              - column:
+                  name: ask_vol
+                  type: BIGINT
+              - column:
+                  name: bid_vol
+                  type: BIGINT
+              - column:
+                  name: no_side_vol
+                  type: BIGINT
+              - column:
+                  name: mid_vol
+                  type: BIGINT
+              - column:
+                  name: multi_vol
+                  type: BIGINT
+              - column:
+                  name: stock_multi_vol
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: option_trades
+            columnNames: trade_id, executed_at
+            constraintName: option_trades_pkey
+        - createIndex:
+            indexName: idx_option_trades_ticker_executed
+            tableName: option_trades
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: executed_at
+                  descending: true
+        - createIndex:
+            indexName: idx_option_trades_option_chain
+            tableName: option_trades
+            columns:
+              - column:
+                  name: option_chain
+        - createIndex:
+            indexName: idx_option_trades_executed_at
+            tableName: option_trades
+            columns:
+              - column:
+                  name: executed_at
+                  descending: true
+
+        - createTable:
+            tableName: option_trade_bookmarks
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trade_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: source_type
+                  type: VARCHAR(10)
+                  defaultValue: FA
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: option_trade_bookmarks
+            columnNames: user_id, trade_id, source_type
+            constraintName: uq_bookmark_user_trade_source
+        - addForeignKeyConstraint:
+            baseTableName: option_trade_bookmarks
+            baseColumnNames: user_id
+            constraintName: fk_bookmark_user
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - createIndex:
+            indexName: idx_bookmark_user_id
+            tableName: option_trade_bookmarks
+            columns:
+              - column:
+                  name: user_id

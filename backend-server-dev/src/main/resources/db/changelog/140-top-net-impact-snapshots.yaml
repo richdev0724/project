@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: top-net-impact-snapshots-140-table
+      author: marketmono
+      comment: >-
+        Store one top net impact snapshot per trading day for the dashboard
+        Top Bullish / Top Bearish Net Premium widgets. Each row holds the
+        chart-ready bullish and bearish ticker lists from one upstream
+        top-net-impact call. The current day's row is replaced in place every
+        minute during market hours; rows older than 4 days are purged.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS top_net_impact_snapshots (
+                  id             BIGSERIAL      PRIMARY KEY,
+                  trading_date   DATE           NOT NULL,
+                  bullish        JSONB          NOT NULL,
+                  bearish        JSONB          NOT NULL,
+                  fetched_at     TIMESTAMPTZ    NOT NULL,
+                  created_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  CONSTRAINT uq_top_net_impact_snapshots_trading_date UNIQUE (trading_date)
+              );
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.top_net_impact_snapshots TO marketmono_app;
+                  GRANT USAGE, SELECT ON SEQUENCE public.top_net_impact_snapshots_id_seq TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS top_net_impact_snapshots;

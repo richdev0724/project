@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option java_package = "com.marketmono.proto.client";
+option java_outer_classname = "DecimalProto";
+
+message Decimal {
+  uint64 lo = 1;
+  uint32 hi = 2;
+  uint32 scale = 3;
+  bool negative = 4;
+}

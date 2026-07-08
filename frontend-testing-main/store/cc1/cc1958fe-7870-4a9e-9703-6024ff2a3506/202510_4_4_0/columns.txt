@@ -1,0 +1,12 @@
+columns format version: 1
+10 columns:
+`ticker` String
+`date` Date
+`total_call_premium` Int64
+`total_put_premium` Int64
+`net_call_premium` Int64
+`net_put_premium` Int64
+`calculated_net_premium` Int64
+`total_ticks` UInt32
+`created_at` DateTime
+`updated_at` DateTime

@@ -1,0 +1,517 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/120-whop-provider-billing.yaml
+
+  - changeSet:
+      id: 120-whop-provider-billing-columns
+      author: marketmono
+      comment: Add provider-aware billing columns for Whop catalog, subscriptions, and payment history.
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: whop_product_id
+                  type: VARCHAR(100)
+              - column:
+                  name: whop_checkout_url
+                  type: VARCHAR(500)
+        - addColumn:
+            tableName: product_prices
+            columns:
+              - column:
+                  name: whop_plan_id
+                  type: VARCHAR(100)
+              - column:
+                  name: whop_purchase_url
+                  type: VARCHAR(500)
+        - addColumn:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: billing_provider
+                  type: VARCHAR(20)
+                  defaultValue: STRIPE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: provider_subscription_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_customer_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_user_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_product_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_plan_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_status
+                  type: VARCHAR(100)
+              - column:
+                  name: provider_manage_url
+                  type: VARCHAR(500)
+              - column:
+                  name: provider_metadata
+                  type: TEXT
+        - addColumn:
+            tableName: payment_history
+            columns:
+              - column:
+                  name: billing_provider
+                  type: VARCHAR(20)
+                  defaultValue: STRIPE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: provider_payment_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_subscription_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_customer_id
+                  type: VARCHAR(255)
+              - column:
+                  name: provider_status
+                  type: VARCHAR(100)
+              - column:
+                  name: provider_metadata
+                  type: TEXT
+        - createIndex:
+            indexName: idx_products_whop_product_id
+            tableName: products
+            unique: true
+            columns:
+              - column:
+                  name: whop_product_id
+        - createIndex:
+            indexName: idx_product_prices_whop_plan_id
+            tableName: product_prices
+            unique: true
+            columns:
+              - column:
+                  name: whop_plan_id
+        - createIndex:
+            indexName: idx_subscriptions_billing_provider
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: billing_provider
+        - createIndex:
+            indexName: idx_subscriptions_provider_subscription
+            tableName: subscriptions
+            unique: true
+            columns:
+              - column:
+                  name: billing_provider
+              - column:
+                  name: provider_subscription_id
+        - createIndex:
+            indexName: idx_payment_history_billing_provider
+            tableName: payment_history
+            columns:
+              - column:
+                  name: billing_provider
+        - createIndex:
+            indexName: idx_payment_history_provider_payment
+            tableName: payment_history
+            unique: true
+            columns:
+              - column:
+                  name: billing_provider
+              - column:
+                  name: provider_payment_id
+      rollback:
+        - dropIndex:
+            indexName: idx_payment_history_provider_payment
+            tableName: payment_history
+        - dropIndex:
+            indexName: idx_payment_history_billing_provider
+            tableName: payment_history
+        - dropIndex:
+            indexName: idx_subscriptions_provider_subscription
+            tableName: subscriptions
+        - dropIndex:
+            indexName: idx_subscriptions_billing_provider
+            tableName: subscriptions
+        - dropIndex:
+            indexName: idx_product_prices_whop_plan_id
+            tableName: product_prices
+        - dropIndex:
+            indexName: idx_products_whop_product_id
+            tableName: products
+        - dropColumn:
+            tableName: payment_history
+            columns:
+              - column:
+                  name: billing_provider
+              - column:
+                  name: provider_payment_id
+              - column:
+                  name: provider_subscription_id
+              - column:
+                  name: provider_customer_id
+              - column:
+                  name: provider_status
+              - column:
+                  name: provider_metadata
+        - dropColumn:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: billing_provider
+              - column:
+                  name: provider_subscription_id
+              - column:
+                  name: provider_customer_id
+              - column:
+                  name: provider_user_id
+              - column:
+                  name: provider_product_id
+              - column:
+                  name: provider_plan_id
+              - column:
+                  name: provider_status
+              - column:
+                  name: provider_manage_url
+              - column:
+                  name: provider_metadata
+        - dropColumn:
+            tableName: product_prices
+            columns:
+              - column:
+                  name: whop_plan_id
+              - column:
+                  name: whop_purchase_url
+        - dropColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: whop_product_id
+              - column:
+                  name: whop_checkout_url
+
+  - changeSet:
+      id: 120-whop-seed-monthly-product-mappings
+      author: marketmono
+      comment: Seed known Whop monthly product and plan mappings before webhook cutover.
+      dbms: postgresql
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              DECLARE
+                standard_product_id UUID;
+                beta_product_id UUID;
+              BEGIN
+                SELECT id
+                INTO standard_product_id
+                FROM products
+                WHERE whop_product_id = 'prod_VYg1i2OBMF2No'
+                   OR slug IN (
+                     'market-mono-monthly',
+                     'market-mono-monthly-subscription',
+                     'market-mono---monthly-subscription'
+                   )
+                   OR LOWER(name) IN (
+                     'market mono monthly',
+                     'market mono monthly subscription',
+                     'market mono - monthly subscription'
+                   )
+                ORDER BY
+                  CASE
+                    WHEN whop_product_id = 'prod_VYg1i2OBMF2No' THEN 0
+                    WHEN slug = 'market-mono-monthly' THEN 1
+                    ELSE 2
+                  END,
+                  created_at NULLS LAST
+                LIMIT 1;
+
+                IF standard_product_id IS NULL THEN
+                  INSERT INTO products (
+                    id,
+                    name,
+                    slug,
+                    short_description,
+                    whop_product_id,
+                    whop_checkout_url,
+                    sort_order,
+                    is_active,
+                    is_archived,
+                    trial_days
+                  )
+                  VALUES (
+                    gen_random_uuid(),
+                    'Market Mono - Monthly Subscription',
+                    'market-mono-monthly',
+                    'Market Mono monthly access',
+                    'prod_VYg1i2OBMF2No',
+                    'https://whop.com/checkout/plan_psgRuvs8nuYvo',
+                    1,
+                    true,
+                    false,
+                    1
+                  )
+                  RETURNING id INTO standard_product_id;
+                ELSE
+                  UPDATE products
+                  SET whop_product_id = 'prod_VYg1i2OBMF2No',
+                      whop_checkout_url = 'https://whop.com/checkout/plan_psgRuvs8nuYvo',
+                      is_active = true,
+                      is_archived = false,
+                      updated_at = CURRENT_TIMESTAMP
+                  WHERE id = standard_product_id;
+                END IF;
+
+                UPDATE product_prices
+                SET whop_plan_id = NULL,
+                    whop_purchase_url = NULL,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE whop_plan_id = 'plan_psgRuvs8nuYvo'
+                  AND product_id <> standard_product_id;
+
+                INSERT INTO product_prices (
+                  id,
+                  product_id,
+                  billing_period,
+                  price_cents,
+                  whop_plan_id,
+                  whop_purchase_url,
+                  is_active,
+                  sort_order
+                )
+                VALUES (
+                  gen_random_uuid(),
+                  standard_product_id,
+                  'MONTHLY',
+                  4000,
+                  'plan_psgRuvs8nuYvo',
+                  'https://whop.com/checkout/plan_psgRuvs8nuYvo',
+                  true,
+                  1
+                )
+                ON CONFLICT (product_id, billing_period) DO UPDATE
+                SET price_cents = EXCLUDED.price_cents,
+                    whop_plan_id = EXCLUDED.whop_plan_id,
+                    whop_purchase_url = EXCLUDED.whop_purchase_url,
+                    is_active = true,
+                    sort_order = EXCLUDED.sort_order,
+                    updated_at = CURRENT_TIMESTAMP;
+
+                SELECT id
+                INTO beta_product_id
+                FROM products
+                WHERE whop_product_id = 'prod_xKyE6lcOIYmw7'
+                   OR slug IN (
+                     'market-mono-beta-monthly',
+                     'market-mono-beta-monthly-subscription',
+                     'market-mono-beta---monthly-subscription'
+                   )
+                   OR LOWER(name) IN (
+                     'market mono beta monthly',
+                     'market mono beta monthly subscription',
+                     'market mono beta - monthly subscription'
+                   )
+                ORDER BY
+                  CASE
+                    WHEN whop_product_id = 'prod_xKyE6lcOIYmw7' THEN 0
+                    WHEN slug = 'market-mono-beta-monthly' THEN 1
+                    ELSE 2
+                  END,
+                  created_at NULLS LAST
+                LIMIT 1;
+
+                IF beta_product_id IS NULL THEN
+                  INSERT INTO products (
+                    id,
+                    name,
+                    slug,
+                    short_description,
+                    whop_product_id,
+                    whop_checkout_url,
+                    sort_order,
+                    is_active,
+                    is_archived,
+                    trial_days
+                  )
+                  VALUES (
+                    gen_random_uuid(),
+                    'Market Mono Beta - Monthly Subscription',
+                    'market-mono-beta-monthly',
+                    'Market Mono beta monthly access',
+                    'prod_xKyE6lcOIYmw7',
+                    'https://whop.com/checkout/plan_qCFdPvGNk9iRb',
+                    0,
+                    true,
+                    false,
+                    3
+                  )
+                  RETURNING id INTO beta_product_id;
+                ELSE
+                  UPDATE products
+                  SET whop_product_id = 'prod_xKyE6lcOIYmw7',
+                      whop_checkout_url = 'https://whop.com/checkout/plan_qCFdPvGNk9iRb',
+                      is_active = true,
+                      is_archived = false,
+                      trial_days = 3,
+                      updated_at = CURRENT_TIMESTAMP
+                  WHERE id = beta_product_id;
+                END IF;
+
+                UPDATE product_prices
+                SET whop_plan_id = NULL,
+                    whop_purchase_url = NULL,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE whop_plan_id = 'plan_qCFdPvGNk9iRb'
+                  AND product_id <> beta_product_id;
+
+                INSERT INTO product_prices (
+                  id,
+                  product_id,
+                  billing_period,
+                  price_cents,
+                  whop_plan_id,
+                  whop_purchase_url,
+                  is_active,
+                  sort_order
+                )
+                VALUES (
+                  gen_random_uuid(),
+                  beta_product_id,
+                  'MONTHLY',
+                  4000,
+                  'plan_qCFdPvGNk9iRb',
+                  'https://whop.com/checkout/plan_qCFdPvGNk9iRb',
+                  true,
+                  0
+                )
+                ON CONFLICT (product_id, billing_period) DO UPDATE
+                SET price_cents = EXCLUDED.price_cents,
+                    whop_plan_id = EXCLUDED.whop_plan_id,
+                    whop_purchase_url = EXCLUDED.whop_purchase_url,
+                    is_active = true,
+                    sort_order = EXCLUDED.sort_order,
+                    updated_at = CURRENT_TIMESTAMP;
+              END
+              $$;
+      rollback:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              UPDATE product_prices
+              SET whop_plan_id = NULL,
+                  whop_purchase_url = NULL,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE whop_plan_id IN ('plan_psgRuvs8nuYvo', 'plan_qCFdPvGNk9iRb');
+
+              UPDATE products
+              SET whop_product_id = NULL,
+                  whop_checkout_url = NULL,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE whop_product_id IN ('prod_VYg1i2OBMF2No', 'prod_xKyE6lcOIYmw7');
+
+  - changeSet:
+      id: 120-whop-billing-webhook-events
+      author: marketmono
+      comment: Create a shared billing webhook delivery ledger for idempotent provider processing.
+      changes:
+        - createTable:
+            tableName: billing_webhook_events
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: billing_provider
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: external_event_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_type
+                  type: VARCHAR(100)
+              - column:
+                  name: processing_status
+                  type: VARCHAR(20)
+                  defaultValue: RECEIVED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payload_sha256
+                  type: VARCHAR(64)
+              - column:
+                  name: error_message
+                  type: VARCHAR(500)
+              - column:
+                  name: received_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: processed_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: billing_webhook_events
+            columnNames: billing_provider, external_event_id
+            constraintName: uk_billing_webhook_events_provider_event
+        - createIndex:
+            indexName: idx_billing_webhook_events_provider
+            tableName: billing_webhook_events
+            columns:
+              - column:
+                  name: billing_provider
+        - createIndex:
+            indexName: idx_billing_webhook_events_event_type
+            tableName: billing_webhook_events
+            columns:
+              - column:
+                  name: event_type
+        - createIndex:
+            indexName: idx_billing_webhook_events_received_at
+            tableName: billing_webhook_events
+            columns:
+              - column:
+                  name: received_at
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.billing_webhook_events TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - dropTable:
+            tableName: billing_webhook_events

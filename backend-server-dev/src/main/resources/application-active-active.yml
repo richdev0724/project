@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: active-active
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      ssl:
+        enabled: ${REDIS_SSL:false}
+
+  kafka:
+    listener:
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:2}
+
+active-active:
+  redis:
+    enabled: ${ACTIVE_ACTIVE_REDIS_ENABLED:true}
+
+websocket:
+  relay:
+    enabled: ${WEBSOCKET_RELAY_ENABLED:true}

@@ -1,0 +1,130 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/124-whop-membership-correlations.yaml
+
+  - changeSet:
+      id: 124-whop-membership-correlations
+      author: marketmono
+      comment: Add durable Whop membership correlation records for direct-link review and reconciliation.
+      changes:
+        - createTable:
+            tableName: whop_membership_correlations
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: whop_membership_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: whop_user_id
+                  type: VARCHAR(255)
+              - column:
+                  name: buyer_email
+                  type: VARCHAR(255)
+              - column:
+                  name: whop_product_id
+                  type: VARCHAR(255)
+              - column:
+                  name: whop_plan_id
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: review_reason
+                  type: VARCHAR(500)
+              - column:
+                  name: last_webhook_event_id
+                  type: VARCHAR(255)
+              - column:
+                  name: last_payload_sha256
+                  type: VARCHAR(64)
+              - column:
+                  name: user_id
+                  type: UUID
+              - column:
+                  name: product_id
+                  type: UUID
+              - column:
+                  name: subscription_id
+                  type: UUID
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: whop_membership_correlations
+            columnNames: whop_membership_id
+            constraintName: uk_whop_membership_correlations_membership
+        - addForeignKeyConstraint:
+            baseTableName: whop_membership_correlations
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_whop_membership_correlations_user
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: whop_membership_correlations
+            baseColumnNames: product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            constraintName: fk_whop_membership_correlations_product
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: whop_membership_correlations
+            baseColumnNames: subscription_id
+            referencedTableName: subscriptions
+            referencedColumnNames: id
+            constraintName: fk_whop_membership_correlations_subscription
+            onDelete: SET NULL
+        - createIndex:
+            indexName: idx_whop_membership_correlations_status
+            tableName: whop_membership_correlations
+            columns:
+              - column:
+                  name: status
+        - createIndex:
+            indexName: idx_whop_membership_correlations_email
+            tableName: whop_membership_correlations
+            columns:
+              - column:
+                  name: buyer_email
+        - createIndex:
+            indexName: idx_whop_membership_correlations_product_plan
+            tableName: whop_membership_correlations
+            columns:
+              - column:
+                  name: whop_product_id
+              - column:
+                  name: whop_plan_id
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.whop_membership_correlations TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - dropTable:
+            tableName: whop_membership_correlations

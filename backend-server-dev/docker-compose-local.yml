@@ -1,0 +1,77 @@
+# Local development docker-compose with TimescaleDB
+# Uses port 5433 to avoid conflicts with host PostgreSQL service on 5432
+#
+# Usage:
+#   docker compose -f docker-compose-local.yml up -d
+#   docker compose -f docker-compose-local.yml down
+#   docker compose -f docker-compose-local.yml down -v  # also remove data volume
+#
+# Database access:
+#   Host: localhost:5433
+#   User: postgres
+#   Password: postgres
+#   Database: marketmono
+#
+# Connect via psql:
+#   psql -h localhost -p 5433 -U postgres -d marketmono
+# Or via docker:
+#   docker exec -it marketmono-timescaledb psql -U postgres -d marketmono
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg18
+    container_name: marketmono-timescaledb
+    environment:
+      POSTGRES_DB: marketmono
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - marketmono_tsdb_data:/var/lib/postgresql/data
+    # High-load PostgreSQL tuning for financial trade data (2K+ writes/sec)
+    # Based on 03-POSTGRESQL-HIGH-LOAD.md recommendations
+    command:
+      - "postgres"
+      - "-c" 
+      - "max_connections=150"
+      - "-c"
+      - "shared_buffers=512MB"
+      - "-c"
+      - "effective_cache_size=1536MB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=256MB"
+      - "-c"
+      - "wal_buffers=16MB"
+      - "-c"
+      - "checkpoint_completion_target=0.9"
+      - "-c"
+      - "max_wal_size=2GB"
+      - "-c"
+      - "min_wal_size=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "effective_io_concurrency=200"
+      - "-c"
+      - "default_statistics_target=100"
+      - "-c"
+      - "log_min_duration_statement=1000"
+      - "-c"
+      - "idle_in_transaction_session_timeout=60000"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d marketmono"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "5"
+        compress: "true"
+
+volumes:
+  marketmono_tsdb_data:

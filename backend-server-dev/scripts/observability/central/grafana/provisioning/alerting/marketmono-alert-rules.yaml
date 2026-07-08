@@ -1,0 +1,830 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: marketmono_core_1m
+    folder: MarketMono Alerts
+    interval: 1m
+    rules:
+      - uid: mm_target_down
+        title: MarketMono Target Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: up{job=~"prometheus|node-exporter|backend-server|backend-admin|postgres-exporter"}
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: One or more MarketMono scrape targets are down.
+          description: A Prometheus target for MarketMono has reported down for at least 5 minutes.
+        labels:
+          severity: critical
+          service: observability
+          category: availability
+        isPaused: false
+      - uid: mm_backend_5xx
+        title: MarketMono Backend 5xx Spike
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: 100 * (sum by (host) (rate(http_server_requests_seconds_count{job="backend-server",status=~"5.."}[5m])) / clamp_min(sum by (host) (rate(http_server_requests_seconds_count{job="backend-server"}[5m])), 0.01))
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 2
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Backend 5xx ratio is elevated.
+          description: A backend-server host has sustained a 5xx ratio above 2% for 10 minutes.
+        labels:
+          severity: warning
+          service: backend-server
+          category: errors
+        isPaused: false
+      - uid: mm_latency_p95
+        title: MarketMono Backend Latency Regression
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: histogram_quantile(0.95, sum by (host, le) (rate(http_server_requests_seconds_bucket{job="backend-server"}[5m])))
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 1
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Backend p95 latency is above 1 second.
+          description: A backend-server host has sustained p95 request latency above 1 second for 10 minutes.
+        labels:
+          severity: warning
+          service: backend-server
+          category: latency
+        isPaused: false
+      - uid: mm_hikari_pressure
+        title: MarketMono Hikari Pool Pressure
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: 100 * hikaricp_connections_active{job=~"backend-server|backend-admin"} / clamp_min(hikaricp_connections_max{job=~"backend-server|backend-admin"}, 1)
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 85
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Hikari pool usage is above 85%.
+          description: One MarketMono application instance has sustained high Hikari active/max usage for 10 minutes.
+        labels:
+          severity: warning
+          service: application
+          category: database
+        isPaused: false
+      - uid: mm_host_cpu_high
+        title: MarketMono Host CPU Saturation
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: 100 * (1 - avg by (host) (rate(node_cpu_seconds_total{job="node-exporter",mode="idle"}[5m])))
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 85
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Host CPU usage is above 85%.
+          description: A monitored MarketMono host has sustained CPU usage above 85% for 10 minutes.
+        labels:
+          severity: warning
+          service: infrastructure
+          category: cpu
+        isPaused: false
+      - uid: mm_host_mem_high
+        title: MarketMono Host Memory Saturation
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: 100 * (1 - (node_memory_MemAvailable_bytes{job="node-exporter"} / node_memory_MemTotal_bytes{job="node-exporter"}))
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 90
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Host memory usage is above 90%.
+          description: A monitored MarketMono host has sustained memory usage above 90% for 10 minutes.
+        labels:
+          severity: warning
+          service: infrastructure
+          category: memory
+        isPaused: false
+      - uid: mm_host_disk_high
+        title: MarketMono Host Disk Saturation
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: 100 * (1 - (node_filesystem_avail_bytes{job="node-exporter",mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{job="node-exporter",mountpoint="/",fstype!~"tmpfs|overlay"}))
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 90
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 15m
+        annotations:
+          summary: Host root disk usage is above 90%.
+          description: A monitored MarketMono host has sustained root filesystem usage above 90% for 15 minutes.
+        labels:
+          severity: warning
+          service: infrastructure
+          category: disk
+        isPaused: false
+      - uid: mm_kafka_lag_high
+        title: MarketMono Kafka Lag High
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: max by (host) (kafka_consumer_fetch_manager_records_lag_max{job="backend-server"})
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 5000
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Kafka consumer lag is high.
+          description: A backend-server host has sustained Kafka consumer lag above 5000 for 10 minutes.
+        labels:
+          severity: warning
+          service: kafka
+          category: lag
+        isPaused: false
+      - uid: mm_error_log_burst
+        title: MarketMono Error Log Burst
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: afisr480c5af4e
+            model:
+              datasource:
+                type: loki
+                uid: afisr480c5af4e
+              editorMode: code
+              expr: sum by (host) (count_over_time({host!~"observability-prod",job=~".+"} |~ "(?i)((^|[[:space:]])(\\x1b[[][0-9;]*m)?(ERROR|FATAL|PANIC)([[:space:]]|\\x1b[[][0-9;]*m|:)|[[](error|crit|alert|emerg)[]]|level=(error|fatal|panic))" |!~ "(?i)(NewsAPI.*429|Marketaux.*402|MarketAux.*402|Received 429 rate limit response|Endpoint returned 422|Invalid refresh token|Refresh token is expired or revoked)" [5m]))
+              instant: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              queryType: range
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 25
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 5m
+        annotations:
+          summary: Error logs are spiking on a MarketMono host.
+          description: A monitored host has emitted more than 25 error-pattern log lines in 5 minutes.
+        labels:
+          severity: warning
+          service: logs
+          category: error-burst
+        isPaused: false

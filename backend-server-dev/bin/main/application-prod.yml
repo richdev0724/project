@@ -1,0 +1,70 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    show-sql: false
+
+  # JVM Monitoring
+  jmx:
+    enabled: true
+
+  # Database Connection Pool Monitoring
+  datasource:
+    hikari:
+      register-mbeans: true
+
+# WebSocket CORS Configuration for Production
+# For dynamic IPs, use wildcard patterns:
+# - http://*:* (allows ALL HTTP - dev only, security risk!)
+# - http://*.compute.amazonaws.com (AWS EC2 instances)
+# - http://*.cloudapp.azure.com (Azure VMs)
+# - Specific IPs: http://15.204.212.20,http://15.204.212.20:*
+websocket:
+  allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://*:*}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,heapdump,threaddump
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+      jmx:
+        enabled: true
+    enable:
+      jvm: true
+      system: true
+      http: true
+      datasource: true
+      caffeine: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 1ms,5ms,10ms,50ms,100ms,500ms,1s,5s
+
+logging:
+  level:
+    root: WARN
+    com.marketmono: INFO
+    org.springframework.web: WARN
+    # Enhanced logging for crash investigation
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    reactor.netty: DEBUG
+
+# WebSocket Debug Logging
+unusual-whales:
+  websocket:
+    debug-enabled: true

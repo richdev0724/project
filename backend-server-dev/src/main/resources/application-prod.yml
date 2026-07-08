@@ -1,0 +1,109 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    show-sql: false
+
+  # JVM Monitoring
+  jmx:
+    enabled: true
+
+  # Database Connection Pool Monitoring
+  datasource:
+    hikari:
+      register-mbeans: true
+
+# WebSocket CORS Configuration for Production
+# For dynamic IPs, use wildcard patterns:
+# - http://*:* (allows ALL HTTP - dev only, security risk!)
+# - http://*.compute.amazonaws.com (AWS EC2 instances)
+# - http://*.cloudapp.azure.com (Azure VMs)
+# - Specific IPs: http://15.204.212.20,http://15.204.212.20:*
+websocket:
+  allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://*:*}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,heapdump,threaddump
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+      jmx:
+        enabled: true
+    enable:
+      jvm: true
+      system: true
+      http: true
+      datasource: true
+      caffeine: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 1ms,5ms,10ms,50ms,100ms,500ms,1s,5s
+
+logging:
+  level:
+    root: WARN
+    com.marketmono: INFO
+    org.springframework.web: WARN
+    # Keep production signal-focused; crash-investigation verbosity belongs in ad hoc troubleshooting only.
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    reactor.netty: WARN
+
+# WebSocket Debug Logging
+unusual-whales:
+  websocket:
+    debug-enabled: false
+
+market-data:
+  dashboard-ohlc:
+    enabled: ${MARKET_DATA_DASHBOARD_OHLC_ENABLED:true}
+    interval-ms: ${MARKET_DATA_DASHBOARD_OHLC_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_DASHBOARD_OHLC_INITIAL_DELAY_MS:15000}
+  strata-stock-prices:
+    enabled: ${MARKET_DATA_STRATA_STOCK_PRICES_ENABLED:true}
+    interval-ms: ${MARKET_DATA_STRATA_STOCK_PRICES_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_STRATA_STOCK_PRICES_INITIAL_DELAY_MS:10000}
+  crm-price-stream:
+    enabled: ${MARKET_DATA_CRM_PRICE_STREAM_ENABLED:true}
+    ticker-refresh-ms: ${MARKET_DATA_CRM_PRICE_STREAM_TICKER_REFRESH_MS:60000}
+    persist-interval-ms: ${MARKET_DATA_CRM_PRICE_STREAM_PERSIST_INTERVAL_MS:5000}
+    broadcast-throttle-ms: ${MARKET_DATA_CRM_PRICE_STREAM_BROADCAST_THROTTLE_MS:1000}
+    initial-delay-ms: ${MARKET_DATA_CRM_PRICE_STREAM_INITIAL_DELAY_MS:15000}
+  sector-performance:
+    enabled: ${MARKET_DATA_SECTOR_PERFORMANCE_ENABLED:true}
+    interval-ms: ${MARKET_DATA_SECTOR_PERFORMANCE_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_SECTOR_PERFORMANCE_INITIAL_DELAY_MS:20000}
+  market-tide:
+    enabled: ${MARKET_DATA_MARKET_TIDE_ENABLED:true}
+    interval-ms: ${MARKET_DATA_MARKET_TIDE_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_MARKET_TIDE_INITIAL_DELAY_MS:25000}
+    retention-days: ${MARKET_DATA_MARKET_TIDE_RETENTION_DAYS:4}
+  top-net-impact:
+    enabled: ${MARKET_DATA_TOP_NET_IMPACT_ENABLED:true}
+    interval-ms: ${MARKET_DATA_TOP_NET_IMPACT_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_TOP_NET_IMPACT_INITIAL_DELAY_MS:30000}
+    retention-days: ${MARKET_DATA_TOP_NET_IMPACT_RETENTION_DAYS:4}
+  dashboard-contracts:
+    enabled: ${MARKET_DATA_DASHBOARD_CONTRACTS_ENABLED:true}
+    interval-ms: ${MARKET_DATA_DASHBOARD_CONTRACTS_INTERVAL_MS:60000}
+    initial-delay-ms: ${MARKET_DATA_DASHBOARD_CONTRACTS_INITIAL_DELAY_MS:35000}
+    retention-days: ${MARKET_DATA_DASHBOARD_CONTRACTS_RETENTION_DAYS:4}
+  ticker-options-volume:
+    enabled: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_ENABLED:true}
+    interval-ms: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_INTERVAL_MS:600000}
+    initial-delay-ms: ${MARKET_DATA_TICKER_OPTIONS_VOLUME_INITIAL_DELAY_MS:15000}

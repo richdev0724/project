@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - changeSet:
+      id: 107-customer-invite-user-fields
+      author: marketmono
+      comment: Add customer invite lifecycle fields to end-user accounts.
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: requires_password_change
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password_changed_at
+                  type: TIMESTAMP
+              - column:
+                  name: temp_password_expires_at
+                  type: TIMESTAMP
+              - column:
+                  name: customer_invite_status
+                  type: VARCHAR(40)
+              - column:
+                  name: customer_invited_at
+                  type: TIMESTAMP
+              - column:
+                  name: customer_invite_last_sent_at
+                  type: TIMESTAMP
+              - column:
+                  name: customer_invite_revoked_at
+                  type: TIMESTAMP
+              - column:
+                  name: customer_invited_by
+                  type: UUID
+        - createIndex:
+            indexName: idx_users_customer_invited_at
+            tableName: users
+            columns:
+              - column:
+                  name: customer_invited_at
+        - createIndex:
+            indexName: idx_users_customer_invite_status
+            tableName: users
+            columns:
+              - column:
+                  name: customer_invite_status
+
+  - changeSet:
+      id: 107-economic-event-admin-fields
+      author: marketmono
+      comment: Add managed economic event lifecycle fields.
+      changes:
+        - addColumn:
+            tableName: economic_events
+            columns:
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: retired_at
+                  type: TIMESTAMP
+        - createIndex:
+            indexName: idx_economic_events_retired_at
+            tableName: economic_events
+            columns:
+              - column:
+                  name: retired_at

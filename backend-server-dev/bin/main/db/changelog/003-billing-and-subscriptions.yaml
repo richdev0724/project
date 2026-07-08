@@ -1,0 +1,568 @@
+databaseChangeLog:
+  - changeSet:
+      id: baseline-003-billing-types
+      author: marketmono
+      comment: Create the payment-related enum types that remain in the consolidated final schema.
+      changes:
+        - sql:
+            splitStatements: false
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'stripe_mode') THEN
+                  CREATE TYPE stripe_mode AS ENUM ('TEST', 'PROD', 'DEFAULT');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status') THEN
+                  CREATE TYPE payment_status AS ENUM ('PAID', 'FAILED', 'PENDING', 'REFUNDED');
+                END IF;
+              END
+              $$;
+
+  - changeSet:
+      id: baseline-003-billing-and-subscriptions
+      author: marketmono
+      validCheckSum:
+        - '9:118175ab2427a2199449a68027edcc91'
+      comment: Create the final consolidated billing, Stripe config, catalog, subscriptions, and payment history schema.
+      changes:
+        - createTable:
+            tableName: stripe_config
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: value
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_stripe_config_name
+            tableName: stripe_config
+            columns:
+              - column:
+                  name: name
+        - sql:
+            dbms: postgresql
+            sql: |
+              INSERT INTO stripe_config (id, name, value)
+              VALUES
+                (gen_random_uuid(), 'default_mode', 'TEST'),
+                (gen_random_uuid(), 'past_due_grace_period_days', '1');
+
+        - createTable:
+            tableName: stripe_config_audit_log
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: admin_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: field_changed
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: old_value_masked
+                  type: VARCHAR(50)
+              - column:
+                  name: new_value_masked
+                  type: VARCHAR(50)
+              - column:
+                  name: changed_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ip_address
+                  type: VARCHAR(45)
+        - createIndex:
+            indexName: idx_stripe_config_audit_log_admin_id
+            tableName: stripe_config_audit_log
+            columns:
+              - column:
+                  name: admin_id
+        - createIndex:
+            indexName: idx_stripe_config_audit_log_changed_at
+            tableName: stripe_config_audit_log
+            columns:
+              - column:
+                  name: changed_at
+
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slug
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: short_description
+                  type: VARCHAR(255)
+              - column:
+                  name: stripe_product_id
+                  type: VARCHAR(100)
+              - column:
+                  name: sort_order
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_archived
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trial_days
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_products_slug
+            tableName: products
+            columns:
+              - column:
+                  name: slug
+        - createIndex:
+            indexName: idx_products_is_active
+            tableName: products
+            columns:
+              - column:
+                  name: is_active
+        - createIndex:
+            indexName: idx_products_is_archived
+            tableName: products
+            columns:
+              - column:
+                  name: is_archived
+        - createIndex:
+            indexName: idx_products_sort_order
+            tableName: products
+            columns:
+              - column:
+                  name: sort_order
+
+        - createTable:
+            tableName: product_prices
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: billing_period
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_cents
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stripe_price_id
+                  type: VARCHAR(100)
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sort_order
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - sql:
+            splitStatements: false
+            dbms: postgresql
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (
+                  SELECT 1
+                  FROM pg_constraint
+                  WHERE conname = 'chk_product_prices_billing_period'
+                ) THEN
+                  ALTER TABLE product_prices
+                    ADD CONSTRAINT chk_product_prices_billing_period
+                    CHECK (billing_period IN ('MONTHLY', 'QUARTERLY', 'SEMI_ANNUAL', 'ANNUAL', 'LIFETIME'));
+                END IF;
+              END
+              $$;
+        - addUniqueConstraint:
+            tableName: product_prices
+            columnNames: product_id, billing_period
+            constraintName: uk_product_prices_product_billing
+        - createIndex:
+            indexName: idx_product_prices_product_id
+            tableName: product_prices
+            columns:
+              - column:
+                  name: product_id
+        - addForeignKeyConstraint:
+            baseTableName: product_prices
+            baseColumnNames: product_id
+            constraintName: fk_product_prices_product
+            referencedTableName: products
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createTable:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: billing_period
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stripe_subscription_id
+                  type: VARCHAR(100)
+              - column:
+                  name: stripe_customer_id
+                  type: VARCHAR(255)
+              - column:
+                  name: stripe_mode
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: VARCHAR(3)
+                  defaultValue: USD
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_at_subscription
+                  type: DECIMAL(10,2)
+              - column:
+                  name: current_period_start
+                  type: TIMESTAMP
+              - column:
+                  name: current_period_end
+                  type: TIMESTAMP
+              - column:
+                  name: next_billing_date
+                  type: TIMESTAMP
+              - column:
+                  name: cancel_at_period_end
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trial_end
+                  type: TIMESTAMP
+              - column:
+                  name: canceled_at
+                  type: TIMESTAMP
+              - column:
+                  name: cancellation_reason
+                  type: VARCHAR(500)
+              - column:
+                  name: pending_product_id
+                  type: UUID
+              - column:
+                  name: pending_billing_period
+                  type: VARCHAR(20)
+              - column:
+                  name: previous_product_id
+                  type: UUID
+              - column:
+                  name: upgraded_at
+                  type: TIMESTAMP
+              - column:
+                  name: downgraded_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_subscriptions_user_id
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_subscriptions_product_id
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            indexName: idx_subscriptions_stripe_subscription_id
+            tableName: subscriptions
+            unique: true
+            columns:
+              - column:
+                  name: stripe_subscription_id
+        - createIndex:
+            indexName: idx_subscriptions_status
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: status
+        - createIndex:
+            indexName: idx_subscriptions_current_period_end
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: current_period_end
+        - addForeignKeyConstraint:
+            baseTableName: subscriptions
+            baseColumnNames: user_id
+            constraintName: fk_subscriptions_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: subscriptions
+            baseColumnNames: product_id
+            constraintName: fk_subscriptions_product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            onDelete: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: subscriptions
+            baseColumnNames: pending_product_id
+            constraintName: fk_subscriptions_pending_product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - createTable:
+            tableName: payment_history
+            columns:
+              - column:
+                  name: stripe_invoice_id
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subscription_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stripe_payment_intent_id
+                  type: VARCHAR(255)
+              - column:
+                  name: amount
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: payment_status
+                  constraints:
+                    nullable: false
+              - column:
+                  name: paid_at
+                  type: TIMESTAMP
+              - column:
+                  name: period_start
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: period_end
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_method_last4
+                  type: VARCHAR(4)
+              - column:
+                  name: payment_method_exp_month
+                  type: INTEGER
+              - column:
+                  name: payment_method_exp_year
+                  type: INTEGER
+              - column:
+                  name: stripe_mode
+                  type: stripe_mode
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_payment_history_user_id
+            tableName: payment_history
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_payment_history_subscription_id
+            tableName: payment_history
+            columns:
+              - column:
+                  name: subscription_id
+        - createIndex:
+            indexName: idx_payment_history_paid_at
+            tableName: payment_history
+            columns:
+              - column:
+                  name: paid_at
+                  descending: true
+        - createIndex:
+            indexName: idx_payment_history_status
+            tableName: payment_history
+            columns:
+              - column:
+                  name: status
+        - addForeignKeyConstraint:
+            baseTableName: payment_history
+            baseColumnNames: user_id
+            constraintName: fk_payment_history_user
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: payment_history
+            baseColumnNames: subscription_id
+            constraintName: fk_payment_history_subscription
+            referencedTableName: subscriptions
+            referencedColumnNames: id
+            onDelete: CASCADE

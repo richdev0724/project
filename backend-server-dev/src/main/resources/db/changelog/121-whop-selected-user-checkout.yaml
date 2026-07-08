@@ -1,0 +1,189 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/121-whop-selected-user-checkout.yaml
+
+  - changeSet:
+      id: 121-whop-selected-user-checkout
+      author: marketmono
+      comment: Add selected-user checkout provider override and Whop checkout attempt tracking.
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: checkout_provider_override
+                  type: VARCHAR(20)
+                  defaultValue: DEFAULT
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: subscriber_cap_reservations
+            columns:
+              - column:
+                  name: checkout_provider
+                  type: VARCHAR(20)
+                  defaultValue: STRIPE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: whop_checkout_configuration_id
+                  type: VARCHAR(255)
+              - column:
+                  name: whop_membership_id
+                  type: VARCHAR(255)
+        - createIndex:
+            indexName: idx_subscriber_cap_reservations_checkout_provider
+            tableName: subscriber_cap_reservations
+            columns:
+              - column:
+                  name: checkout_provider
+        - createIndex:
+            indexName: idx_subscriber_cap_reservations_whop_configuration
+            tableName: subscriber_cap_reservations
+            columns:
+              - column:
+                  name: whop_checkout_configuration_id
+        - createIndex:
+            indexName: idx_subscriber_cap_reservations_whop_membership
+            tableName: subscriber_cap_reservations
+            columns:
+              - column:
+                  name: whop_membership_id
+        - createTable:
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_price_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subscriber_cap_reservation_id
+                  type: UUID
+              - column:
+                  name: whop_plan_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: whop_checkout_configuration_id
+                  type: VARCHAR(255)
+              - column:
+                  name: whop_purchase_url
+                  type: VARCHAR(500)
+              - column:
+                  name: whop_membership_id
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: failure_reason
+                  type: VARCHAR(500)
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: completed_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: whop_checkout_attempts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_whop_checkout_attempts_user
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: whop_checkout_attempts
+            baseColumnNames: product_price_id
+            referencedTableName: product_prices
+            referencedColumnNames: id
+            constraintName: fk_whop_checkout_attempts_product_price
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: whop_checkout_attempts
+            baseColumnNames: subscriber_cap_reservation_id
+            referencedTableName: subscriber_cap_reservations
+            referencedColumnNames: id
+            constraintName: fk_whop_checkout_attempts_cap_reservation
+            onDelete: SET NULL
+        - createIndex:
+            indexName: idx_whop_checkout_attempts_user_id
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_whop_checkout_attempts_status_expires
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: expires_at
+        - createIndex:
+            indexName: idx_whop_checkout_attempts_configuration
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: whop_checkout_configuration_id
+        - createIndex:
+            indexName: idx_whop_checkout_attempts_membership
+            tableName: whop_checkout_attempts
+            columns:
+              - column:
+                  name: whop_membership_id
+      rollback:
+        - dropTable:
+            tableName: whop_checkout_attempts
+        - dropIndex:
+            indexName: idx_subscriber_cap_reservations_whop_membership
+            tableName: subscriber_cap_reservations
+        - dropIndex:
+            indexName: idx_subscriber_cap_reservations_whop_configuration
+            tableName: subscriber_cap_reservations
+        - dropIndex:
+            indexName: idx_subscriber_cap_reservations_checkout_provider
+            tableName: subscriber_cap_reservations
+        - dropColumn:
+            tableName: subscriber_cap_reservations
+            columns:
+              - column:
+                  name: checkout_provider
+              - column:
+                  name: whop_checkout_configuration_id
+              - column:
+                  name: whop_membership_id
+        - dropColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: checkout_provider_override

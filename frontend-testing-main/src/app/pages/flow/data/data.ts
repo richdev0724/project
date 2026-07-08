@@ -1,0 +1,130 @@
+export const optionsData = [
+  {
+    date: '01/02',
+    volume: 15000,
+    open_in: 100,
+    plus_minus: 1.1,
+    open: 56.18,
+    close: 56.1,
+    avg: 55.76,
+    total_prems: '$15.6M',
+    multi_percent: 1,
+    floor: '10%',
+    sweep: '20%',
+    bidAskSpread: 0.08,
+    trend: 'up', // for green indicator
+  },
+  {
+    date: '01/02',
+    volume: 100,
+    open_in: 100,
+    plus_minus: 0,
+    open: 56.18,
+    close: 56.1,
+    avg: 55.76,
+    total_prems: '$4.2K',
+    multi_percent: 1,
+    floor: '10%',
+    sweep: '20%',
+    bidAskSpread: 0.08,
+    trend: 'neutral', // for neutral indicator
+  },
+  {
+    date: '01/02',
+    volume: 10,
+    open_in: 100,
+    plus_minus: 0,
+    open: 56.18,
+    close: 56.1,
+    avg: 55.76,
+    total_prems: '$600',
+    multi_percent: 1,
+    floor: '10%',
+    sweep: '20%',
+    bidAskSpread: 0.08,
+    trend: 'down', // for red indicator
+  },
+  {
+    date: '01/02',
+    volume: 17,
+    open_in: 100,
+    plus_minus: -1.0,
+    open: 56.18,
+    close: 56.1,
+    avg: 55.76,
+    total_prems: '$8.2K',
+    multi_percent: 1,
+    floor: '10%',
+    sweep: '20%',
+    bidAskSpread: 0.08,
+    trend: 'down',
+  },
+  {
+    date: '01/02',
+    volume: 19,
+    open_in: 100,
+    plus_minus: 1.0,
+    open: 56.18,
+    close: 56.1,
+    avg: 55.76,
+    total_prems: '$9.1K',
+    multi_percent: 1,
+    floor: '10%',
+    sweep: '20%',
+    bidAskSpread: 0.08,
+    trend: 'up',
+  },
+]
+
+export const highestOIData = [
+  {
+    contract: 'SPY 390P 01/17/25 (17D)',
+    premium: '450.2K',
+    volume: 1823,
+    open_in: 10892,
+    chainStatus: {
+      positive: 60, // Percentage for green part
+      negative: 40, // Percentage for red part
+    },
+  },
+  {
+    contract: 'SPY 620C 01/17/25 (17D)',
+    premium: '4.5M',
+    volume: 1823,
+    open_in: 9762,
+    chainStatus: {
+      positive: 55,
+      negative: 45,
+    },
+  },
+  {
+    contract: 'SPY 620C 01/17/25 (17D)',
+    premium: '450.2K',
+    volume: 1823,
+    open_in: 6211,
+    chainStatus: {
+      positive: 65,
+      negative: 35,
+    },
+  },
+  {
+    contract: 'SPY 595B 01/17/25 (17D)',
+    premium: '450.2K',
+    volume: 1823,
+    open_in: 6051,
+    chainStatus: {
+      positive: 45,
+      negative: 55,
+    },
+  },
+  {
+    contract: 'SPY 620C 01/17/25 (17D)',
+    premium: '450.2K',
+    volume: 1823,
+    open_in: 5800,
+    chainStatus: {
+      positive: 70,
+      negative: 30,
+    },
+  },
+]

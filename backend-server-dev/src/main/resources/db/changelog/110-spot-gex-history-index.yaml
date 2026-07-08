@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/110-spot-gex-history-index.yaml
+
+  - changeSet:
+      id: spot-gex-110-add-history-ticker-collected-index
+      author: marketmono
+      runInTransaction: false
+      comment: Add an index for unfiltered Spot GEX history reads by ticker and collected time.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+                CREATE INDEX IF NOT EXISTS idx_spot_gex_exposures_ticker_collected_desc
+                    ON spot_gex_exposures (ticker, collected_at DESC);
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+                DROP INDEX IF EXISTS idx_spot_gex_exposures_ticker_collected_desc;

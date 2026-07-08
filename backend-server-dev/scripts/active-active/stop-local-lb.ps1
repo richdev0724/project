@@ -1,0 +1,1 @@
+docker rm -f marketmono-active-active-lb 2>$null | Out-Null

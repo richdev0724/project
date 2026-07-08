@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-option-trades-flow-performance-indexes
+      author: marketmono
+      runInTransaction: false
+      comment: >-
+        Prepare the option_trades performance hardening step for manual DBA execution
+        against the managed PostgreSQL cluster. Production Liquibase remains disabled;
+        this changelog serves as the canonical audited definition of the index and
+        autovacuum tuning. The production execution verified that option_trades is a
+        Timescale hypertable, so the index must be created without CONCURRENTLY.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE INDEX IF NOT EXISTS
+                idx_option_trades_executed_premium_volume
+                ON option_trades (executed_at DESC, premium, volume)
+                WHERE premium IS NOT NULL AND volume IS NOT NULL;
+
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              ALTER TABLE option_trades SET (
+                autovacuum_analyze_scale_factor = 0.02,
+                autovacuum_vacuum_scale_factor  = 0.05,
+                autovacuum_analyze_threshold    = 5000,
+                autovacuum_vacuum_threshold     = 5000
+              );

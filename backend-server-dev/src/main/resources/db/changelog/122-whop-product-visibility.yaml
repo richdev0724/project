@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/122-whop-product-visibility.yaml
+
+  - changeSet:
+      id: 122-whop-product-visibility
+      author: marketmono
+      comment: Add product visibility for public storefront versus direct-link-only Whop Beta checkout.
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: visibility
+                  type: VARCHAR(30)
+                  defaultValue: PUBLIC
+                  constraints:
+                    nullable: false
+        - sql:
+            dbms: postgresql
+            sql: |
+              UPDATE products
+              SET visibility = 'PUBLIC'
+              WHERE whop_product_id = 'prod_VYg1i2OBMF2No';
+
+              UPDATE products
+              SET visibility = 'DIRECT_LINK_ONLY'
+              WHERE whop_product_id = 'prod_xKyE6lcOIYmw7';
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (
+                  SELECT 1
+                  FROM pg_constraint
+                  WHERE conname = 'chk_products_visibility'
+                ) THEN
+                  ALTER TABLE products
+                    ADD CONSTRAINT chk_products_visibility
+                    CHECK (visibility IN ('PUBLIC', 'DIRECT_LINK_ONLY', 'HIDDEN'));
+                END IF;
+              END
+              $$;
+        - createIndex:
+            indexName: idx_products_visibility
+            tableName: products
+            columns:
+              - column:
+                  name: visibility
+      rollback:
+        - dropIndex:
+            indexName: idx_products_visibility
+            tableName: products
+        - sql:
+            dbms: postgresql
+            sql: ALTER TABLE products DROP CONSTRAINT IF EXISTS chk_products_visibility;
+        - dropColumn:
+            tableName: products
+            columnName: visibility

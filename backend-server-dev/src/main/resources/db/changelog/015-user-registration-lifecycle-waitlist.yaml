@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: 015-user-registration-lifecycle-waitlist
+      author: marketmono
+      comment: Add end-user registration lifecycle and waitlist metadata to users.
+      preConditions:
+        - onFail: HALT
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: |
+              SELECT COUNT(*)
+              FROM (
+                SELECT email_lowercase
+                FROM users
+                GROUP BY email_lowercase
+                HAVING COUNT(*) > 1
+              ) duplicate_email_lowercase
+        - sqlCheck:
+            expectedResult: 0
+            sql: |
+              SELECT COUNT(*)
+              FROM users
+              WHERE password_hash IS NULL
+                AND deleted_at IS NULL
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: registration_status
+                  type: VARCHAR(40)
+                  defaultValue: REGISTERED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: waitlist_joined_at
+                  type: TIMESTAMP
+              - column:
+                  name: waitlist_source
+                  type: VARCHAR(80)
+              - column:
+                  name: waitlist_confirmation_email_sent_at
+                  type: TIMESTAMP
+        - sql:
+            dbms: postgresql
+            splitStatements: true
+            stripComments: true
+            sql: |
+              UPDATE users
+              SET registration_status = 'PENDING_EMAIL_VERIFICATION'
+              WHERE password_hash IS NOT NULL
+                AND email_verified = FALSE
+                AND deleted_at IS NULL;
+        - createIndex:
+            indexName: idx_users_registration_status
+            tableName: users
+            columns:
+              - column:
+                  name: registration_status
+        - createIndex:
+            indexName: idx_users_waitlist_joined_at
+            tableName: users
+            columns:
+              - column:
+                  name: waitlist_joined_at
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: email_lowercase
+            constraintName: uq_users_email_lowercase

@@ -1,0 +1,127 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/105-changelog-entries.yaml
+  - changeSet:
+      id: changelog-105-create-table
+      author: marketmono
+      comment: Create changelog_entries table for Help-page changelog content managed from the admin panel.
+      changes:
+        - createTable:
+            tableName: changelog_entries
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: release_version
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: release_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entry_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: entry_text
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sort_order
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: visibility
+                  type: VARCHAR(20)
+                  defaultValue: VISIBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_changelog_entries_release_date
+            tableName: changelog_entries
+            columns:
+              - column:
+                  name: release_date
+        - createIndex:
+            indexName: idx_changelog_entries_visibility_release_sort
+            tableName: changelog_entries
+            columns:
+              - column:
+                  name: visibility
+              - column:
+                  name: release_date
+              - column:
+                  name: sort_order
+
+  - changeSet:
+      id: changelog-105-seed-existing-help-page-data
+      author: marketmono
+      comment: Seed existing Help-page changelog entries into the new managed changelog table.
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              INSERT INTO changelog_entries (
+                  release_version,
+                  release_date,
+                  entry_type,
+                  entry_text,
+                  sort_order,
+                  visibility,
+                  created_by,
+                  updated_by
+              ) VALUES
+                  ('2.8.0', DATE '2025-02-28', 'NEW', 'Politicians page rebuilt with live congressional trade data, party coloring, and Top Tickers / Most Active panels.', 10, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.8.0', DATE '2025-02-28', 'NEW', 'Affiliate referral program added to Settings — custom invite codes, discount tracking, and cash payout tiers.', 20, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.8.0', DATE '2025-02-28', 'NEW', 'Support & Suggestions section added to Settings — open tickets, attach files, track responses inline.', 30, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.8.0', DATE '2025-02-28', 'IMPROVED', 'Settings & Profile page now matches Market Dashboard gradient and card styling.', 40, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.2', DATE '2025-02-14', 'IMPROVED', 'Tickers and politician names on the Politicians page now use Flow-page hover effects (slight zoom, no underline).', 10, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.2', DATE '2025-02-14', 'IMPROVED', 'Browser back/forward navigation now works correctly when moving between politician and committee pages.', 20, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.2', DATE '2025-02-14', 'FIXED', 'Trade detail popup removed from Recent Trades table — tickers are now direct links to their options page.', 30, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.2', DATE '2025-02-14', 'FIXED', 'Politician portfolio pages now load for real API politicians, not just mock data.', 40, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.0', DATE '2025-01-30', 'NEW', 'Earnings EPS chart added to the ticker overview page with quarterly comparison bars.', 10, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.0', DATE '2025-01-30', 'NEW', 'ETF sector breakdown view added to the ticker page for ETF symbols.', 20, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.0', DATE '2025-01-30', 'IMPROVED', 'Dark Pool and Lit Pool modals now scale to full screen on larger displays.', 30, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.7.0', DATE '2025-01-30', 'PERFORMANCE', 'Options flow table renders 40% faster on large datasets.', 40, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.5', DATE '2025-01-12', 'NEW', 'Mono News page added with ticker tape, hero carousel, and story categories.', 10, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.5', DATE '2025-01-12', 'IMPROVED', 'Market Dashboard background and card styling unified across all panels.', 20, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.5', DATE '2025-01-12', 'FIXED', 'Flow table column widths no longer collapse on smaller viewports.', 30, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.0', DATE '2024-12-20', 'NEW', 'Gamma Exposure and Market Snippets panels added to Market Dashboard bottom row.', 10, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.0', DATE '2024-12-20', 'NEW', 'Custom alert templates for options flow by premium, ticker, and expiration.', 20, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.0', DATE '2024-12-20', 'IMPROVED', 'Accordion open-interest chain explorer: now sortable by OI change % and absolute size.', 30, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.6.0', DATE '2024-12-20', 'FIXED', 'Open interest data now correctly refreshes at 6:45 AM ET each trading day.', 40, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.5.1', DATE '2024-12-04', 'FIXED', 'Mobile: options flow table now loads correctly on iOS Safari.', 10, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.5.1', DATE '2024-12-04', 'FIXED', 'Duplicate billing charge resolved — safeguard added to payment processor integration.', 20, 'VISIBLE', 'system-seed', 'system-seed'),
+                  ('2.5.1', DATE '2024-12-04', 'PERFORMANCE', 'Dark pool feed latency reduced by ~200ms.', 30, 'VISIBLE', 'system-seed', 'system-seed');

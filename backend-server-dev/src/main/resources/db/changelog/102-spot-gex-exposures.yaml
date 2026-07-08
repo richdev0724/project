@@ -1,0 +1,99 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/102-spot-gex-exposures.yaml
+  - changeSet:
+      id: spot-gex-102-create-table
+      author: marketmono
+      comment: Create the spot_gex_exposures hypertable backing scheduled spot GEX collection.
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              CREATE TABLE IF NOT EXISTS spot_gex_exposures (
+                  ticker              VARCHAR(10)     NOT NULL,
+                  expiry              DATE            NOT NULL,
+                  strike              DECIMAL(12,4)   NOT NULL,
+                  collected_at        TIMESTAMPTZ     NOT NULL,
+                  price               DECIMAL(12,4),
+                  date                DATE,
+                  source_time         TIMESTAMPTZ,
+                  call_delta_oi       DECIMAL(24,4),
+                  call_gamma_oi       DECIMAL(24,4),
+                  call_vanna_oi       DECIMAL(24,4),
+                  call_charm_oi       DECIMAL(24,4),
+                  put_delta_oi        DECIMAL(24,4),
+                  put_gamma_oi        DECIMAL(24,4),
+                  put_vanna_oi        DECIMAL(24,4),
+                  put_charm_oi        DECIMAL(24,4),
+                  call_delta_vol      DECIMAL(24,4),
+                  call_gamma_vol      DECIMAL(24,4),
+                  call_vanna_vol      DECIMAL(24,4),
+                  call_charm_vol      DECIMAL(24,4),
+                  put_delta_vol       DECIMAL(24,4),
+                  put_gamma_vol       DECIMAL(24,4),
+                  put_vanna_vol       DECIMAL(24,4),
+                  put_charm_vol       DECIMAL(24,4),
+                  call_delta_bid      DECIMAL(24,4),
+                  call_delta_ask      DECIMAL(24,4),
+                  call_gamma_bid      DECIMAL(24,4),
+                  call_gamma_ask      DECIMAL(24,4),
+                  call_vanna_bid      DECIMAL(24,4),
+                  call_vanna_ask      DECIMAL(24,4),
+                  call_charm_bid      DECIMAL(24,4),
+                  call_charm_ask      DECIMAL(24,4),
+                  put_delta_bid       DECIMAL(24,4),
+                  put_delta_ask       DECIMAL(24,4),
+                  put_gamma_bid       DECIMAL(24,4),
+                  put_gamma_ask       DECIMAL(24,4),
+                  put_vanna_bid       DECIMAL(24,4),
+                  put_vanna_ask       DECIMAL(24,4),
+                  put_charm_bid       DECIMAL(24,4),
+                  put_charm_ask       DECIMAL(24,4),
+                  PRIMARY KEY (ticker, expiry, strike, collected_at)
+              );
+
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_exposures_ticker_expiry_collected
+                  ON spot_gex_exposures (ticker, expiry, collected_at);
+
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_exposures_ticker_expiry_strike_collected_desc
+                  ON spot_gex_exposures (ticker, expiry, strike, collected_at DESC);
+
+  - changeSet:
+      id: spot-gex-102-configure-timescaledb
+      author: marketmono
+      validCheckSum:
+        - '1:any'
+      comment: >-
+        Convert spot_gex_exposures into a TimescaleDB hypertable with
+        compression and best-effort retention policies.
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              SELECT create_hypertable('spot_gex_exposures', 'collected_at',
+                chunk_time_interval => INTERVAL '1 day',
+                if_not_exists => true
+              );
+
+              ALTER TABLE spot_gex_exposures SET (
+                timescaledb.compress,
+                timescaledb.compress_segmentby = 'ticker, expiry',
+                timescaledb.compress_orderby = 'collected_at DESC'
+              );
+
+              DO $$
+              BEGIN
+                IF COALESCE(current_setting('timescaledb.license', true), '') = 'apache' THEN
+                  RAISE NOTICE 'Skipping Timescale policy helpers for spot_gex_exposures because timescaledb.license=apache';
+                ELSE
+                  PERFORM add_compression_policy('spot_gex_exposures', INTERVAL '2 hours', if_not_exists => true);
+                  PERFORM add_retention_policy('spot_gex_exposures', INTERVAL '15 days', if_not_exists => true);
+                END IF;
+              EXCEPTION
+                WHEN feature_not_supported OR undefined_function THEN
+                  RAISE NOTICE 'Skipping Timescale policy helpers for spot_gex_exposures because this environment does not expose the legacy helper API';
+              END
+              $$;

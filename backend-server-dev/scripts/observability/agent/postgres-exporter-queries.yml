@@ -1,0 +1,180 @@
+marketmono_pg_archiver:
+  query: |
+    SELECT
+      COALESCE(archived_count, 0)::float8 AS archived_count,
+      COALESCE(failed_count, 0)::float8 AS failed_count,
+      COALESCE(EXTRACT(EPOCH FROM now() - last_archived_time), 0)::float8 AS seconds_since_last_success
+    FROM pg_stat_archiver;
+  metrics:
+    - archived_count:
+        usage: "COUNTER"
+        description: "Total successfully archived WAL segments reported by pg_stat_archiver."
+    - failed_count:
+        usage: "COUNTER"
+        description: "Total failed WAL archive attempts reported by pg_stat_archiver."
+    - seconds_since_last_success:
+        usage: "GAUGE"
+        description: "Seconds since the last successful WAL archive operation."
+
+marketmono_pg_replication:
+  query: |
+    SELECT
+      CASE
+        WHEN pg_is_in_recovery() THEN 0::float8
+        ELSE COALESCE((SELECT MAX(CASE WHEN state = 'streaming' THEN 1 ELSE 0 END)::float8 FROM pg_stat_replication), 0::float8)
+      END AS standby_streaming,
+      CASE
+        WHEN pg_is_in_recovery() THEN 0::float8
+        ELSE COALESCE((SELECT MAX(GREATEST(pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn), 0))::float8 FROM pg_stat_replication), 0::float8)
+      END AS replay_lag_bytes;
+  metrics:
+    - standby_streaming:
+        usage: "GAUGE"
+        description: "1 when at least one standby is streaming from this primary, otherwise 0."
+    - replay_lag_bytes:
+        usage: "GAUGE"
+        description: "Maximum byte lag between the primary current WAL LSN and standby replay LSN."
+
+marketmono_pg_standby_replay:
+  query: |
+    SELECT
+      CASE WHEN pg_is_in_recovery() THEN 1::float8 ELSE 0::float8 END AS in_recovery,
+      CASE
+        WHEN pg_is_in_recovery() AND pg_last_xact_replay_timestamp() IS NOT NULL
+          THEN EXTRACT(EPOCH FROM now() - pg_last_xact_replay_timestamp())::float8
+        ELSE 0::float8
+      END AS seconds_since_last_replay;
+  metrics:
+    - in_recovery:
+        usage: "GAUGE"
+        description: "1 when the exporter target is a PostgreSQL standby in recovery, otherwise 0."
+    - seconds_since_last_replay:
+        usage: "GAUGE"
+        description: "Seconds since the standby replayed its last transaction."
+
+marketmono_pg_activity:
+  query: |
+    SELECT
+      COUNT(*) FILTER (WHERE wait_event_type = 'Lock')::float8 AS blocked_queries,
+      COALESCE(MAX(EXTRACT(EPOCH FROM now() - query_start)) FILTER (WHERE wait_event_type = 'Lock' AND query_start IS NOT NULL), 0)::float8 AS max_blocked_seconds,
+      COALESCE(MAX(EXTRACT(EPOCH FROM now() - xact_start)) FILTER (WHERE xact_start IS NOT NULL), 0)::float8 AS max_transaction_seconds
+    FROM pg_stat_activity;
+  metrics:
+    - blocked_queries:
+        usage: "GAUGE"
+        description: "Current number of sessions waiting on locks."
+    - max_blocked_seconds:
+        usage: "GAUGE"
+        description: "Age in seconds of the oldest currently lock-blocked query."
+    - max_transaction_seconds:
+        usage: "GAUGE"
+        description: "Age in seconds of the oldest currently open transaction."
+
+marketmono_pg_stat_statements:
+  query: |
+    SELECT
+      COALESCE(MAX(mean_exec_time), 0)::float8 / 1000.0 AS max_mean_exec_seconds,
+      COALESCE(MAX(max_exec_time), 0)::float8 / 1000.0 AS max_exec_seconds,
+      COALESCE(SUM(calls), 0)::float8 AS calls
+    FROM pg_stat_statements;
+  metrics:
+    - max_mean_exec_seconds:
+        usage: "GAUGE"
+        description: "Highest mean execution time for any tracked pg_stat_statements entry, in seconds."
+    - max_exec_seconds:
+        usage: "GAUGE"
+        description: "Highest max execution time for any tracked pg_stat_statements entry, in seconds."
+    - calls:
+        usage: "COUNTER"
+        description: "Total pg_stat_statements call count across tracked statements."
+
+marketmono_pg_stat_statements_top:
+  query: |
+    SELECT
+      d.datname,
+      s.queryid::text AS queryid,
+      SUM(s.calls)::float8 AS calls,
+      SUM(s.total_exec_time)::float8 / 1000.0 AS total_exec_seconds,
+      (SUM(s.total_exec_time) / NULLIF(SUM(s.calls), 0))::float8 / 1000.0 AS mean_exec_seconds,
+      MAX(s.max_exec_time)::float8 / 1000.0 AS max_exec_seconds
+    FROM pg_stat_statements s
+    JOIN pg_database d ON d.oid = s.dbid
+    WHERE s.calls > 0
+    GROUP BY d.datname, s.queryid
+    ORDER BY mean_exec_seconds DESC
+    LIMIT 20;
+  metrics:
+    - datname:
+        usage: "LABEL"
+        description: "Database name."
+    - queryid:
+        usage: "LABEL"
+        description: "pg_stat_statements query identifier. Query text is intentionally not exported to avoid high-cardinality and sensitive labels."
+    - calls:
+        usage: "COUNTER"
+        description: "Calls for this pg_stat_statements entry."
+    - total_exec_seconds:
+        usage: "COUNTER"
+        description: "Total execution time for this pg_stat_statements entry, in seconds."
+    - mean_exec_seconds:
+        usage: "GAUGE"
+        description: "Mean execution time for this pg_stat_statements entry, in seconds."
+    - max_exec_seconds:
+        usage: "GAUGE"
+        description: "Maximum execution time for this pg_stat_statements entry, in seconds."
+
+marketmono_timescaledb_hypertable_chunks:
+  query: |
+    SELECT
+      hypertable_schema,
+      hypertable_name,
+      COUNT(*)::float8 AS chunks,
+      COUNT(*) FILTER (WHERE is_compressed)::float8 AS compressed_chunks
+    FROM timescaledb_information.chunks
+    GROUP BY hypertable_schema, hypertable_name;
+  metrics:
+    - hypertable_schema:
+        usage: "LABEL"
+        description: "Timescale hypertable schema."
+    - hypertable_name:
+        usage: "LABEL"
+        description: "Timescale hypertable name."
+    - chunks:
+        usage: "GAUGE"
+        description: "Current chunk count for the hypertable."
+    - compressed_chunks:
+        usage: "GAUGE"
+        description: "Current compressed chunk count for the hypertable."
+
+marketmono_timescaledb_job_stats:
+  query: |
+    SELECT
+      job_id::text AS job_id,
+      COALESCE(last_run_status, 'Unknown') AS last_run_status,
+      COALESCE(total_runs, 0)::float8 AS total_runs,
+      COALESCE(total_successes, 0)::float8 AS total_successes,
+      COALESCE(total_failures, 0)::float8 AS total_failures,
+      CASE
+        WHEN last_successful_finish IS NULL THEN 0::float8
+        ELSE EXTRACT(EPOCH FROM now() - last_successful_finish)::float8
+      END AS seconds_since_last_success
+    FROM timescaledb_information.job_stats;
+  metrics:
+    - job_id:
+        usage: "LABEL"
+        description: "TimescaleDB background job identifier."
+    - last_run_status:
+        usage: "LABEL"
+        description: "Last TimescaleDB background job status."
+    - total_runs:
+        usage: "COUNTER"
+        description: "Total TimescaleDB job runs."
+    - total_successes:
+        usage: "COUNTER"
+        description: "Total TimescaleDB job successes."
+    - total_failures:
+        usage: "COUNTER"
+        description: "Total TimescaleDB job failures."
+    - seconds_since_last_success:
+        usage: "GAUGE"
+        description: "Seconds since the last successful TimescaleDB job finish."

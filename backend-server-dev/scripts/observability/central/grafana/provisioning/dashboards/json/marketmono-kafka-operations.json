@@ -1,0 +1,139 @@
+{
+  "id": null,
+  "uid": "kafka-operations",
+  "title": "MarketMono - Kafka Operations",
+  "tags": ["kafka", "consumer", "operations"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "host",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+        "query": "label_values(kafka_consumer_fetch_manager_records_lag_max, host)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Max Consumer Lag",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "max by (host) (kafka_consumer_fetch_manager_records_lag_max{host=~\"$host\"})",
+          "legendFormat": "{{host}} lag"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Records Consumed Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (rate(kafka_consumer_fetch_manager_records_consumed_total{host=~\"$host\"}[5m]))",
+          "legendFormat": "{{host}} consumed"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 3,
+      "title": "Persisted Trades Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (rate(kafka_option_trades_persisted_total{host=~\"$host\"}[5m]))",
+          "legendFormat": "{{host}} persisted"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 4,
+      "title": "Kafka Failures / Retries (15m increase)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "efisr3uq9kw00a" },
+      "targets": [
+        {
+          "expr": "sum by (host) (increase(kafka_option_trades_deser_errors_total{host=~\"$host\"}[15m]))",
+          "legendFormat": "{{host}} deser errors"
+        },
+        {
+          "expr": "sum by (host) (increase(kafka_option_trades_map_errors_total{host=~\"$host\"}[15m]))",
+          "legendFormat": "{{host}} map errors"
+        },
+        {
+          "expr": "sum by (host) (increase(kafka_option_trades_persistence_retries_total{host=~\"$host\"}[15m]))",
+          "legendFormat": "{{host}} retries"
+        },
+        {
+          "expr": "sum by (host) (increase(kafka_option_trades_dead_lettered_total{host=~\"$host\"}[15m]))",
+          "legendFormat": "{{host}} dead-lettered"
+        },
+        {
+          "expr": "sum by (host) (increase(kafka_consumer_failed_authentication_total{host=~\"$host\"}[15m]))",
+          "legendFormat": "{{host}} auth failures"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 5,
+      "title": "Kafka Logs",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 14 },
+      "datasource": { "type": "loki", "uid": "afisr480c5af4e" },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\"} |~ \"\\\\[KAFKA\\\\]\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 6,
+      "title": "Kafka Errors / Rebalances / Retries",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 24 },
+      "datasource": { "type": "loki", "uid": "afisr480c5af4e" },
+      "targets": [
+        {
+          "expr": "{host=~\"$host\"} |~ \"(?i)(kafka|consumer|lag|rebalance|retry|dead.?letter|deseriali[sz]e|authenticat|error)\"",
+          "legendFormat": ""
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "enableLogDetails": true
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

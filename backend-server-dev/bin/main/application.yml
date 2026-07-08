@@ -1,0 +1,293 @@
+spring:
+  application:
+    name: market-mono-backend
+
+  config:
+    import: optional:file:.env[.properties]
+  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:marketmono}?reWriteBatchedInserts=true
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin123}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL:35}
+      minimum-idle: ${HIKARI_MIN_IDLE:10}
+      idle-timeout: 300000        # 5min (reduced from 10min)
+      max-lifetime: 1200000       # 20min (reduced)
+      connection-timeout: 20000   # 20s (stricter)
+      leak-detection-threshold: 60000  # 60s leak detection
+      validation-timeout: 5000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false  # Disable OSIV for better performance
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: ${HIBERNATE_BATCH_SIZE:50}  # Increase to 200 when Kafka enabled
+        order_inserts: true  # Group inserts by entity type
+        order_updates: true  # Group updates by entity type
+        batch_versioned_data: true  # Enable batching for @Version entities
+    show-sql: false
+  
+  liquibase:
+    change-log: ${SPRING_LIQUIBASE_CHANGE_LOG:classpath:db/changelog/db.changelog-master.yaml}
+    enabled: true
+  
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=5m
+  
+  threads:
+    virtual:
+      enabled: true
+
+  # Graceful shutdown: let Kafka consumers finish current batch + commit offsets before JVM exits
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  # Kafka Consumer Configuration (Unusual Whales real-time feed)
+  kafka:
+    enabled: ${KAFKA_ENABLED:false}  # Disabled by default; enable per-environment
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:stream.unusualwhales.com:9083}
+    consumer:
+      group-id: ${KAFKA_GROUP_ID:marketmono_farrukh}
+      auto-offset-reset: earliest  # Resume from committed offset after redeploy; 'latest' loses messages during downtime
+      enable-auto-commit: false  # Manual offset commit for reliability
+      max-poll-records: 500
+      fetch-min-size: 1024       # 1KB minimum fetch
+      fetch-max-wait: 500ms
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        security.protocol: SASL_SSL
+        sasl.mechanism: SCRAM-SHA-512
+        sasl.jaas.config: >-
+          org.apache.kafka.common.security.scram.ScramLoginModule required
+          username="${KAFKA_USERNAME:marketmono}"
+          password="${KAFKA_PASSWORD:}";
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+    listener:
+      type: batch           # Batch listener for high-throughput ingestion
+      concurrency: 3        # 3 consumer threads per topic
+      ack-mode: manual_immediate
+      auto-startup: false   # Started by KafkaListenerStartup after app is ready (non-fatal)
+      auth-exception-retry-interval: 30s  # Retry on auth/authz failures instead of dying
+  
+  # WebSocket / STOMP Configuration
+  websocket:
+    message-size-limit: 1048576      # 1MB max message size
+    send-buffer-size-limit: 524288   # 512KB send buffer
+    send-time-limit: 20000           # 20s send timeout
+
+# WebSocket CORS Configuration
+# Use wildcard patterns for flexible origin matching
+# WARNING: http://*:* allows ALL HTTP origins - use only in development!
+websocket:
+  allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://localhost:*,http://127.0.0.1:*,http://[::1]:*}
+
+# Kafka Topic Configuration
+kafka:
+  topics:
+    option-trades: ${KAFKA_TOPIC_OPTION_TRADES:all-option-trades}
+    flow-alerts: ${KAFKA_TOPIC_FLOW_ALERTS:flow-alerts}
+    option-trades-dlt: ${KAFKA_TOPIC_OPTION_TRADES_DLT:all-option-trades-dlt}
+  consumers:
+    flow-alerts:
+      enabled: ${KAFKA_FLOW_ALERTS_ENABLED:false}  # Disabled — only all-option-trades is needed
+  consumer:
+    batch-size: 200            # Records to accumulate before DB flush
+    batch-timeout-ms: 2000     # Max wait before flushing incomplete batch
+  dead-letter:
+    option-trades-topic: ${KAFKA_TOPIC_OPTION_TRADES_DLT:all-option-trades-dlt}
+    retry-attempts: ${KAFKA_RETRY_ATTEMPTS:3}
+    retry-backoff-ms: ${KAFKA_RETRY_BACKOFF_MS:1000}
+
+# NewsAPI.org Configuration
+# API docs: https://newsapi.org/docs/endpoints/top-headlines
+newsapi:
+  api-key: ${NEWSAPI_API_KEY:}
+  base-url: https://newsapi.org
+
+unusual-whales:
+  api:
+    base-url: https://api.unusualwhales.com
+    api-key: ${UNUSUAL_WHALES_API_KEY}
+    rest-enabled: true  # Global REST API enable (individual endpoints controlled below)
+    endpoints:
+      # Conservative per-endpoint permissions (only enable necessary endpoints)
+      congress-trades: true          # Enable for politician trade data
+      politician-trades: true        # Enable for politician trade data
+      politician-portfolios: true    # Enable - used for frontend portfolio view
+      politicians-list: false        # Disable
+      flow-alerts: true              # Enable for top block/sweep orders data
+      market-tide: true              # Enable for market tide data
+      top-net-impact: true           # Enable for top bullish/bearish net premium tickers
+      economic-calendar: true        # Enable for economic calendar events
+      spy-ohlc: true                  # Enable - Required for SPY price line in Mono Matrix chart
+      ticker-tide: true              # Enable for ticker-specific net premium and volume data
+      ticker-ohlc: true              # Enable for ticker-specific OHLC price data
+      stock-state: true              # Enable for stock price, volume, prev_close (replaces Polygon /v3/snapshot)
+      stock-volume-price-levels: true  # Enable for dark pool/lit pool data (replaces Polygon DP/LP)
+      news: true                     # Enable for financial news headlines
+      greek-exposure: true           # Enable for gamma exposure and other greeks data
+      darkpool-recent: true          # Enable for recent dark pool trades
+      option-contracts: true         # Enable for option contracts screener
+      spot-exposure: true            # Enable for spot exposure by strike data
+    rate-limit:
+      daily-limit: 15000  # UW API daily request limit (resets at 8 PM EST)
+    timeout:
+      connect: 5000
+      read: 30000
+    retry:
+      max-attempts: 3
+      backoff-multiplier: 2
+  websocket:
+    enabled: ${WEBSOCKET_ENABLED:true}
+    url: ${WEBSOCKET_URL:wss://api.unusualwhales.com/socket}
+    reconnect-interval-seconds: 10
+    max-reconnect-attempts: -1  # -1 for infinite retries
+    ping-interval-seconds: 30
+    message-buffer-size: 1000
+    batch:
+      max-size: 50  # Maximum alerts per batch
+      max-bytes: 1048576  # Maximum 1MB per batch (1024*1024)
+      flush-interval-ms: 2000  # Maximum 2 seconds wait time
+  flow:
+    primary-source: WEBSOCKET
+    fallback-to-rest: true
+    sync:
+      enabled: true
+      interval-seconds: ${FLOW_SYNC_INTERVAL:300}  # Default: 5 minutes (adjustable via env var)
+      batch-size: 100
+      retention-days: 30
+      initial-delay-seconds: 10
+
+market-data:
+  stock-prices:
+    enabled: false  # Master switch for all stock price operations (collection, aggregation, cleanup)
+    retention-days: 365  # Keep 1 year of historical data
+    cleanup-schedule: "0 0 2 * * ?"  # Daily at 2:00 AM EST
+    collection-schedule: "0 * 9-16 * * MON-FRI"  # Every minute 9 AM - 4 PM EST Mon-Fri
+    aggregation-schedule: "0 5 16 * * MON-FRI"  # Daily at 4:05 PM EST Mon-Fri
+    max-concurrent-requests: 100
+    requests-per-second: 50
+
+# Politician Trades Sync Configuration
+# Schedule: Daily at 2 AM EST (STOCK Act requires 45-day filing, daily checks are industry standard)
+politician:
+  sync:
+    enabled: true
+    retention-days: 90  # Keep 90 days of trade history
+    max-pages-per-sync: 10  # Max pages to fetch per sync (10 pages * 200 trades = 2,000 max trades)
+    congress-api:
+      enabled: true
+      interval-minutes: 30
+      initial-delay-minutes: 5
+      batch-size: 500
+    portfolio-api:
+      enabled: true
+      interval-minutes: 30
+      initial-delay-minutes: 20
+      batch-size: 500
+
+server:
+  shutdown: graceful
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    mail:
+      enabled: false  # Disable mail health check until mail server is configured
+
+logging:
+  level:
+    root: INFO
+    com.marketmono: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+
+# JWT Configuration
+# IMPORTANT: Override jwt.secret in production with a secure 256-bit key!
+jwt:
+  secret: ${JWT_SECRET:}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}  # 15 minutes
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days
+  issuer: marketmono
+
+# Email Configuration (Gmail SMTP)
+spring.mail:
+  host: ${MAIL_HOST:smtp.gmail.com}
+  port: ${MAIL_PORT:587}
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000
+
+# Congress.gov API configuration
+# API key obtained from https://api.data.gov/signup/
+# Rate limit: 1,000 requests/hour per key
+congress-gov:
+  api-key: ${CONGRESS_GOV_API_KEY:}
+  base-url: https://api.congress.gov/v3
+
+# hCaptcha Configuration
+# Privacy-focused CAPTCHA: https://dashboard.hcaptcha.com
+# Free tier: 1M+ verifications/month, GDPR compliant
+hcaptcha:
+  enabled: ${HCAPTCHA_ENABLED:false}  # Enable in production
+  site-key: ${HCAPTCHA_SITE_KEY:}
+  secret-key: ${HCAPTCHA_SECRET_KEY:}
+
+# Email Validation Configuration
+# Uses https://github.com/disposable/disposable-email-domains
+email:
+  validation:
+    enabled: ${EMAIL_VALIDATION_ENABLED:true}
+
+# Registration Rate Limiting Configuration
+registration:
+  rate-limit:
+    short-window-max: 5       # Max attempts in 10-minute window before blocking
+    long-window-max: 10       # Max attempts in 1-hour window before longer block
+    short-block-minutes: 15   # Block duration for short window violations
+    long-block-minutes: 60    # Block duration for long window violations
+
+# Subscription Configuration
+subscription:
+  past-due-grace-period-days: ${PAST_DUE_GRACE_PERIOD_DAYS:1}  # Days to allow access for PAST_DUE subscriptions (0 = immediate revocation)

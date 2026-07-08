@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/118-admin-hard-delete-challenges.yaml
+  - changeSet:
+      id: 118-admin-hard-delete-challenges
+      author: marketmono
+      comment: Persist admin hard-delete challenges so validation works across backend instances.
+      changes:
+        - createTable:
+            tableName: admin_hard_delete_challenges
+            columns:
+              - column:
+                  name: challenge_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_admin_hard_delete_challenges
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: actor_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: challenge_text
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: not_before
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: admin_hard_delete_challenges
+            indexName: idx_admin_hard_delete_challenges_user
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            tableName: admin_hard_delete_challenges
+            indexName: idx_admin_hard_delete_challenges_expires_at
+            columns:
+              - column:
+                  name: expires_at
+      rollback:
+        - dropTable:
+            tableName: admin_hard_delete_challenges

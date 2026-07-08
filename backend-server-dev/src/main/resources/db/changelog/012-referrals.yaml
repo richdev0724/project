@@ -1,0 +1,216 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/012-referrals.yaml
+  - changeSet:
+      id: referral-012-schema
+      author: marketmono
+      comment: Add referral-program schema for invite tracking, referral rewards, and per-user referral codes.
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: referral_code
+                  type: VARCHAR(8)
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: referral_code
+            constraintName: uq_users_referral_code
+        - createIndex:
+            indexName: idx_users_referral_code
+            tableName: users
+            columns:
+              - column:
+                  name: referral_code
+
+        - createTable:
+            tableName: referrals
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: referrer_user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: referred_user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: referral_code
+                  type: VARCHAR(8)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: qualifying_subscription_id
+                  type: UUID
+              - column:
+                  name: qualifying_stripe_invoice_id
+                  type: VARCHAR(255)
+              - column:
+                  name: qualified_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_referrals_referrer_user_id
+            tableName: referrals
+            columns:
+              - column:
+                  name: referrer_user_id
+        - createIndex:
+            indexName: idx_referrals_status
+            tableName: referrals
+            columns:
+              - column:
+                  name: status
+        - createIndex:
+            indexName: idx_referrals_referral_code
+            tableName: referrals
+            columns:
+              - column:
+                  name: referral_code
+        - addUniqueConstraint:
+            tableName: referrals
+            columnNames: referred_user_id
+            constraintName: uq_referrals_referred_user_id
+        - addForeignKeyConstraint:
+            baseTableName: referrals
+            baseColumnNames: referrer_user_id
+            constraintName: fk_referrals_referrer_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: referrals
+            baseColumnNames: referred_user_id
+            constraintName: fk_referrals_referred_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: referrals
+            baseColumnNames: qualifying_subscription_id
+            constraintName: fk_referrals_qualifying_subscription_id
+            referencedTableName: subscriptions
+            referencedColumnNames: id
+
+        - createTable:
+            tableName: referral_rewards
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: referral_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reward_amount
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: VARCHAR(3)
+                  defaultValue: USD
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: notes
+                  type: VARCHAR(500)
+              - column:
+                  name: approved_at
+                  type: TIMESTAMP
+              - column:
+                  name: rejected_at
+                  type: TIMESTAMP
+              - column:
+                  name: applied_at
+                  type: TIMESTAMP
+              - column:
+                  name: payout_batch_id
+                  type: VARCHAR(64)
+              - column:
+                  name: payout_reference
+                  type: VARCHAR(255)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_referral_rewards_user_id
+            tableName: referral_rewards
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_referral_rewards_status
+            tableName: referral_rewards
+            columns:
+              - column:
+                  name: status
+        - addUniqueConstraint:
+            tableName: referral_rewards
+            columnNames: referral_id
+            constraintName: uq_referral_rewards_referral_id
+        - addForeignKeyConstraint:
+            baseTableName: referral_rewards
+            baseColumnNames: referral_id
+            constraintName: fk_referral_rewards_referral_id
+            referencedTableName: referrals
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: referral_rewards
+            baseColumnNames: user_id
+            constraintName: fk_referral_rewards_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE

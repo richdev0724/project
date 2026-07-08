@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/127-beta-waitlist-marketmono-checkout-link-labels.yaml
+
+  - changeSet:
+      id: 127-beta-waitlist-marketmono-checkout-link-labels
+      author: codex
+      comment: Clarify beta invite checkout variables now point at MarketMono-owned subscribe links.
+      changes:
+        - update:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"Beta invite recipient first name parsed from display name","example":"Alex"},{"key":"user.lastName","description":"Beta invite recipient last name parsed from display name","example":"Trader"},{"key":"user.displayName","description":"Beta invite recipient display name","example":"Alex Trader"},{"key":"user.email","description":"Beta invite recipient email address","example":"alex@example.com"},{"key":"beta.trialDays","description":"Configured beta trial days","example":"3"},{"key":"beta.discountText","description":"Human-readable beta discount","example":"10% off your first 3 months"},{"key":"beta.checkoutUrl","description":"MarketMono beta subscribe URL that creates an individualized Whop checkout","example":"https://marketmono.com/subscribe?promoCode=BETAMM2026"},{"key":"app.betaSubscribeUrl","description":"MarketMono beta subscribe URL that creates an individualized Whop checkout","example":"https://marketmono.com/subscribe?promoCode=BETAMM2026"},{"key":"app.frontendUrl","description":"Public Market Mono frontend URL","example":"https://marketmono.com"},{"key":"app.signInUrl","description":"Public Market Mono sign-in URL","example":"https://marketmono.com/sign-in"},{"key":"app.signUpUrl","description":"Public Market Mono sign-up URL","example":"https://marketmono.com/sign-up"},{"key":"app.subscribeUrl","description":"MarketMono beta subscribe URL with beta code","example":"https://marketmono.com/subscribe?promoCode=BETAMM2026"},{"key":"app.year","description":"Current year","example":"2026"}]'
+            where: slug = 'beta-waitlist-invite'
+      rollback:
+        - update:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"Beta invite recipient first name parsed from display name","example":"Alex"},{"key":"user.lastName","description":"Beta invite recipient last name parsed from display name","example":"Trader"},{"key":"user.displayName","description":"Beta invite recipient display name","example":"Alex Trader"},{"key":"user.email","description":"Beta invite recipient email address","example":"alex@example.com"},{"key":"beta.trialDays","description":"Configured beta trial days","example":"3"},{"key":"beta.discountText","description":"Human-readable beta discount","example":"10% off your first 3 months"},{"key":"beta.checkoutUrl","description":"Direct Whop Beta checkout URL","example":"https://whop.com/checkout/plan_beta"},{"key":"app.betaSubscribeUrl","description":"Direct Whop Beta checkout URL","example":"https://whop.com/checkout/plan_beta"},{"key":"app.frontendUrl","description":"Public Market Mono frontend URL","example":"https://marketmono.com"},{"key":"app.signInUrl","description":"Public Market Mono sign-in URL","example":"https://marketmono.com/sign-in"},{"key":"app.signUpUrl","description":"Public Market Mono sign-up URL","example":"https://marketmono.com/sign-up"},{"key":"app.subscribeUrl","description":"Legacy Market Mono subscribe URL with beta code","example":"https://marketmono.com/subscribe?promoCode=BETAMM2026"},{"key":"app.year","description":"Current year","example":"2026"}]'
+            where: slug = 'beta-waitlist-invite'

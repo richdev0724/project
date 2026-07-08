@@ -1,0 +1,196 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/144-honor-program.yaml
+
+  - changeSet:
+      id: 144-honor-program-schema
+      author: marketmono
+      comment: Add HONOR program codes table, honor_user launch label, and complimentary product.
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: honor_user
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_users_honor_user
+            tableName: users
+            columns:
+              - column:
+                  name: honor_user
+
+        - createTable:
+            tableName: honor_codes
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: recipient_name
+                  type: VARCHAR(255)
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
+              - column:
+                  name: redeemed_at
+                  type: TIMESTAMP
+              - column:
+                  name: redeemed_by_user_id
+                  type: UUID
+              - column:
+                  name: created_by_admin_id
+                  type: UUID
+              - column:
+                  name: notes
+                  type: TEXT
+              - column:
+                  name: validation_attempts
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: honor_codes
+            baseColumnNames: redeemed_by_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_honor_codes_redeemed_by_user
+            onDelete: SET NULL
+        - createIndex:
+            indexName: idx_honor_codes_status
+            tableName: honor_codes
+            columns:
+              - column:
+                  name: status
+
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              DECLARE
+                honor_product_id UUID;
+              BEGIN
+                SELECT id
+                INTO honor_product_id
+                FROM products
+                WHERE slug = 'honor-complimentary'
+                LIMIT 1;
+
+                IF honor_product_id IS NULL THEN
+                  INSERT INTO products (
+                    id,
+                    name,
+                    slug,
+                    short_description,
+                    sort_order,
+                    is_active,
+                    is_archived,
+                    visibility,
+                    trial_days
+                  )
+                  VALUES (
+                    gen_random_uuid(),
+                    'HONOR Complimentary',
+                    'honor-complimentary',
+                    'Complimentary Market Mono access for HONOR program members',
+                    999,
+                    true,
+                    false,
+                    'HIDDEN',
+                    0
+                  )
+                  RETURNING id INTO honor_product_id;
+                ELSE
+                  UPDATE products
+                  SET name = 'HONOR Complimentary',
+                      short_description = 'Complimentary Market Mono access for HONOR program members',
+                      is_active = true,
+                      is_archived = false,
+                      visibility = 'HIDDEN',
+                      updated_at = CURRENT_TIMESTAMP
+                  WHERE id = honor_product_id;
+                END IF;
+
+                INSERT INTO product_prices (
+                  id,
+                  product_id,
+                  billing_period,
+                  price_cents,
+                  is_active,
+                  sort_order
+                )
+                VALUES (
+                  gen_random_uuid(),
+                  honor_product_id,
+                  'MONTHLY',
+                  0,
+                  true,
+                  1
+                )
+                ON CONFLICT (product_id, billing_period) DO UPDATE
+                SET price_cents = 0,
+                    is_active = true,
+                    sort_order = EXCLUDED.sort_order,
+                    updated_at = CURRENT_TIMESTAMP;
+
+                INSERT INTO stripe_config (id, name, value, created_at, updated_at)
+                VALUES
+                  (gen_random_uuid(), 'honor_complimentary_product_id', honor_product_id::text, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+                  (gen_random_uuid(), 'honor_grant_duration_days', '3660', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                ON CONFLICT (name) DO UPDATE
+                SET value = EXCLUDED.value,
+                    updated_at = CURRENT_TIMESTAMP;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DELETE FROM stripe_config
+              WHERE name IN ('honor_complimentary_product_id', 'honor_grant_duration_days');
+        - dropTable:
+            tableName: honor_codes
+        - dropIndex:
+            indexName: idx_users_honor_user
+            tableName: users
+        - dropColumn:
+            tableName: users
+            columnName: honor_user

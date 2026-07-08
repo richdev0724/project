@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/129-stock-price-source-neutralization.yaml
+
+  - changeSet:
+      id: 129-stock-price-source-neutralization
+      author: marketmono
+      comment: Neutralize the stock price source default and legacy persisted source labels.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              UPDATE stock_prices
+              SET source = 'MARKET_DATA'
+              WHERE source = 'UW';
+
+              ALTER TABLE stock_prices
+              ALTER COLUMN source SET DEFAULT 'MARKET_DATA';
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              ALTER TABLE stock_prices
+              ALTER COLUMN source SET DEFAULT 'UW';

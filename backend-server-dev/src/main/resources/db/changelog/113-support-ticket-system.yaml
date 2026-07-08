@@ -1,0 +1,562 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/113-support-ticket-system.yaml
+
+  - changeSet:
+      id: 113-support-ticket-types
+      author: marketmono
+      comment: Create support ticket enum types and ticket number sequence.
+      dbms: postgresql
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'support_ticket_status') THEN
+                  CREATE TYPE support_ticket_status AS ENUM ('OPEN', 'PENDING_RESPONSE', 'CLOSED');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'support_ticket_priority') THEN
+                  CREATE TYPE support_ticket_priority AS ENUM ('LOW', 'MEDIUM', 'HIGH', 'URGENT');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'support_ticket_message_author_type') THEN
+                  CREATE TYPE support_ticket_message_author_type AS ENUM ('USER', 'STAFF');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'support_ticket_notification_event_type') THEN
+                  CREATE TYPE support_ticket_notification_event_type AS ENUM ('TICKET_CREATED', 'USER_REPLY', 'STAFF_REPLY');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'support_ticket_notification_recipient_type') THEN
+                  CREATE TYPE support_ticket_notification_recipient_type AS ENUM ('SUPPORT_TEAM', 'CUSTOMER');
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'support_ticket_notification_status') THEN
+                  CREATE TYPE support_ticket_notification_status AS ENUM ('PENDING', 'IN_PROGRESS', 'SENT', 'FAILED');
+                END IF;
+                IF to_regclass('public.support_ticket_number_seq') IS NULL THEN
+                  CREATE SEQUENCE public.support_ticket_number_seq START WITH 1 INCREMENT BY 1;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DROP SEQUENCE IF EXISTS public.support_ticket_number_seq;
+              DROP TYPE IF EXISTS support_ticket_notification_status;
+              DROP TYPE IF EXISTS support_ticket_notification_recipient_type;
+              DROP TYPE IF EXISTS support_ticket_notification_event_type;
+              DROP TYPE IF EXISTS support_ticket_message_author_type;
+              DROP TYPE IF EXISTS support_ticket_priority;
+              DROP TYPE IF EXISTS support_ticket_status;
+
+  - changeSet:
+      id: 113-support-ticket-tables
+      author: marketmono
+      comment: Create text-only support ticket tables owned by backend-server.
+      changes:
+        - createTable:
+            tableName: support_tickets
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ticket_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: UUID
+              - column:
+                  name: user_uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject
+                  type: VARCHAR(160)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: support_ticket_status
+                  defaultValue: OPEN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: priority
+                  type: support_ticket_priority
+                  defaultValue: MEDIUM
+                  constraints:
+                    nullable: false
+              - column:
+                  name: assigned_admin_id
+                  type: UUID
+              - column:
+                  name: unread_staff_message_count
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_user_reply_at
+                  type: TIMESTAMP
+              - column:
+                  name: last_staff_reply_at
+                  type: TIMESTAMP
+              - column:
+                  name: closed_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: support_tickets
+            indexName: idx_support_tickets_user_uuid
+            columns:
+              - column:
+                  name: user_uuid
+        - createIndex:
+            tableName: support_tickets
+            indexName: idx_support_tickets_status
+            columns:
+              - column:
+                  name: status
+        - createIndex:
+            tableName: support_tickets
+            indexName: idx_support_tickets_priority
+            columns:
+              - column:
+                  name: priority
+        - createIndex:
+            tableName: support_tickets
+            indexName: idx_support_tickets_updated_at
+            columns:
+              - column:
+                  name: updated_at
+                  descending: true
+        - createIndex:
+            tableName: support_tickets
+            indexName: idx_support_tickets_assigned_admin_id
+            columns:
+              - column:
+                  name: assigned_admin_id
+        - createIndex:
+            tableName: support_tickets
+            indexName: idx_support_tickets_unread_staff
+            columns:
+              - column:
+                  name: user_uuid
+              - column:
+                  name: unread_staff_message_count
+        - addForeignKeyConstraint:
+            baseTableName: support_tickets
+            baseColumnNames: user_id
+            constraintName: fk_support_tickets_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - createTable:
+            tableName: support_ticket_messages
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ticket_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_type
+                  type: support_ticket_message_author_type
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_user_uuid
+                  type: UUID
+              - column:
+                  name: author_admin_id
+                  type: UUID
+              - column:
+                  name: author_display_name
+                  type: VARCHAR(160)
+              - column:
+                  name: body
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: read_by_user_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: support_ticket_messages
+            indexName: idx_support_ticket_messages_ticket_created
+            columns:
+              - column:
+                  name: ticket_id
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: support_ticket_messages
+            indexName: idx_support_ticket_messages_unread_staff
+            columns:
+              - column:
+                  name: ticket_id
+              - column:
+                  name: author_type
+              - column:
+                  name: read_by_user_at
+        - addForeignKeyConstraint:
+            baseTableName: support_ticket_messages
+            baseColumnNames: ticket_id
+            constraintName: fk_support_ticket_messages_ticket_id
+            referencedTableName: support_tickets
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createTable:
+            tableName: support_ticket_notification_events
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ticket_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message_id
+                  type: UUID
+              - column:
+                  name: event_type
+                  type: support_ticket_notification_event_type
+                  constraints:
+                    nullable: false
+              - column:
+                  name: recipient_type
+                  type: support_ticket_notification_recipient_type
+                  constraints:
+                    nullable: false
+              - column:
+                  name: recipient_email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: support_ticket_notification_status
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attempts
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: next_attempt_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sent_at
+                  type: TIMESTAMP
+              - column:
+                  name: last_error
+                  type: VARCHAR(160)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: support_ticket_notification_events
+            indexName: idx_support_ticket_notification_due
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: next_attempt_at
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: support_ticket_notification_events
+            indexName: idx_support_ticket_notification_ticket
+            columns:
+              - column:
+                  name: ticket_id
+        - addForeignKeyConstraint:
+            baseTableName: support_ticket_notification_events
+            baseColumnNames: ticket_id
+            constraintName: fk_support_ticket_notification_ticket_id
+            referencedTableName: support_tickets
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: support_ticket_notification_events
+            baseColumnNames: message_id
+            constraintName: fk_support_ticket_notification_message_id
+            referencedTableName: support_ticket_messages
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - sql:
+            splitStatements: false
+            stripComments: true
+            dbms: postgresql
+            sql: |
+              ALTER TABLE support_ticket_messages
+                ADD CONSTRAINT chk_support_ticket_message_body_length
+                CHECK (char_length(body) <= 5000);
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.support_tickets TO marketmono_app;
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.support_ticket_messages TO marketmono_app;
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.support_ticket_notification_events TO marketmono_app;
+                  GRANT USAGE, SELECT ON SEQUENCE public.support_ticket_number_seq TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - dropTable:
+            tableName: support_ticket_notification_events
+        - dropTable:
+            tableName: support_ticket_messages
+        - dropTable:
+            tableName: support_tickets
+
+  - changeSet:
+      id: 113-support-ticket-notification-status-in-progress
+      author: marketmono
+      comment: Ensure notification event status supports atomic claimed rows.
+      dbms: postgresql
+      runInTransaction: false
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              ALTER TYPE support_ticket_notification_status ADD VALUE IF NOT EXISTS 'IN_PROGRESS';
+
+  - changeSet:
+      id: 113-seed-support-ticket-created-email-template
+      author: marketmono
+      comment: Seed editable support ticket created email template.
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM email_templates WHERE slug = 'support-ticket-created'
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: support-ticket-created
+              - column:
+                  name: name
+                  value: Support Ticket Created
+              - column:
+                  name: subject
+                  value: "New support ticket {{ticket.number}}: {{ticket.subject}}"
+              - column:
+                  name: body_html
+                  value: |
+                    <p>A customer created support ticket {{ticket.number}}.</p>
+                    <p><strong>Customer:</strong> {{user.email}}</p>
+                    <p><strong>Subject:</strong> {{ticket.subject}}</p>
+                    <p>{{message.preview}}</p>
+              - column:
+                  name: body_text
+                  value: |
+                    New support ticket {{ticket.number}}
+                    Customer: {{user.email}}
+                    Subject: {{ticket.subject}}
+                    Preview: {{message.preview}}
+              - column:
+                  name: variables
+                  value: '[{"key":"ticket.number"},{"key":"ticket.subject"},{"key":"ticket.status"},{"key":"ticket.priority"},{"key":"ticket.url"},{"key":"user.email"},{"key":"message.preview"},{"key":"app.frontendUrl"},{"key":"app.year"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: slug = 'support-ticket-created'
+
+  - changeSet:
+      id: 113-seed-support-ticket-user-reply-email-template
+      author: marketmono
+      comment: Seed editable support ticket user reply email template.
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM email_templates WHERE slug = 'support-ticket-user-reply'
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: support-ticket-user-reply
+              - column:
+                  name: name
+                  value: Support Ticket User Reply
+              - column:
+                  name: subject
+                  value: "Customer replied to {{ticket.number}}: {{ticket.subject}}"
+              - column:
+                  name: body_html
+                  value: |
+                    <p>A customer replied to support ticket {{ticket.number}}.</p>
+                    <p><strong>Customer:</strong> {{user.email}}</p>
+                    <p><strong>Subject:</strong> {{ticket.subject}}</p>
+                    <p>{{message.preview}}</p>
+              - column:
+                  name: body_text
+                  value: |
+                    Customer reply on {{ticket.number}}
+                    Customer: {{user.email}}
+                    Subject: {{ticket.subject}}
+                    Preview: {{message.preview}}
+              - column:
+                  name: variables
+                  value: '[{"key":"ticket.number"},{"key":"ticket.subject"},{"key":"ticket.status"},{"key":"ticket.priority"},{"key":"ticket.url"},{"key":"user.email"},{"key":"message.preview"},{"key":"app.frontendUrl"},{"key":"app.year"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: slug = 'support-ticket-user-reply'
+
+  - changeSet:
+      id: 113-seed-support-ticket-staff-reply-email-template
+      author: marketmono
+      comment: Seed editable support ticket staff reply email template.
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM email_templates WHERE slug = 'support-ticket-staff-reply'
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: support-ticket-staff-reply
+              - column:
+                  name: name
+                  value: Support Ticket Staff Reply
+              - column:
+                  name: subject
+                  value: "Support update for {{ticket.number}}"
+              - column:
+                  name: body_html
+                  value: |
+                    <p>Market Mono Support replied to your ticket {{ticket.number}}.</p>
+                    <p><strong>Subject:</strong> {{ticket.subject}}</p>
+                    <p>{{message.preview}}</p>
+                    <p><a href="{{ticket.url}}">View the conversation</a></p>
+              - column:
+                  name: body_text
+                  value: |
+                    Market Mono Support replied to your ticket {{ticket.number}}.
+                    Subject: {{ticket.subject}}
+                    Preview: {{message.preview}}
+                    View the conversation: {{ticket.url}}
+              - column:
+                  name: variables
+                  value: '[{"key":"ticket.number"},{"key":"ticket.subject"},{"key":"ticket.status"},{"key":"ticket.priority"},{"key":"ticket.url"},{"key":"user.email"},{"key":"message.preview"},{"key":"app.frontendUrl"},{"key":"app.year"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: slug = 'support-ticket-staff-reply'

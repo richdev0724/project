@@ -1,0 +1,283 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: marketmono_db_cache_1m
+    folder: MarketMono Alerts
+    interval: 1m
+    rules:
+      - uid: mm_db_pending_conns
+        title: MarketMono DB Pending Connections
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: max by (host) (hikaricp_connections_pending{job=~"backend-server|backend-admin"})
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 2
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: DB connection requests are queueing.
+          description: A MarketMono application instance has sustained more than 2 pending Hikari connections for 10 minutes.
+        labels:
+          severity: warning
+          service: application
+          category: database
+        isPaused: false
+      - uid: mm_db_acquire_slow
+        title: MarketMono DB Connection Acquire Slow
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: sum by (host) (rate(hikaricp_connections_acquire_seconds_sum{job=~"backend-server|backend-admin"}[5m])) / clamp_min(sum by (host) (rate(hikaricp_connections_acquire_seconds_count{job=~"backend-server|backend-admin"}[5m])), 0.001)
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.25
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: DB connection acquisition is slower than expected.
+          description: A MarketMono application instance has sustained average Hikari acquire time above 250 ms for 10 minutes.
+        labels:
+          severity: warning
+          service: application
+          category: database-latency
+        isPaused: false
+      - uid: mm_redis_latency_high
+        title: MarketMono Redis Command Latency High
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: efisr3uq9kw00a
+            model:
+              datasource:
+                type: prometheus
+                uid: efisr3uq9kw00a
+              disableTextWrap: false
+              editorMode: code
+              expr: sum by (host) (rate(lettuce_command_completion_seconds_sum{job="backend-server",command!~"HELLO|CLIENT"}[5m])) / clamp_min(sum by (host) (rate(lettuce_command_completion_seconds_count{job="backend-server",command!~"HELLO|CLIENT"}[5m])), 0.001)
+              fullMetaSearch: false
+              includeNullMetadata: true
+              instant: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+              useBackend: false
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.05
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations:
+          summary: Redis / Valkey command latency is elevated.
+          description: A backend-server host has sustained average Lettuce command completion above 50 ms for 10 minutes, excluding HELLO and CLIENT handshakes.
+        labels:
+          severity: warning
+          service: redis
+          category: cache-latency
+        isPaused: false

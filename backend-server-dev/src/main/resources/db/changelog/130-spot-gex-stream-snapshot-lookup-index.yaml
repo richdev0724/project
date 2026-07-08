@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: spot-gex-130-stream-snapshot-lookup-index
+      author: marketmono
+      comment: >-
+        Support latest-per-(ticker, expiry, strike) Spot GEX stream snapshots
+        without scanning and sorting the whole recent ticker bucket window.
+        Timescale hypertables do not support concurrent index creation, so this
+        uses a plain IF NOT EXISTS index like the existing hypertable index
+        changelogs.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE INDEX IF NOT EXISTS idx_spot_gex_1m_snapshot_lookup
+                  ON spot_gex_strike_expiry_1m (
+                      ticker,
+                      expiry,
+                      strike_price_cents,
+                      bucket_start DESC,
+                      latest_timestamp_ms DESC
+                  );

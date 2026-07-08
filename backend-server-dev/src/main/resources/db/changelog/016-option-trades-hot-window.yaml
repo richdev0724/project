@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: option-trades-016-hot-window-index-and-compression-policy
+      author: marketmono
+      runInTransaction: false
+      comment: >-
+        Keep recent option_trades chunks queryable for user-facing latest-day Flow
+        reads, and keep the aggregate OI/OTM expensive slice below the backend
+        5s transaction timeout. The 2026-05-17 raw default outage came from
+        bulk decompression of compressed hot chunks; the follow-up aggregate
+        503s came from filtering millions of latest-day aggregate rows to find a
+        small volume/open-interest subset. The aggregate partial index avoids
+        constant threshold predicates so PostgreSQL can use it for Hibernate
+        prepared statements and generic plans. This canonicalizes both partial
+        indexes and extends option_trades compression from two hours to seven
+        days. Existing compressed hot chunks still require explicit DBA
+        decompression; see scripts/pg18/option-trades-hot-window-remediation.sql.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE INDEX IF NOT EXISTS
+                idx_option_trades_hot_raw_default_slice
+                ON option_trades (executed_at DESC, trade_id DESC)
+                WHERE is_multileg = false
+                  AND premium >= 50000
+                  AND volume >= 100;
+
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE INDEX CONCURRENTLY IF NOT EXISTS
+                idx_option_trade_aggregates_oi_ticker_slice
+                ON option_trade_aggregates (ticker, last_executed_at DESC, aggregate_id DESC)
+                WHERE is_multileg = false
+                  AND volume IS NOT NULL
+                  AND open_interest IS NOT NULL
+                  AND volume > open_interest::bigint
+                  AND total_size IS NOT NULL
+                  AND total_size > open_interest::bigint;
+
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              DO $$
+              BEGIN
+                IF COALESCE(current_setting('timescaledb.license', true), '') = 'apache' THEN
+                  RAISE NOTICE 'Skipping option_trades compression policy update because timescaledb.license=apache';
+                ELSE
+                  PERFORM remove_compression_policy('option_trades', if_exists => true);
+                  PERFORM add_compression_policy('option_trades', INTERVAL '7 days', if_not_exists => true);
+                END IF;
+              EXCEPTION
+                WHEN feature_not_supported OR undefined_function THEN
+                  RAISE NOTICE 'Skipping option_trades compression policy update because this environment does not expose the Timescale policy helper API';
+              END
+              $$;

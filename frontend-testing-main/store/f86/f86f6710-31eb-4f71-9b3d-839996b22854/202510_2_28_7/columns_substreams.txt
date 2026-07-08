@@ -1,0 +1,20 @@
+columns substreams version: 1
+9 columns:
+1 substreams for column `ticker`:
+	ticker
+1 substreams for column `trade_date`:
+	trade_date
+1 substreams for column `price`:
+	price
+1 substreams for column `size`:
+	size
+1 substreams for column `total_premium`:
+	total_premium
+1 substreams for column `trades`:
+	trades
+1 substreams for column `market_session`:
+	market_session
+1 substreams for column `created_at`:
+	created_at
+1 substreams for column `updated_at`:
+	updated_at

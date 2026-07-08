@@ -1,0 +1,319 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'src/**'
+      - 'gradle/**'
+      - '.gitignore'
+      - 'build.gradle.kts'
+      - 'gradle.properties'
+      - 'settings.gradle.kts'
+      - 'Dockerfile.ghcr'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:  # Allow manual workflow trigger
+
+concurrency:
+  group: deploy-backend-dev
+  cancel-in-progress: false
+
+env:
+  IMAGE_NAME: ghcr.io/market-mono/backend-server
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Run tests
+        run: ./gradlew test --no-daemon
+
+      - name: Build JAR
+        run: ./gradlew clean bootJar -x test --no-daemon
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile.ghcr
+          push: true
+          tags: |
+            ghcr.io/market-mono/backend-server:latest
+            ghcr.io/market-mono/backend-server:${{ github.sha }}
+            ghcr.io/market-mono/backend-server:0.0.1-SNAPSHOT
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+
+      - name: Image details
+        run: |
+          echo "✅ Pushed images:"
+          echo "  - ghcr.io/market-mono/backend-server:latest"
+          echo "  - ghcr.io/market-mono/backend-server:${{ github.sha }}"
+          echo "  - ghcr.io/market-mono/backend-server:0.0.1-SNAPSHOT"
+
+  deploy:
+    needs: [build-and-push]
+    runs-on:
+      - self-hosted
+      - backend-deploy
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Setup SSH
+        env:
+          DEPLOY_SERVER_HOSTKEY: ${{ secrets.DEPLOY_SERVER_HOSTKEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          SSH_KEY_FILE="$HOME/.ssh/deploy_key_${GITHUB_RUN_ID}"
+          echo "$SSH_KEY_FILE" > /tmp/.ssh_key_path_${GITHUB_RUN_ID}
+          echo "${{ secrets.DEPLOY_SERVER_SSH_KEY }}" | base64 -d > "$SSH_KEY_FILE"
+          chmod 600 "$SSH_KEY_FILE"
+          printf '%s\n' "$DEPLOY_SERVER_HOSTKEY" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          cat > ~/.ssh/config_${GITHUB_RUN_ID} << SSHCONF
+          Host *
+            ServerAliveInterval 30
+            ServerAliveCountMax 3
+            ConnectTimeout 10
+          SSHCONF
+          chmod 600 ~/.ssh/config_${GITHUB_RUN_ID}
+
+      - name: Prepare backend environment file
+        run: |
+          if [ -z "${{ secrets.INTERNAL_ADMIN_API_SHARED_SECRET }}" ]; then
+            echo "❌ INTERNAL_ADMIN_API_SHARED_SECRET secret is not configured."
+            exit 1
+          fi
+          if [ "${{ vars.HCAPTCHA_ENABLED || 'false' }}" = "true" ] && [ -z "${{ secrets.HCAPTCHA_SECRET_KEY }}" ]; then
+            echo "❌ HCAPTCHA_SECRET_KEY secret is required when HCAPTCHA_ENABLED is true."
+            exit 1
+          fi
+          if [ "${{ vars.HCAPTCHA_ENABLED || 'false' }}" = "true" ] && [ -z "${{ vars.HCAPTCHA_SITE_KEY }}" ]; then
+            echo "❌ HCAPTCHA_SITE_KEY repository variable is required when HCAPTCHA_ENABLED is true."
+            exit 1
+          fi
+          if [ "${{ vars.MAIL_PROVIDER || 'gmail-api' }}" = "gmail-api" ] && [ -z "${{ secrets.GMAIL_SERVICE_ACCOUNT_JSON_B64 }}" ]; then
+            echo "❌ GMAIL_SERVICE_ACCOUNT_JSON_B64 secret is required when MAIL_PROVIDER is gmail-api."
+            exit 1
+          fi
+          if [ -z "${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" ]; then
+            echo "❌ GOOGLE_OAUTH_CLIENT_ID secret is required for Google login."
+            exit 1
+          fi
+          if [ -z "${{ secrets.JWT_SECRET || secrets.ADMIN_JWT_SECRET }}" ]; then
+            echo "❌ JWT_SECRET or ADMIN_JWT_SECRET secret is required for token signing."
+            exit 1
+          fi
+          if [ -z "${{ secrets.WHOP_WEBHOOK_SECRET }}" ]; then
+            echo "❌ WHOP_WEBHOOK_SECRET secret is required for Whop webhook verification."
+            exit 1
+          fi
+          if [ -z "${{ secrets.WHOP_API_KEY }}" ]; then
+            echo "❌ WHOP_API_KEY secret is required for Whop hosted checkout."
+            exit 1
+          fi
+          if [ -z "${{ secrets.WHOP_COMPANY_ID || vars.WHOP_COMPANY_ID }}" ]; then
+            echo "❌ WHOP_COMPANY_ID secret or variable is required for Whop hosted checkout."
+            exit 1
+          fi
+
+          cat > backend-server.env <<'EOF'
+          SPRING_PROFILES_ACTIVE=prod,active-active
+          APP_FRONTEND_URL=https://marketmono.com
+          JWT_SECRET=${{ secrets.JWT_SECRET || secrets.ADMIN_JWT_SECRET }}
+          GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_ALLOWED_DOMAINS=
+          GOOGLE_OAUTH_REQUIRE_EMAIL_VERIFIED=true
+          GOOGLE_OAUTH_AUTO_LINK_USERS=true
+          GOOGLE_OAUTH_AUTO_CREATE_USERS=true
+          SPRING_DATASOURCE_URL=jdbc:postgresql://${{ secrets.PG18_TSDB_PRIMARY_PRIVATE_HOST }}:5432/${{ secrets.PG18_TSDB_DB_NAME }}?sslmode=require&reWriteBatchedInserts=true
+          SPRING_DATASOURCE_USERNAME=${{ secrets.PG18_TSDB_DB_APP_USER }}
+          SPRING_DATASOURCE_PASSWORD=${{ secrets.PG18_TSDB_DB_APP_PASSWORD }}
+          SPRING_LIQUIBASE_ENABLED=true
+          SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/db.changelog-master.yaml
+          SPRING_LIQUIBASE_URL=jdbc:postgresql://${{ secrets.PG18_TSDB_PRIMARY_PRIVATE_HOST }}:5432/${{ secrets.PG18_TSDB_DB_NAME }}?sslmode=require&reWriteBatchedInserts=true
+          SPRING_LIQUIBASE_USER=${{ secrets.PG18_TSDB_DB_ADMIN_USER }}
+          SPRING_LIQUIBASE_PASSWORD=${{ secrets.PG18_TSDB_DB_ADMIN_PASSWORD }}
+          REDIS_HOST=${{ secrets.REDIS_HOST }}
+          REDIS_PORT=25061
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          REDIS_SSL=true
+          ACTIVE_ACTIVE_REDIS_ENABLED=true
+          WEBSOCKET_RELAY_ENABLED=true
+          INTERNAL_ADMIN_API_SHARED_SECRET=${{ secrets.INTERNAL_ADMIN_API_SHARED_SECRET }}
+          MAIL_PROVIDER=${{ vars.MAIL_PROVIDER || 'gmail-api' }}
+          MAIL_FROM_EMAIL=${{ vars.MAIL_FROM_EMAIL || 'support@marketmono.com' }}
+          MAIL_FROM_NAME=${{ vars.MAIL_FROM_NAME || 'Market Mono' }}
+          GMAIL_DELEGATED_USER=${{ vars.GMAIL_DELEGATED_USER || 'support@marketmono.com' }}
+          GMAIL_SERVICE_ACCOUNT_JSON_B64=${{ secrets.GMAIL_SERVICE_ACCOUNT_JSON_B64 }}
+          HCAPTCHA_ENABLED=${{ vars.HCAPTCHA_ENABLED || 'false' }}
+          HCAPTCHA_SITE_KEY=${{ vars.HCAPTCHA_SITE_KEY }}
+          HCAPTCHA_SECRET_KEY=${{ secrets.HCAPTCHA_SECRET_KEY }}
+          WHOP_API_KEY=${{ secrets.WHOP_API_KEY }}
+          WHOP_COMPANY_ID=${{ secrets.WHOP_COMPANY_ID || vars.WHOP_COMPANY_ID }}
+          WHOP_WEBHOOK_SECRET=${{ secrets.WHOP_WEBHOOK_SECRET }}
+          WHOP_WEBHOOK_SIGNATURE_TOLERANCE=${{ vars.WHOP_WEBHOOK_SIGNATURE_TOLERANCE || 'PT5M' }}
+          WEBSOCKET_ALLOWED_ORIGIN_PATTERNS=https://marketmono.com,https://www.marketmono.com
+          UNUSUAL_WHALES_API_KEY=${{ secrets.UW_API_KEY }}
+          NEWSAPI_API_KEY=${{ secrets.NEWSAPI_API_KEY }}
+          FMP_API_KEY=${{ secrets.FMP_API_KEY }}
+          POLYGON_API_KEY=${{ secrets.POLYGON_API_KEY }}
+          MARKETAUX_API_TOKEN=${{ secrets.MARKETAUX_API_TOKEN }}
+          UW_API_MAX_CONCURRENT_REQUESTS=${{ vars.UW_API_MAX_CONCURRENT_REQUESTS || '12' }}
+          UW_API_DAILY_LIMIT=${{ vars.UW_API_DAILY_LIMIT || '300000' }}
+          UW_API_TARGET_PER_MINUTE=${{ vars.UW_API_TARGET_PER_MINUTE || '490' }}
+          UW_API_HARD_CAP_PER_MINUTE=${{ vars.UW_API_HARD_CAP_PER_MINUTE || '500' }}
+          UW_API_PERMIT_WAIT_MS=${{ vars.UW_API_PERMIT_WAIT_MS || '1000' }}
+          UW_API_RETRY_MAX_ATTEMPTS=${{ vars.UW_API_RETRY_MAX_ATTEMPTS || '0' }}
+          JAVA_HEAP_MAX=${{ vars.BACKEND_JAVA_HEAP_MAX || '2048m' }}
+          JAVA_MAX_METASPACE_SIZE=${{ vars.BACKEND_JAVA_MAX_METASPACE_SIZE || '512m' }}
+          OPTION_TRADE_AGGREGATION_ENABLED=${{ vars.OPTION_TRADE_AGGREGATION_ENABLED || 'true' }}
+          OPTION_TRADE_AGGREGATION_ASYNC=${{ vars.OPTION_TRADE_AGGREGATION_ASYNC || 'true' }}
+          OPTION_TRADE_AGGREGATION_MAX_IN_FLIGHT_BATCHES=${{ vars.OPTION_TRADE_AGGREGATION_MAX_IN_FLIGHT_BATCHES || '1' }}
+          OPTION_TRADE_AGGREGATION_QUEUE_CAPACITY=${{ vars.OPTION_TRADE_AGGREGATION_QUEUE_CAPACITY || '2' }}
+          OPTION_TRADE_AGGREGATION_LOOKUP_CHUNK_SIZE=${{ vars.OPTION_TRADE_AGGREGATION_LOOKUP_CHUNK_SIZE || '200' }}
+          OPTION_TRADE_AGGREGATION_SAVE_CHUNK_SIZE=${{ vars.OPTION_TRADE_AGGREGATION_SAVE_CHUNK_SIZE || '200' }}
+          KAFKA_LISTENER_CONCURRENCY=${{ vars.KAFKA_LISTENER_CONCURRENCY || '2' }}
+          KAFKA_MAX_POLL_RECORDS=${{ vars.KAFKA_MAX_POLL_RECORDS || '500' }}
+          KAFKA_CONSUMER_BATCH_SIZE=${{ vars.KAFKA_CONSUMER_BATCH_SIZE || '200' }}
+          KAFKA_CONSUMER_BATCH_TIMEOUT_MS=${{ vars.KAFKA_CONSUMER_BATCH_TIMEOUT_MS || '2000' }}
+          KAFKA_TOPIC_LIVE_GEX=${{ vars.KAFKA_TOPIC_LIVE_GEX || 'live-gex' }}
+          SPOT_GEX_SOURCE=${{ vars.SPOT_GEX_SOURCE || 'legacy' }}
+          SPOT_GEX_STREAM_TRANSPORT=${{ vars.SPOT_GEX_STREAM_TRANSPORT || 'websocket' }}
+          SPOT_GEX_KAFKA_GROUP_ID=${{ vars.SPOT_GEX_KAFKA_GROUP_ID || vars.KAFKA_GROUP_ID || 'marketmono_farrukh' }}
+          SPOT_GEX_ENABLED=${{ vars.SPOT_GEX_ENABLED || 'true' }}
+          SPOT_GEX_INTERVAL_MS=${{ vars.SPOT_GEX_INTERVAL_MS || '60000' }}
+          SPOT_GEX_INITIAL_DELAY_MS=${{ vars.SPOT_GEX_INITIAL_DELAY_MS || '30000' }}
+          SPOT_GEX_INTER_TICKER_DELAY_MS=${{ vars.SPOT_GEX_INTER_TICKER_DELAY_MS || '100' }}
+          SPOT_GEX_INTER_PAGE_DELAY_MS=${{ vars.SPOT_GEX_INTER_PAGE_DELAY_MS || '50' }}
+          SPOT_GEX_ABORT_WHEN_UW_BUDGET_ABOVE_TARGET=${{ vars.SPOT_GEX_ABORT_WHEN_UW_BUDGET_ABOVE_TARGET || 'true' }}
+          SPOT_GEX_PAGE_SIZE=${{ vars.SPOT_GEX_PAGE_SIZE || '500' }}
+          SPOT_GEX_RETENTION_DAYS=${{ vars.SPOT_GEX_RETENTION_DAYS || '90' }}
+          SPOT_GEX_STREAM_STALE_THRESHOLD_MS=${{ vars.SPOT_GEX_STREAM_STALE_THRESHOLD_MS || '120000' }}
+          SPOT_GEX_STREAM_MAX_PENDING_EVENTS=${{ vars.SPOT_GEX_STREAM_MAX_PENDING_EVENTS || '10000' }}
+          SPOT_GEX_STREAM_DELTA_REST_ENRICHMENT_ENABLED=${{ vars.SPOT_GEX_STREAM_DELTA_REST_ENRICHMENT_ENABLED || 'true' }}
+          SPOT_GEX_FAKE_STREAM_INTERVAL_MS=${{ vars.SPOT_GEX_FAKE_STREAM_INTERVAL_MS || '1000' }}
+          SPOT_GEX_STREAM_OWNER_NODE_ID=${{ vars.SPOT_GEX_STREAM_OWNER_NODE_ID || '' }}
+          SPOT_GEX_TICKERS=${{ vars.SPOT_GEX_TICKERS || 'SPY,QQQ,IWM,DIA,AAPL,AMZN,META,MSFT,NVDA,TSLA,GOOG,GOOGL' }}
+          MARKET_DATA_STRATA_STOCK_PRICES_ENABLED=${{ vars.MARKET_DATA_STRATA_STOCK_PRICES_ENABLED || 'true' }}
+          MARKET_DATA_STRATA_STOCK_PRICES_INTERVAL_MS=${{ vars.MARKET_DATA_STRATA_STOCK_PRICES_INTERVAL_MS || '60000' }}
+          MARKET_DATA_STRATA_STOCK_PRICES_INITIAL_DELAY_MS=${{ vars.MARKET_DATA_STRATA_STOCK_PRICES_INITIAL_DELAY_MS || '10000' }}
+          CONGRESS_GOV_API_KEY=${{ secrets.CONGRESS_GOV_API_KEY }}
+          KAFKA_ENABLED=${{ secrets.KAFKA_ENABLED }}
+          KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME }}
+          KAFKA_PASSWORD=${{ secrets.KAFKA_PASSWORD }}
+          KAFKA_BOOTSTRAP_SERVERS=${{ secrets.KAFKA_BOOTSTRAP_SERVERS }}
+          EOF
+          chmod 600 backend-server.env
+
+      - name: Rolling deploy backend-a then backend-b
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_SERVER_USER }}
+          HOST_A: ${{ secrets.DEPLOY_SERVER_HOST }}
+          HOST_B: ${{ secrets.DEPLOY_SERVER_HOST_B }}
+        run: |
+          set -euo pipefail
+          SSH_KEY_FILE=$(cat /tmp/.ssh_key_path_${GITHUB_RUN_ID})
+
+          deploy_host() {
+            local target_host="$1"
+            local target_label="$2"
+
+            echo "=== Deploying ${target_label} (${target_host}) ==="
+            ssh -i "$SSH_KEY_FILE" -F ~/.ssh/config_${GITHUB_RUN_ID} "$DEPLOY_USER@$target_host" 'mkdir -p ~/marketmono'
+            scp -i "$SSH_KEY_FILE" -F ~/.ssh/config_${GITHUB_RUN_ID} backend-server.env "$DEPLOY_USER@$target_host:~/marketmono/backend-server.env"
+
+            ssh -T -i "$SSH_KEY_FILE" -F ~/.ssh/config_${GITHUB_RUN_ID} "$DEPLOY_USER@$target_host" "TARGET_LABEL='$target_label' IMAGE_NAME='$IMAGE_NAME' IMAGE_TAG='$IMAGE_TAG' GHCR_TOKEN='${{ secrets.GITHUB_TOKEN }}' GITHUB_ACTOR='${{ github.actor }}' bash -s" <<'EOF'
+          set -euo pipefail
+          cd ~/marketmono
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker pull "$IMAGE_NAME:$IMAGE_TAG"
+          docker stop marketmono-backend 2>/dev/null || true
+          docker rm marketmono-backend 2>/dev/null || true
+          docker run -d \
+            --name marketmono-backend \
+            --restart unless-stopped \
+            --log-driver json-file \
+            --log-opt max-size=100m \
+            --log-opt max-file=100 \
+            --log-opt compress=true \
+            --env-file ~/marketmono/backend-server.env \
+            -e NODE_ID="$TARGET_LABEL" \
+            -p 8080:8080 \
+            "$IMAGE_NAME:$IMAGE_TAG"
+
+          for i in $(seq 1 60); do
+            if docker exec marketmono-backend wget --spider -q http://localhost:8080/actuator/health/readiness 2>/dev/null; then
+              echo "✅ ${TARGET_LABEL} is healthy on attempt $i"
+              exit 0
+            fi
+
+            if ! docker ps --format '{{.Names}}' | grep -qx marketmono-backend; then
+              echo "❌ ${TARGET_LABEL} container stopped unexpectedly"
+              docker logs marketmono-backend --tail 200 || true
+              exit 1
+            fi
+
+            echo "Waiting for ${TARGET_LABEL} readiness (attempt $i/60)..."
+            sleep 5
+          done
+
+          echo "❌ ${TARGET_LABEL} failed readiness checks"
+          docker logs marketmono-backend --tail 200 || true
+          exit 1
+          EOF
+          }
+
+          deploy_host "$HOST_A" backend-a
+          deploy_host "$HOST_B" backend-b
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f "$HOME/.ssh/deploy_key_${GITHUB_RUN_ID}" "$HOME/.ssh/config_${GITHUB_RUN_ID}" /tmp/.ssh_key_path_${GITHUB_RUN_ID} backend-server.env
+
+  notify:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Report status
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "✅ Backend rolling deployment successful"
+          else
+            echo "❌ Backend rolling deployment failed"
+            exit 1
+          fi

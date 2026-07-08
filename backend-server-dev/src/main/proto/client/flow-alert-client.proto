@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "client/decimal-client.proto";
+
+option java_package = "com.marketmono.proto.client";
+option java_outer_classname = "FlowAlertProto";
+
+// Represents an aggregated flow alert from the "flow-alerts" Kafka topic.
+// Links to individual trades via trade_ids field.
+message FlowAlert {
+    string rule_id = 1;              // Alert rule identifier
+    string ticker = 2;              // Underlying ticker symbol
+    string option_chain = 3;        // OSI option symbol
+    double underlying_price = 4;    // Underlying price at alert time
+    int32 volume = 5;               // Total option volume
+    int32 total_size = 6;           // Total contracts traded
+    double total_premium = 7;       // Total dollar premium
+    double total_ask_side_prem = 8; // Ask-side premium
+    double total_bid_side_prem = 9; // Bid-side premium
+    int64 start_time = 10;          // Alert start epoch millis
+    int64 end_time = 11;            // Alert end epoch millis
+    double price = 12;              // Option price at alert
+    bool has_multileg = 13;         // Contains multi-leg trades
+    bool has_sweep = 14;            // Contains sweep trades
+    bool has_floor = 15;            // Contains floor trades
+    int32 open_interest = 16;       // Current open interest
+    bool all_opening_trades = 17;   // All trades are opening positions
+    string id = 18;                 // UUID of the flow alert
+    bool has_singleleg = 19;        // Contains single-leg trades
+    double volume_oi_ratio = 20;    // Volume to OI ratio
+    repeated string trade_ids = 21; // UUIDs linking to individual option trades
+    int32 trade_count = 22;         // Number of individual trades in alert
+    int32 expiry_count = 23;        // Number of distinct expiration dates
+    int64 executed_at = 24;         // Execution timestamp epoch millis
+    int32 ask_vol = 25;             // Ask-side volume
+    int32 bid_vol = 26;             // Bid-side volume
+    int32 no_side_vol = 27;         // No-side volume
+    int32 mid_vol = 28;             // Mid-price volume
+    int32 multi_vol = 29;           // Multi-leg volume
+    int32 stock_multi_vol = 30;     // Stock multi-leg volume
+    string upstream_condition_details = 31;  // JSON conditions detail
+    repeated string exchanges = 32;          // Exchanges involved
+    double bid = 33;                // Best bid price
+    double ask = 34;                // Best ask price
+}

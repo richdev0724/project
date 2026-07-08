@@ -1,0 +1,113 @@
+databaseChangeLog:
+  - changeSet:
+      id: 108-seed-economic-events-from-temporary-json
+      author: marketmono
+      comment: Seed economic_events from the temporary packaged JSON source before removing JSON runtime usage.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              INSERT INTO economic_events (
+                event,
+                event_time,
+                type,
+                priority,
+                cache_date,
+                forecast,
+                prev,
+                reported_period,
+                cached_at,
+                created_at
+              )
+              SELECT
+                seed.event,
+                seed.event_time,
+                seed.type::economic_event_type,
+                seed.priority::economic_event_priority,
+                seed.cache_date::date,
+                seed.forecast,
+                seed.prev,
+                seed.reported_period,
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP
+              FROM (VALUES
+              ('Fed Venable Speech', TIMESTAMP '2026-05-18 08:30:00', 'FED_SPEAKER', 'LOW', '2026-05-18', NULL, NULL, NULL),
+              ('NY Fed Services Activity Index', TIMESTAMP '2026-05-18 08:30:00', 'REPORT', 'MEDIUM', '2026-05-18', NULL, NULL, NULL),
+              ('NAHB Housing Market Index', TIMESTAMP '2026-05-18 10:00:00', 'REPORT', 'MEDIUM', '2026-05-18', NULL, NULL, NULL),
+              ('3-Month Bill Auction', TIMESTAMP '2026-05-18 11:30:00', 'REPORT', 'LOW', '2026-05-18', NULL, NULL, NULL),
+              ('6-Month Bill Auction', TIMESTAMP '2026-05-18 11:30:00', 'REPORT', 'LOW', '2026-05-18', NULL, NULL, NULL),
+              ('Foreign Bond Investment', TIMESTAMP '2026-05-18 16:00:00', 'REPORT', 'LOW', '2026-05-18', NULL, NULL, NULL),
+              ('Net Long-term TIC Flows', TIMESTAMP '2026-05-18 16:00:00', 'REPORT', 'MEDIUM', '2026-05-18', NULL, NULL, NULL),
+              ('Overall Net Capital Flows', TIMESTAMP '2026-05-18 16:00:00', 'REPORT', 'MEDIUM', '2026-05-18', NULL, NULL, NULL),
+              ('ADP Employment Change Weekly', TIMESTAMP '2026-05-19 08:15:00', 'REPORT', 'MEDIUM', '2026-05-19', NULL, NULL, NULL),
+              ('Redbook YoY', TIMESTAMP '2026-05-19 08:55:00', 'REPORT', 'LOW', '2026-05-19', NULL, NULL, NULL),
+              ('Fed Waller Speech', TIMESTAMP '2026-05-19 09:00:00', 'FED_SPEAKER', 'MEDIUM', '2026-05-19', NULL, NULL, NULL),
+              ('Pending Home Sales MoM', TIMESTAMP '2026-05-19 10:00:00', 'REPORT', 'MEDIUM', '2026-05-19', NULL, NULL, NULL),
+              ('Pending Home Sales YoY', TIMESTAMP '2026-05-19 10:00:00', 'REPORT', 'LOW', '2026-05-19', NULL, NULL, NULL),
+              ('6-Week Bill Auction', TIMESTAMP '2026-05-19 11:30:00', 'REPORT', 'LOW', '2026-05-19', NULL, NULL, NULL),
+              ('API Crude Oil Stock Change', TIMESTAMP '2026-05-19 16:30:00', 'REPORT', 'HIGH', '2026-05-19', NULL, NULL, NULL),
+              ('Fed Paulson Speech', TIMESTAMP '2026-05-19 19:00:00', 'FED_SPEAKER', 'LOW', '2026-05-19', NULL, NULL, NULL),
+              ('Fed Venable Speech', TIMESTAMP '2026-05-19 19:30:00', 'FED_SPEAKER', 'LOW', '2026-05-19', NULL, NULL, NULL),
+              ('MBA 30-Year Mortgage Rate', TIMESTAMP '2026-05-20 07:00:00', 'REPORT', 'MEDIUM', '2026-05-20', NULL, NULL, NULL),
+              ('MBA Mortgage Applications', TIMESTAMP '2026-05-20 07:00:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('MBA Mortgage Market Index', TIMESTAMP '2026-05-20 07:00:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('MBA Mortgage Refinance Index', TIMESTAMP '2026-05-20 07:00:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('MBA Purchase Index', TIMESTAMP '2026-05-20 07:00:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('Fed Paulson Speech', TIMESTAMP '2026-05-20 08:00:00', 'FED_SPEAKER', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('Fed Barr Speech', TIMESTAMP '2026-05-20 10:15:00', 'FED_SPEAKER', 'MEDIUM', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Crude Oil Imports Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Crude Oil Stocks Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'HIGH', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Cushing Crude Oil Stocks Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'MEDIUM', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Distillate Fuel Production Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Distillate Stocks Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'MEDIUM', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Gasoline Production Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Gasoline Stocks Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'MEDIUM', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Heating Oil Stocks Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('EIA Refinery Crude Runs Change', TIMESTAMP '2026-05-20 10:30:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('17-Week Bill Auction', TIMESTAMP '2026-05-20 11:30:00', 'REPORT', 'LOW', '2026-05-20', NULL, NULL, NULL),
+              ('20-Year Bond Auction', TIMESTAMP '2026-05-20 13:00:00', 'REPORT', 'MEDIUM', '2026-05-20', NULL, NULL, NULL),
+              ('FOMC Minutes', TIMESTAMP '2026-05-20 14:00:00', 'FOMC', 'HIGH', '2026-05-20', NULL, NULL, NULL),
+              ('Building Permits MoM Prel', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Building Permits Prel', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Continuing Jobless Claims', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Housing Starts', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'HIGH', '2026-05-21', NULL, NULL, NULL),
+              ('Housing Starts MoM', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Initial Jobless Claims', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'HIGH', '2026-05-21', NULL, NULL, NULL),
+              ('Jobless Claims 4-week Average', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('Philadelphia Fed Manufacturing Index', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'HIGH', '2026-05-21', NULL, NULL, NULL),
+              ('Philly Fed Business Conditions', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Philly Fed CAPEX Index', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('Philly Fed Employment', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('Philly Fed New Orders', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Philly Fed Prices Paid', TIMESTAMP '2026-05-21 08:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('S&P Global Composite PMI Flash', TIMESTAMP '2026-05-21 09:45:00', 'REPORT', 'HIGH', '2026-05-21', NULL, NULL, NULL),
+              ('S&P Global Manufacturing PMI Flash', TIMESTAMP '2026-05-21 09:45:00', 'REPORT', 'HIGH', '2026-05-21', NULL, NULL, NULL),
+              ('S&P Global Services PMI Flash', TIMESTAMP '2026-05-21 09:45:00', 'REPORT', 'HIGH', '2026-05-21', NULL, NULL, NULL),
+              ('EIA Natural Gas Stocks Change', TIMESTAMP '2026-05-21 10:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Kansas Fed Composite Index', TIMESTAMP '2026-05-21 11:00:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('Kansas Fed Manufacturing Index', TIMESTAMP '2026-05-21 11:00:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('4-Week Bill Auction', TIMESTAMP '2026-05-21 11:30:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('8-Week Bill Auction', TIMESTAMP '2026-05-21 11:30:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('15-Year Mortgage Rate', TIMESTAMP '2026-05-21 12:00:00', 'REPORT', 'LOW', '2026-05-21', NULL, NULL, NULL),
+              ('30-Year Mortgage Rate', TIMESTAMP '2026-05-21 12:00:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('10-Year TIPS Auction', TIMESTAMP '2026-05-21 13:00:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('Fed Balance Sheet', TIMESTAMP '2026-05-21 16:30:00', 'REPORT', 'MEDIUM', '2026-05-21', NULL, NULL, NULL),
+              ('CB Leading Index MoM', TIMESTAMP '2026-05-22 10:00:00', 'REPORT', 'MEDIUM', '2026-05-22', NULL, NULL, NULL),
+              ('Michigan 5 Year Inflation Expectations Final', TIMESTAMP '2026-05-22 10:00:00', 'REPORT', 'MEDIUM', '2026-05-22', NULL, NULL, NULL),
+              ('Michigan Consumer Expectations Final', TIMESTAMP '2026-05-22 10:00:00', 'REPORT', 'MEDIUM', '2026-05-22', NULL, NULL, NULL),
+              ('Michigan Consumer Sentiment Final', TIMESTAMP '2026-05-22 10:00:00', 'REPORT', 'HIGH', '2026-05-22', NULL, NULL, NULL),
+              ('Michigan Current Conditions Final', TIMESTAMP '2026-05-22 10:00:00', 'REPORT', 'MEDIUM', '2026-05-22', NULL, NULL, NULL),
+              ('Michigan Inflation Expectations Final', TIMESTAMP '2026-05-22 10:00:00', 'REPORT', 'HIGH', '2026-05-22', NULL, NULL, NULL),
+              ('Fed Waller Speech', TIMESTAMP '2026-05-22 11:00:00', 'FED_SPEAKER', 'MEDIUM', '2026-05-22', NULL, NULL, NULL),
+              ('Baker Hughes Oil Rig Count', TIMESTAMP '2026-05-22 13:00:00', 'REPORT', 'LOW', '2026-05-22', NULL, NULL, NULL),
+              ('Baker Hughes Total Rigs Count', TIMESTAMP '2026-05-22 13:00:00', 'REPORT', 'LOW', '2026-05-22', NULL, NULL, NULL)
+              ) AS seed(event, event_time, type, priority, cache_date, forecast, prev, reported_period)
+              WHERE NOT EXISTS (
+                SELECT 1
+                FROM economic_events existing
+                WHERE existing.event = seed.event
+                  AND existing.event_time = seed.event_time
+                  AND existing.type = seed.type::economic_event_type
+                  AND COALESCE(existing.reported_period, '') = COALESCE(seed.reported_period, '')
+              );

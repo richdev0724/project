@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: ticker-options-volume-136-table
+      author: marketmono
+      comment: >-
+        Store daily options volume & premium snapshots (Unusual Whales
+        /stock/{ticker}/options-volume) so the Market Premiums widget reads
+        from our database instead of proxying upstream on every page load.
+        Rows are upserted by (ticker, date) every minute by the sync scheduler.
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TABLE IF NOT EXISTS ticker_options_volume (
+                  id                       BIGSERIAL      PRIMARY KEY,
+                  ticker                   VARCHAR(10)    NOT NULL,
+                  date                     DATE           NOT NULL,
+                  call_volume              BIGINT,
+                  put_volume               BIGINT,
+                  call_premium             DECIMAL(20,4),
+                  put_premium              DECIMAL(20,4),
+                  call_open_interest       BIGINT,
+                  put_open_interest        BIGINT,
+                  call_volume_ask_side     BIGINT,
+                  call_volume_bid_side     BIGINT,
+                  put_volume_ask_side      BIGINT,
+                  put_volume_bid_side      BIGINT,
+                  bullish_premium          DECIMAL(20,4),
+                  bearish_premium          DECIMAL(20,4),
+                  net_call_premium         DECIMAL(20,4),
+                  net_put_premium          DECIMAL(20,4),
+                  avg_3_day_call_volume    DECIMAL(20,4),
+                  avg_3_day_put_volume     DECIMAL(20,4),
+                  avg_7_day_call_volume    DECIMAL(20,4),
+                  avg_7_day_put_volume     DECIMAL(20,4),
+                  avg_30_day_call_volume   DECIMAL(20,4),
+                  avg_30_day_put_volume    DECIMAL(20,4),
+                  created_at               TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  updated_at               TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+                  CONSTRAINT uq_ticker_options_volume_ticker_date UNIQUE (ticker, date)
+              );
+
+              DO $$
+              BEGIN
+                IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'marketmono_app') THEN
+                  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.ticker_options_volume TO marketmono_app;
+                  GRANT USAGE, SELECT ON SEQUENCE public.ticker_options_volume_id_seq TO marketmono_app;
+                END IF;
+              END
+              $$;
+      rollback:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: |
+              DROP TABLE IF EXISTS ticker_options_volume;

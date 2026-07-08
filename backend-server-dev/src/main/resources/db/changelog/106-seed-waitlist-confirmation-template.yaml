@@ -1,0 +1,101 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-106-waitlist-confirmation-template
+      author: marketmono
+      comment: Seed the editable waitlist confirmation email template used by backend-server.
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM email_templates WHERE slug = 'waitlist-confirmation'
+      changes:
+        - insert:
+            tableName: email_templates
+            columns:
+              - column:
+                  name: slug
+                  value: waitlist-confirmation
+              - column:
+                  name: name
+                  value: Waitlist Confirmation
+              - column:
+                  name: subject
+                  value: "You're on the Market Mono waitlist, {{user.firstName}}"
+              - column:
+                  name: body_html
+                  value: |
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="utf-8">
+                      <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f9f9f9; }
+                        .button { display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                        .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                        .details { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 18px 0; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <div class="header">
+                          <h1>Market Mono Waitlist</h1>
+                        </div>
+                        <div class="content">
+                          <p>Hi {{user.firstName}},</p>
+                          <p>Thanks for joining the Market Mono waitlist. We recorded your signup for {{user.firstName}} {{user.lastName}} at {{user.email}}.</p>
+                          <p>We are preparing early access and will send launch updates as registration opens.</p>
+                          <div class="details">
+                            <p><strong>Signup name:</strong> {{user.displayName}}</p>
+                            <p><strong>Joined:</strong> {{waitlist.joinedDate}}</p>
+                            <p><strong>Source:</strong> {{waitlist.source}}</p>
+                          </div>
+                          <p>Early waitlist members will get priority access, launch updates, and a special discounted price when we go live.</p>
+                          <a href="{{app.frontendUrl}}" class="button">Visit Market Mono</a>
+                        </div>
+                        <div class="footer">
+                          <p>&copy; {{app.year}} Market Mono. All rights reserved.</p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+              - column:
+                  name: body_text
+                  value: |
+                    Market Mono Waitlist
+
+                    Hi {{user.firstName}},
+
+                    Thanks for joining the Market Mono waitlist. We recorded your signup for {{user.firstName}} {{user.lastName}} at {{user.email}}.
+
+                    Signup name: {{user.displayName}}
+                    Joined: {{waitlist.joinedDate}}
+                    Source: {{waitlist.source}}
+
+                    We are preparing early access and will send launch updates as registration opens. Early waitlist members will get priority access and a special discounted price when we go live.
+
+                    Visit Market Mono: {{app.frontendUrl}}
+
+                    (c) {{app.year}} Market Mono. All rights reserved.
+              - column:
+                  name: variables
+                  value: '[{"key":"user.firstName","description":"Waitlist user first name parsed from signup name","example":"Alex"},{"key":"user.lastName","description":"Waitlist user last name parsed from signup name","example":"Trader"},{"key":"user.displayName","description":"Full waitlist signup name","example":"Alex Trader"},{"key":"user.email","description":"Waitlist user email address","example":"alex@example.com"},{"key":"waitlist.source","description":"Signup source recorded by backend-server","example":"landing"},{"key":"waitlist.joinedDate","description":"Formatted date when the user joined the waitlist","example":"May 13, 2026"},{"key":"app.frontendUrl","description":"Public Market Mono frontend URL","example":"https://marketmono.com"},{"key":"app.year","description":"Current year","example":"2026"}]'
+              - column:
+                  name: category
+                  value: TRANSACTIONAL
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_system
+                  valueBoolean: true
+              - column:
+                  name: version
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: email_templates
+            where: slug = 'waitlist-confirmation'

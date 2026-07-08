@@ -1,0 +1,4862 @@
+{
+  "ticker": "META",
+  "days": 5,
+  "timestamp": "2025-10-14",
+  "total_levels": 539,
+  "total_trades": 647263,
+  "total_volume": 18145220,
+  "total_premium": 13051758349.159239,
+  "levels": [
+    {
+      "ticker": "META",
+      "price": 717.9,
+      "size": 718571,
+      "total_premium": 515826587.8248981,
+      "trades": 5181,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.05,
+      "size": 175399,
+      "total_premium": 125944515.29866865,
+      "trades": 6481,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.1999999999999,
+      "size": 151638,
+      "total_premium": 108905536.18957607,
+      "trades": 5023,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 717,
+      "size": 145357,
+      "total_premium": 104220595.54124281,
+      "trades": 5174,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 717.6,
+      "size": 139996,
+      "total_premium": 100461805.43371603,
+      "trades": 5362,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 716.85,
+      "size": 130916,
+      "total_premium": 93847515.5632663,
+      "trades": 4858,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 717.75,
+      "size": 120462,
+      "total_premium": 86460490.18649754,
+      "trades": 4761,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 717.4499999999999,
+      "size": 115847,
+      "total_premium": 83114977.85359374,
+      "trades": 4306,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.1999999999999,
+      "size": 115291,
+      "total_premium": 82455722.65573788,
+      "trades": 4114,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.8,
+      "size": 109404,
+      "total_premium": 78639472.29897465,
+      "trades": 3821,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.35,
+      "size": 106591,
+      "total_premium": 76249632.20343009,
+      "trades": 4157,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.05,
+      "size": 104243,
+      "total_premium": 74537480.330111,
+      "trades": 3461,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.9499999999999,
+      "size": 100779,
+      "total_premium": 72454267.39207011,
+      "trades": 4017,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.5,
+      "size": 93779,
+      "total_premium": 67098801.47996406,
+      "trades": 3317,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 717.15,
+      "size": 92677,
+      "total_premium": 66462249.82538122,
+      "trades": 3671,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.65,
+      "size": 92355,
+      "total_premium": 66371062.67907305,
+      "trades": 3149,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714.9,
+      "size": 89075,
+      "total_premium": 63680197.60583235,
+      "trades": 3193,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.65,
+      "size": 88723,
+      "total_premium": 63494322.65894411,
+      "trades": 3050,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.9499999999999,
+      "size": 85437,
+      "total_premium": 61169761.40692398,
+      "trades": 2194,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 716.6999999999999,
+      "size": 79600,
+      "total_premium": 57049109.04629008,
+      "trades": 2873,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 717.3,
+      "size": 78485,
+      "total_premium": 56297841.05528697,
+      "trades": 3411,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 719.1,
+      "size": 75315,
+      "total_premium": 54159106.43363602,
+      "trades": 2937,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714.75,
+      "size": 71087,
+      "total_premium": 50809481.5656549,
+      "trades": 2560,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 716.1,
+      "size": 68626,
+      "total_premium": 49143513.88651493,
+      "trades": 2531,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 715.8,
+      "size": 64643,
+      "total_premium": 46271000.417509995,
+      "trades": 2638,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 719.25,
+      "size": 64060,
+      "total_premium": 46074215.36368301,
+      "trades": 2451,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.5,
+      "size": 60616,
+      "total_premium": 43552310.38054908,
+      "trades": 2315,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 716.25,
+      "size": 59424,
+      "total_premium": 42562645.5929689,
+      "trades": 2365,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 718.35,
+      "size": 56381,
+      "total_premium": 40500801.65714505,
+      "trades": 2323,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 716.55,
+      "size": 56218,
+      "total_premium": 40282551.19302102,
+      "trades": 2089,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 713.55,
+      "size": 55926,
+      "total_premium": 39905375.845536,
+      "trades": 4314,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714.4499999999999,
+      "size": 53712,
+      "total_premium": 38375587.73949108,
+      "trades": 1657,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714.6,
+      "size": 53328,
+      "total_premium": 38108399.81355399,
+      "trades": 2072,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714,
+      "size": 49276,
+      "total_premium": 35183211.370829485,
+      "trades": 2491,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714.15,
+      "size": 49238,
+      "total_premium": 35163788.106192,
+      "trades": 2123,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 714.3,
+      "size": 47391,
+      "total_premium": 33851100.03468692,
+      "trades": 2074,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 713.25,
+      "size": 47357,
+      "total_premium": 33777389.03846296,
+      "trades": 1583,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711.9,
+      "size": 46297,
+      "total_premium": 32959540.547255002,
+      "trades": 724,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 713.4,
+      "size": 44873,
+      "total_premium": 32012284.16593702,
+      "trades": 1703,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 716.4,
+      "size": 44462,
+      "total_premium": 31852561.92428798,
+      "trades": 1993,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 713.6999999999999,
+      "size": 41374,
+      "total_premium": 29528600.752799004,
+      "trades": 1776,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 713.85,
+      "size": 39105,
+      "total_premium": 27915265.454489198,
+      "trades": 2276,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.9499999999999,
+      "size": 39126,
+      "total_premium": 27895698.695852008,
+      "trades": 1203,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711,
+      "size": 36355,
+      "total_premium": 25848535.560608,
+      "trades": 944,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.05,
+      "size": 35869,
+      "total_premium": 25539538.728311945,
+      "trades": 989,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 710.85,
+      "size": 35664,
+      "total_premium": 25351602.48394302,
+      "trades": 1042,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 710.6999999999999,
+      "size": 34002,
+      "total_premium": 24164989.253235996,
+      "trades": 1009,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.5,
+      "size": 31202,
+      "total_premium": 22231434.54402993,
+      "trades": 904,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.35,
+      "size": 30263,
+      "total_premium": 21557677.099122025,
+      "trades": 678,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 719.4,
+      "size": 29377,
+      "total_premium": 21133273.99955701,
+      "trades": 1038,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.8,
+      "size": 28086,
+      "total_premium": 20020399.678684954,
+      "trades": 936,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 710.55,
+      "size": 26510,
+      "total_premium": 18836849.368770964,
+      "trades": 765,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 713.1,
+      "size": 26305,
+      "total_premium": 18758004.631111894,
+      "trades": 1115,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.65,
+      "size": 24441,
+      "total_premium": 17344128.47644099,
+      "trades": 470,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711.75,
+      "size": 23765,
+      "total_premium": 16914702.84477198,
+      "trades": 686,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711.6,
+      "size": 22656,
+      "total_premium": 16121925.567039987,
+      "trades": 878,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.05,
+      "size": 21402,
+      "total_premium": 15174680.565599991,
+      "trades": 647,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711.15,
+      "size": 20699,
+      "total_premium": 14720216.073193995,
+      "trades": 593,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708.9,
+      "size": 20307,
+      "total_premium": 14396017.016331993,
+      "trades": 552,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 710.25,
+      "size": 19802,
+      "total_premium": 14064348.892800016,
+      "trades": 623,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.35,
+      "size": 19393,
+      "total_premium": 13756322.740799993,
+      "trades": 543,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.65,
+      "size": 17986,
+      "total_premium": 12817921.833219979,
+      "trades": 742,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.5,
+      "size": 18012,
+      "total_premium": 12779217.357194005,
+      "trades": 543,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 710.4,
+      "size": 17822,
+      "total_premium": 12660434.554659992,
+      "trades": 579,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 712.1999999999999,
+      "size": 17116,
+      "total_premium": 12189929.308529006,
+      "trades": 772,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.9499999999999,
+      "size": 17005,
+      "total_premium": 12073033.431117995,
+      "trades": 416,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708.75,
+      "size": 16833,
+      "total_premium": 11930231.999052003,
+      "trades": 548,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.8,
+      "size": 13233,
+      "total_premium": 9392548.234759003,
+      "trades": 370,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708.3,
+      "size": 13021,
+      "total_premium": 9222910.409088004,
+      "trades": 291,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711.3,
+      "size": 12927,
+      "total_premium": 9194902.327875989,
+      "trades": 498,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 711.4499999999999,
+      "size": 12277,
+      "total_premium": 8734540.637318991,
+      "trades": 532,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708.6,
+      "size": 11404,
+      "total_premium": 8080997.001099996,
+      "trades": 352,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708.4499999999999,
+      "size": 11303,
+      "total_premium": 8007824.644100002,
+      "trades": 291,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 710.1,
+      "size": 9981,
+      "total_premium": 7087318.511900004,
+      "trades": 281,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 709.1999999999999,
+      "size": 9692,
+      "total_premium": 6873493.451912003,
+      "trades": 445,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708,
+      "size": 9365,
+      "total_premium": 6630446.214800007,
+      "trades": 241,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 708.15,
+      "size": 6615,
+      "total_premium": 4684336.944999999,
+      "trades": 193,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 719.55,
+      "size": 6023,
+      "total_premium": 4333595.488984002,
+      "trades": 185,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 707.85,
+      "size": 5435,
+      "total_premium": 3847262.932200001,
+      "trades": 84,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 719.6999999999999,
+      "size": 938,
+      "total_premium": 675031.2819000003,
+      "trades": 26,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 698.4,
+      "size": 520,
+      "total_premium": 363195.092,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 736.65,
+      "size": 160,
+      "total_premium": 117853.87199999999,
+      "trades": 2,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 734.6999999999999,
+      "size": 57,
+      "total_premium": 41874.195,
+      "trades": 2,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 744.4499999999999,
+      "size": 31,
+      "total_premium": 23079.5465,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 672.4499999999999,
+      "size": 25,
+      "total_premium": 16812.420000000002,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 681.75,
+      "size": 10,
+      "total_premium": 6817.462,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 743.4,
+      "size": 9,
+      "total_premium": 6690.599999999999,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-08"
+    },
+    {
+      "ticker": "META",
+      "price": 733.5,
+      "size": 713921,
+      "total_premium": 523666928.24521303,
+      "trades": 811,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 719.25,
+      "size": 118416,
+      "total_premium": 85171732.74812484,
+      "trades": 4048,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 731.85,
+      "size": 111017,
+      "total_premium": 81248135.88182424,
+      "trades": 3538,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726.6,
+      "size": 107942,
+      "total_premium": 78432229.099779,
+      "trades": 2971,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.05,
+      "size": 101928,
+      "total_premium": 74105395.9198502,
+      "trades": 2195,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 733.1999999999999,
+      "size": 97742,
+      "total_premium": 71664669.46340314,
+      "trades": 4180,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726.4499999999999,
+      "size": 96788,
+      "total_premium": 70311265.12311777,
+      "trades": 3326,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 719.1,
+      "size": 95702,
+      "total_premium": 68820093.73607978,
+      "trades": 3436,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726.3,
+      "size": 93653,
+      "total_premium": 68019477.48494992,
+      "trades": 3818,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 719.85,
+      "size": 87533,
+      "total_premium": 63009650.12675111,
+      "trades": 3175,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.5,
+      "size": 86295,
+      "total_premium": 62779018.07783799,
+      "trades": 2193,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 719.55,
+      "size": 84061,
+      "total_premium": 60485448.32842885,
+      "trades": 3341,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 719.6999999999999,
+      "size": 82913,
+      "total_premium": 59672972.77673104,
+      "trades": 3379,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726.75,
+      "size": 79843,
+      "total_premium": 58025849.40002592,
+      "trades": 3010,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 728.85,
+      "size": 79045,
+      "total_premium": 57612473.31440298,
+      "trades": 2829,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 733.35,
+      "size": 75254,
+      "total_premium": 55186392.23344485,
+      "trades": 2748,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726.15,
+      "size": 75588,
+      "total_premium": 54888664.17522298,
+      "trades": 2956,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732,
+      "size": 74889,
+      "total_premium": 54818327.28702777,
+      "trades": 2451,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 719.4,
+      "size": 73032,
+      "total_premium": 52539050.81665306,
+      "trades": 3074,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.9499999999999,
+      "size": 72940,
+      "total_premium": 52440892.50443112,
+      "trades": 2674,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729.3,
+      "size": 71040,
+      "total_premium": 51809878.791202016,
+      "trades": 2015,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.05,
+      "size": 67977,
+      "total_premium": 49625311.466572896,
+      "trades": 1649,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.5,
+      "size": 68280,
+      "total_premium": 49059665.65700414,
+      "trades": 2249,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 733.05,
+      "size": 66140,
+      "total_premium": 48483708.752550974,
+      "trades": 2381,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729.15,
+      "size": 65298,
+      "total_premium": 47612343.303683005,
+      "trades": 1712,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729,
+      "size": 65265,
+      "total_premium": 47577607.783549935,
+      "trades": 2048,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.65,
+      "size": 64414,
+      "total_premium": 46291764.22516305,
+      "trades": 2666,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726.9,
+      "size": 63657,
+      "total_premium": 46272368.14553276,
+      "trades": 2719,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.35,
+      "size": 62997,
+      "total_premium": 45820690.26507196,
+      "trades": 1628,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.35,
+      "size": 62472,
+      "total_premium": 44876997.417632386,
+      "trades": 4870,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720,
+      "size": 61794,
+      "total_premium": 44491594.25109887,
+      "trades": 3062,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729.75,
+      "size": 58847,
+      "total_premium": 42943068.76889806,
+      "trades": 1997,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732.15,
+      "size": 58142,
+      "total_premium": 42568274.145044066,
+      "trades": 1461,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732.3,
+      "size": 57252,
+      "total_premium": 41925798.93782596,
+      "trades": 1719,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.8,
+      "size": 57018,
+      "total_premium": 40984466.49027188,
+      "trades": 2368,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717.4499999999999,
+      "size": 57098,
+      "total_premium": 40964129.832702994,
+      "trades": 1515,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720.3,
+      "size": 54127,
+      "total_premium": 38987754.64762195,
+      "trades": 1660,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 728.6999999999999,
+      "size": 53373,
+      "total_premium": 38893322.72096005,
+      "trades": 2079,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 728.55,
+      "size": 52582,
+      "total_premium": 38308560.59145601,
+      "trades": 1608,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 726,
+      "size": 52661,
+      "total_premium": 38232303.43928003,
+      "trades": 1893,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.8,
+      "size": 48942,
+      "total_premium": 35620388.13909998,
+      "trades": 1423,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732.9,
+      "size": 48459,
+      "total_premium": 35515545.90261401,
+      "trades": 1844,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 731.6999999999999,
+      "size": 48363,
+      "total_premium": 35387602.860727064,
+      "trades": 1577,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.65,
+      "size": 48516,
+      "total_premium": 35302375.355226144,
+      "trades": 1834,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720.15,
+      "size": 48630,
+      "total_premium": 35020333.109206825,
+      "trades": 2090,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.1999999999999,
+      "size": 48114,
+      "total_premium": 34988640.08384401,
+      "trades": 1680,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 725.85,
+      "size": 47141,
+      "total_premium": 34217225.39725602,
+      "trades": 1751,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720.4499999999999,
+      "size": 47255,
+      "total_premium": 34043836.38518302,
+      "trades": 1602,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732.75,
+      "size": 45844,
+      "total_premium": 33592042.279619016,
+      "trades": 1717,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729.9,
+      "size": 45234,
+      "total_premium": 33015713.054949943,
+      "trades": 1795,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717.3,
+      "size": 44890,
+      "total_premium": 32199669.051689997,
+      "trades": 1473,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.1999999999999,
+      "size": 44419,
+      "total_premium": 31902050.964382943,
+      "trades": 1672,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732.4499999999999,
+      "size": 42931,
+      "total_premium": 31444310.17753199,
+      "trades": 1524,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 728.1,
+      "size": 42791,
+      "total_premium": 31155504.992831,
+      "trades": 1064,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.1999999999999,
+      "size": 41295,
+      "total_premium": 30153717.522852954,
+      "trades": 1734,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 731.55,
+      "size": 40963,
+      "total_premium": 29966025.41155605,
+      "trades": 1587,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729.6,
+      "size": 41050,
+      "total_premium": 29950462.49294402,
+      "trades": 1339,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717.6,
+      "size": 40362,
+      "total_premium": 28963520.183310978,
+      "trades": 1595,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 731.4,
+      "size": 38608,
+      "total_premium": 28237782.935466997,
+      "trades": 1514,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 731.1,
+      "size": 38099,
+      "total_premium": 27854031.742131997,
+      "trades": 1188,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717.15,
+      "size": 37586,
+      "total_premium": 26955007.876981974,
+      "trades": 1304,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 718.05,
+      "size": 37499,
+      "total_premium": 26925620.567373,
+      "trades": 1256,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 725.6999999999999,
+      "size": 36960,
+      "total_premium": 26822013.43428702,
+      "trades": 1522,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723.3,
+      "size": 36854,
+      "total_premium": 26656506.999843974,
+      "trades": 1229,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.1999999999999,
+      "size": 36099,
+      "total_premium": 26141613.32956001,
+      "trades": 872,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.35,
+      "size": 36228,
+      "total_premium": 26132462.998099,
+      "trades": 914,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.5,
+      "size": 35559,
+      "total_premium": 25762353.366599992,
+      "trades": 1083,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723.75,
+      "size": 35423,
+      "total_premium": 25637060.60408212,
+      "trades": 1242,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 727.9499999999999,
+      "size": 33966,
+      "total_premium": 24725889.862482026,
+      "trades": 1467,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 729.4499999999999,
+      "size": 33657,
+      "total_premium": 24551213.728823993,
+      "trades": 1199,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720.6,
+      "size": 33886,
+      "total_premium": 24417498.873339966,
+      "trades": 641,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717,
+      "size": 33715,
+      "total_premium": 24173911.467491988,
+      "trades": 977,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 732.6,
+      "size": 31253,
+      "total_premium": 22896035.260595057,
+      "trades": 1312,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.5,
+      "size": 31963,
+      "total_premium": 22869528.297762986,
+      "trades": 1061,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723.6,
+      "size": 31350,
+      "total_premium": 22685147.76582906,
+      "trades": 1256,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 725.4,
+      "size": 31069,
+      "total_premium": 22537085.158774003,
+      "trades": 921,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.65,
+      "size": 31009,
+      "total_premium": 22191975.159716975,
+      "trades": 1154,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717.9,
+      "size": 30211,
+      "total_premium": 21688194.726118,
+      "trades": 1113,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 722.55,
+      "size": 30015,
+      "total_premium": 21687605.877962027,
+      "trades": 880,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.1999999999999,
+      "size": 29929,
+      "total_premium": 21584555.823660005,
+      "trades": 1099,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 717.75,
+      "size": 29642,
+      "total_premium": 21275381.745575134,
+      "trades": 1472,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 725.55,
+      "size": 28947,
+      "total_premium": 21002400.093103956,
+      "trades": 1092,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723.4499999999999,
+      "size": 28909,
+      "total_premium": 20914195.61896002,
+      "trades": 1073,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.65,
+      "size": 28343,
+      "total_premium": 20538776.247688,
+      "trades": 1128,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 722.6999999999999,
+      "size": 28303,
+      "total_premium": 20454519.16210001,
+      "trades": 1101,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.35,
+      "size": 27408,
+      "total_premium": 20016737.686306994,
+      "trades": 1036,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.9499999999999,
+      "size": 27077,
+      "total_premium": 19792341.884938,
+      "trades": 873,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 722.85,
+      "size": 26711,
+      "total_premium": 19307890.308124986,
+      "trades": 935,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 728.4,
+      "size": 26239,
+      "total_premium": 19112316.892829042,
+      "trades": 856,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.8,
+      "size": 26560,
+      "total_premium": 19011629.559817985,
+      "trades": 824,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723.9,
+      "size": 24536,
+      "total_premium": 17761730.528815057,
+      "trades": 876,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.1999999999999,
+      "size": 23834,
+      "total_premium": 17046190.85768199,
+      "trades": 720,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.05,
+      "size": 22397,
+      "total_premium": 16149657.26978998,
+      "trades": 858,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720.9,
+      "size": 21684,
+      "total_premium": 15631892.121699996,
+      "trades": 467,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 725.25,
+      "size": 21286,
+      "total_premium": 15437984.965340022,
+      "trades": 794,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.05,
+      "size": 20610,
+      "total_premium": 14922483.135141019,
+      "trades": 765,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 731.25,
+      "size": 20092,
+      "total_premium": 14692309.926216012,
+      "trades": 903,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 728.25,
+      "size": 19826,
+      "total_premium": 14438332.932480019,
+      "trades": 778,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.35,
+      "size": 19749,
+      "total_premium": 14127597.414446,
+      "trades": 755,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.8,
+      "size": 18687,
+      "total_premium": 13488402.122650027,
+      "trades": 444,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.9499999999999,
+      "size": 17685,
+      "total_premium": 12820770.966899026,
+      "trades": 703,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723,
+      "size": 17713,
+      "total_premium": 12806593.550100002,
+      "trades": 440,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 716.25,
+      "size": 17664,
+      "total_premium": 12651563.400929999,
+      "trades": 523,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 723.15,
+      "size": 17115,
+      "total_premium": 12376754.170645004,
+      "trades": 692,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.5,
+      "size": 17102,
+      "total_premium": 12338733.523612007,
+      "trades": 499,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 725.1,
+      "size": 16982,
+      "total_premium": 12313842.964800002,
+      "trades": 443,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.05,
+      "size": 17192,
+      "total_premium": 12293008.759999996,
+      "trades": 640,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.8,
+      "size": 16848,
+      "total_premium": 12211399.81709702,
+      "trades": 651,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.65,
+      "size": 16067,
+      "total_premium": 11594566.913900003,
+      "trades": 387,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 721.9499999999999,
+      "size": 15783,
+      "total_premium": 11394480.607467003,
+      "trades": 466,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 724.35,
+      "size": 15548,
+      "total_premium": 11262085.592593009,
+      "trades": 633,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 716.85,
+      "size": 14188,
+      "total_premium": 10170770.248147992,
+      "trades": 676,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 713.6999999999999,
+      "size": 13582,
+      "total_premium": 9693638.29197999,
+      "trades": 291,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 715.9499999999999,
+      "size": 13395,
+      "total_premium": 9590255.777644,
+      "trades": 493,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 716.6999999999999,
+      "size": 12958,
+      "total_premium": 9286940.917909984,
+      "trades": 493,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 716.1,
+      "size": 12775,
+      "total_premium": 9148194.548599992,
+      "trades": 489,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 720.75,
+      "size": 12524,
+      "total_premium": 9026691.466594998,
+      "trades": 381,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.65,
+      "size": 12004,
+      "total_premium": 8770606.993076004,
+      "trades": 396,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.8,
+      "size": 10864,
+      "total_premium": 7939449.467386,
+      "trades": 333,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714.9,
+      "size": 10070,
+      "total_premium": 7199125.766654002,
+      "trades": 413,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 730.5,
+      "size": 9538,
+      "total_premium": 6967517.274894006,
+      "trades": 306,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 722.25,
+      "size": 8599,
+      "total_premium": 6210520.088100001,
+      "trades": 188,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714.75,
+      "size": 7902,
+      "total_premium": 5647940.852500005,
+      "trades": 290,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 722.1,
+      "size": 7477,
+      "total_premium": 5399186.2981299935,
+      "trades": 340,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 722.4,
+      "size": 7454,
+      "total_premium": 5384716.618700006,
+      "trades": 368,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714.15,
+      "size": 7482,
+      "total_premium": 5343463.163135004,
+      "trades": 197,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714.3,
+      "size": 7059,
+      "total_premium": 5042266.523700003,
+      "trades": 191,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714.4499999999999,
+      "size": 6813,
+      "total_premium": 4867480.430999999,
+      "trades": 226,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 713.85,
+      "size": 6608,
+      "total_premium": 4717191.6835499955,
+      "trades": 234,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 713.4,
+      "size": 6534,
+      "total_premium": 4661343.023500002,
+      "trades": 327,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714,
+      "size": 6469,
+      "total_premium": 4618775.183341001,
+      "trades": 228,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 716.55,
+      "size": 6272,
+      "total_premium": 4494101.245365,
+      "trades": 260,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 713.1,
+      "size": 5712,
+      "total_premium": 4073191.7962249983,
+      "trades": 222,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 716.4,
+      "size": 5641,
+      "total_premium": 4041054.186000003,
+      "trades": 230,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 713.55,
+      "size": 5011,
+      "total_premium": 3575625.8520410014,
+      "trades": 257,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 712.9499999999999,
+      "size": 4082,
+      "total_premium": 2910367.7366050025,
+      "trades": 180,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 713.25,
+      "size": 4040,
+      "total_premium": 2881522.2460000003,
+      "trades": 237,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 714.6,
+      "size": 3091,
+      "total_premium": 2208843.8409000016,
+      "trades": 167,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 712.8,
+      "size": 2121,
+      "total_premium": 1511869.9356000002,
+      "trades": 81,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 712.5,
+      "size": 1328,
+      "total_premium": 946217.254,
+      "trades": 24,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 712.65,
+      "size": 692,
+      "total_premium": 493145.3566,
+      "trades": 36,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 712.35,
+      "size": 131,
+      "total_premium": 93321.95270000001,
+      "trades": 9,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 742.65,
+      "size": 10,
+      "total_premium": 7426.314,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 764.6999999999999,
+      "size": 5,
+      "total_premium": 3823.5,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 699.75,
+      "size": 5,
+      "total_premium": 3498.8,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 771.3,
+      "size": 3,
+      "total_premium": 2313.87,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 733.8,
+      "size": 1,
+      "total_premium": 733.83,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 733.65,
+      "size": 1,
+      "total_premium": 733.665,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-09"
+    },
+    {
+      "ticker": "META",
+      "price": 705.3,
+      "size": 505412,
+      "total_premium": 356466551.6281721,
+      "trades": 3545,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 710.6999999999999,
+      "size": 141526,
+      "total_premium": 100583117.07329202,
+      "trades": 5741,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 710.85,
+      "size": 129356,
+      "total_premium": 91952157.94767287,
+      "trades": 6313,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711.75,
+      "size": 124999,
+      "total_premium": 88968397.86724198,
+      "trades": 6194,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711,
+      "size": 118368,
+      "total_premium": 84159611.14201784,
+      "trades": 5988,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.05,
+      "size": 117818,
+      "total_premium": 83891493.59261593,
+      "trades": 5650,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711.4499999999999,
+      "size": 116334,
+      "total_premium": 82765288.63583694,
+      "trades": 5832,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708.6,
+      "size": 114208,
+      "total_premium": 80926845.32774475,
+      "trades": 653,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711.9,
+      "size": 108737,
+      "total_premium": 77409747.43686241,
+      "trades": 5881,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711.3,
+      "size": 107612,
+      "total_premium": 76544023.17099182,
+      "trades": 5500,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.5,
+      "size": 105853,
+      "total_premium": 75737151.35919897,
+      "trades": 3558,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732.75,
+      "size": 97428,
+      "total_premium": 71392791.42394005,
+      "trades": 2560,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711.15,
+      "size": 97034,
+      "total_premium": 69005542.26812004,
+      "trades": 5282,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 710.55,
+      "size": 96697,
+      "total_premium": 68708096.69787109,
+      "trades": 4182,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.9499999999999,
+      "size": 93508,
+      "total_premium": 66387686.2303413,
+      "trades": 4337,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 711.6,
+      "size": 93211,
+      "total_premium": 66329229.29786281,
+      "trades": 5225,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.1999999999999,
+      "size": 90007,
+      "total_premium": 64102837.51782825,
+      "trades": 4994,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.35,
+      "size": 89899,
+      "total_premium": 64039390.75378211,
+      "trades": 4229,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 710.1,
+      "size": 83133,
+      "total_premium": 59032123.80036304,
+      "trades": 3166,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.65,
+      "size": 79316,
+      "total_premium": 56762267.16061093,
+      "trades": 3950,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 731.4,
+      "size": 75932,
+      "total_premium": 55534710.77050015,
+      "trades": 2907,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714,
+      "size": 75374,
+      "total_premium": 53817094.62177099,
+      "trades": 2809,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.5,
+      "size": 75183,
+      "total_premium": 53567762.9053582,
+      "trades": 3491,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.05,
+      "size": 71943,
+      "total_premium": 51441828.665734045,
+      "trades": 3491,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 716.4,
+      "size": 70020,
+      "total_premium": 50162238.76920801,
+      "trades": 3037,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.8,
+      "size": 68553,
+      "total_premium": 49070223.546820834,
+      "trades": 3411,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732,
+      "size": 66666,
+      "total_premium": 48799772.3916417,
+      "trades": 3071,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 710.25,
+      "size": 68691,
+      "total_premium": 48786920.52687695,
+      "trades": 2929,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 710.4,
+      "size": 66805,
+      "total_premium": 47458300.61053787,
+      "trades": 2697,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 731.55,
+      "size": 64438,
+      "total_premium": 47139142.539233886,
+      "trades": 2741,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732.3,
+      "size": 63481,
+      "total_premium": 46486509.72775652,
+      "trades": 2899,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.8,
+      "size": 65352,
+      "total_premium": 46387145.50456196,
+      "trades": 3239,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714.4499999999999,
+      "size": 64632,
+      "total_premium": 46176353.82190014,
+      "trades": 2660,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 705.15,
+      "size": 65112,
+      "total_premium": 45915000.32120003,
+      "trades": 2346,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 716.25,
+      "size": 64032,
+      "total_premium": 45863081.12528609,
+      "trades": 2895,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714.75,
+      "size": 63666,
+      "total_premium": 45505265.33812782,
+      "trades": 2819,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.35,
+      "size": 63341,
+      "total_premium": 45311070.91472391,
+      "trades": 3192,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714.15,
+      "size": 63212,
+      "total_premium": 45141988.509575084,
+      "trades": 2201,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 713.85,
+      "size": 62951,
+      "total_premium": 44937404.73352509,
+      "trades": 2353,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 713.6999999999999,
+      "size": 61324,
+      "total_premium": 43766947.82686798,
+      "trades": 1886,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 731.85,
+      "size": 59201,
+      "total_premium": 43326409.724703126,
+      "trades": 3097,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 716.55,
+      "size": 60185,
+      "total_premium": 43124828.171001054,
+      "trades": 2662,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.9499999999999,
+      "size": 58492,
+      "total_premium": 42755005.41847338,
+      "trades": 5346,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714.9,
+      "size": 59769,
+      "total_premium": 42728663.77854795,
+      "trades": 2877,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714.6,
+      "size": 59438,
+      "total_premium": 42474711.47487192,
+      "trades": 2565,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.1999999999999,
+      "size": 57242,
+      "total_premium": 40940098.30749991,
+      "trades": 2908,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 731.25,
+      "size": 55646,
+      "total_premium": 40691214.634837925,
+      "trades": 2273,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 731.1,
+      "size": 54759,
+      "total_premium": 40034358.46124196,
+      "trades": 2222,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.05,
+      "size": 54105,
+      "total_premium": 39660888.22894317,
+      "trades": 3114,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732.15,
+      "size": 54068,
+      "total_premium": 39586080.31618804,
+      "trades": 2248,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 705.4499999999999,
+      "size": 56038,
+      "total_premium": 39531650.907780044,
+      "trades": 2055,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 705,
+      "size": 56020,
+      "total_premium": 39494471.23720007,
+      "trades": 2304,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.5,
+      "size": 53598,
+      "total_premium": 39153886.32138088,
+      "trades": 1907,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 714.3,
+      "size": 53506,
+      "total_premium": 38219142.597829044,
+      "trades": 2253,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.65,
+      "size": 53808,
+      "total_premium": 38185106.54377304,
+      "trades": 2746,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732.9,
+      "size": 51679,
+      "total_premium": 37875872.60585393,
+      "trades": 2734,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.65,
+      "size": 51930,
+      "total_premium": 37007371.87869785,
+      "trades": 2367,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 716.1,
+      "size": 51442,
+      "total_premium": 36837776.62556496,
+      "trades": 2228,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.5,
+      "size": 51893,
+      "total_premium": 36817787.19802709,
+      "trades": 2379,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 715.9499999999999,
+      "size": 50585,
+      "total_premium": 36216762.95637786,
+      "trades": 2827,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 731.6999999999999,
+      "size": 47512,
+      "total_premium": 34764638.909734055,
+      "trades": 2245,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732.4499999999999,
+      "size": 47382,
+      "total_premium": 34704853.996207,
+      "trades": 2474,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.1999999999999,
+      "size": 47152,
+      "total_premium": 34571749.36729399,
+      "trades": 1894,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.1999999999999,
+      "size": 47249,
+      "total_premium": 34501241.68469503,
+      "trades": 1626,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.8,
+      "size": 45706,
+      "total_premium": 33401910.386201948,
+      "trades": 2084,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 732.6,
+      "size": 44872,
+      "total_premium": 32873358.5617109,
+      "trades": 2137,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.1999999999999,
+      "size": 43232,
+      "total_premium": 30659955.14542002,
+      "trades": 2008,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.35,
+      "size": 41215,
+      "total_premium": 30101533.20163092,
+      "trades": 2197,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.35,
+      "size": 41826,
+      "total_premium": 29669006.73154097,
+      "trades": 2214,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 709.05,
+      "size": 40470,
+      "total_premium": 28695387.576612983,
+      "trades": 1889,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720,
+      "size": 38698,
+      "total_premium": 27862545.761854988,
+      "trades": 1360,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.65,
+      "size": 37807,
+      "total_premium": 27623342.54620204,
+      "trades": 1865,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 713.55,
+      "size": 36748,
+      "total_premium": 26221118.523467958,
+      "trades": 1750,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 713.4,
+      "size": 36428,
+      "total_premium": 25987836.076201,
+      "trades": 1634,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 713.25,
+      "size": 36289,
+      "total_premium": 25883429.536599983,
+      "trades": 1281,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.9499999999999,
+      "size": 36143,
+      "total_premium": 25768521.292060032,
+      "trades": 1079,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 716.6999999999999,
+      "size": 35255,
+      "total_premium": 25267131.222856946,
+      "trades": 1803,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 730.05,
+      "size": 33266,
+      "total_premium": 24285389.371617004,
+      "trades": 1283,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720.15,
+      "size": 33300,
+      "total_premium": 23981096.234330032,
+      "trades": 1028,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720.4499999999999,
+      "size": 32160,
+      "total_premium": 23169367.691399973,
+      "trades": 1281,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 704.85,
+      "size": 31693,
+      "total_premium": 22338706.31990001,
+      "trades": 913,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 713.1,
+      "size": 31174,
+      "total_premium": 22230227.504345004,
+      "trades": 996,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 719.6999999999999,
+      "size": 28228,
+      "total_premium": 20315650.810515016,
+      "trades": 983,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 707.6999999999999,
+      "size": 28159,
+      "total_premium": 19927717.198862974,
+      "trades": 1161,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 707.55,
+      "size": 26277,
+      "total_premium": 18592590.280026022,
+      "trades": 1228,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.35,
+      "size": 26255,
+      "total_premium": 18544743.041300017,
+      "trades": 971,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.35,
+      "size": 24327,
+      "total_premium": 17840068.118155014,
+      "trades": 1046,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 719.85,
+      "size": 24720,
+      "total_premium": 17794979.181190006,
+      "trades": 842,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 707.85,
+      "size": 25018,
+      "total_premium": 17708988.282153983,
+      "trades": 931,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729.6,
+      "size": 22798,
+      "total_premium": 16633386.721899992,
+      "trades": 781,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.5,
+      "size": 21930,
+      "total_premium": 16085698.377900008,
+      "trades": 642,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.9499999999999,
+      "size": 21052,
+      "total_premium": 15135604.669505002,
+      "trades": 787,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729.75,
+      "size": 20613,
+      "total_premium": 15042225.509999996,
+      "trades": 954,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720.3,
+      "size": 20785,
+      "total_premium": 14971311.817351034,
+      "trades": 1020,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 716.85,
+      "size": 20067,
+      "total_premium": 14384668.930208985,
+      "trades": 1054,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 719.55,
+      "size": 19948,
+      "total_premium": 14353607.537190003,
+      "trades": 914,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720.75,
+      "size": 19700,
+      "total_premium": 14198970.494400008,
+      "trades": 774,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 712.8,
+      "size": 19667,
+      "total_premium": 14018374.604999995,
+      "trades": 976,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 705.6,
+      "size": 19705,
+      "total_premium": 13903564.249600027,
+      "trades": 706,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720.6,
+      "size": 19097,
+      "total_premium": 13761115.235298008,
+      "trades": 901,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.65,
+      "size": 19320,
+      "total_premium": 13652216.687099999,
+      "trades": 699,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708.75,
+      "size": 19102,
+      "total_premium": 13538437.476899978,
+      "trades": 831,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 719.25,
+      "size": 18408,
+      "total_premium": 13239957.947707001,
+      "trades": 714,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708.9,
+      "size": 17953,
+      "total_premium": 12726958.013645008,
+      "trades": 640,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.05,
+      "size": 17544,
+      "total_premium": 12386520.369500002,
+      "trades": 912,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717,
+      "size": 17247,
+      "total_premium": 12366117.095801001,
+      "trades": 831,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 719.4,
+      "size": 16590,
+      "total_premium": 11934874.060482018,
+      "trades": 806,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.1999999999999,
+      "size": 16467,
+      "total_premium": 11629177.81469999,
+      "trades": 971,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735,
+      "size": 15804,
+      "total_premium": 11615927.980800003,
+      "trades": 605,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 734.55,
+      "size": 15139,
+      "total_premium": 11120096.93857599,
+      "trades": 489,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717.3,
+      "size": 15449,
+      "total_premium": 11081469.062257987,
+      "trades": 726,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.8,
+      "size": 15357,
+      "total_premium": 11038831.879500002,
+      "trades": 421,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 704.6999999999999,
+      "size": 15598,
+      "total_premium": 10992354.312399996,
+      "trades": 401,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.5,
+      "size": 15498,
+      "total_premium": 10949591.243699996,
+      "trades": 535,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.35,
+      "size": 14793,
+      "total_premium": 10670971.679639006,
+      "trades": 473,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.05,
+      "size": 14752,
+      "total_premium": 10592443.004100012,
+      "trades": 448,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 707.4,
+      "size": 14755,
+      "total_premium": 10437509.330000998,
+      "trades": 698,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.8,
+      "size": 14710,
+      "total_premium": 10397238.037299985,
+      "trades": 604,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729.4499999999999,
+      "size": 13895,
+      "total_premium": 10135798.818699984,
+      "trades": 623,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.5,
+      "size": 13856,
+      "total_premium": 9955524.301420003,
+      "trades": 408,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717.15,
+      "size": 13603,
+      "total_premium": 9755344.928100009,
+      "trades": 720,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.05,
+      "size": 13450,
+      "total_premium": 9697950.993944986,
+      "trades": 678,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708.4499999999999,
+      "size": 13672,
+      "total_premium": 9686090.744787995,
+      "trades": 483,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.8,
+      "size": 13159,
+      "total_premium": 9656168.381100006,
+      "trades": 244,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 720.9,
+      "size": 13145,
+      "total_premium": 9476102.514801998,
+      "trades": 697,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 719.1,
+      "size": 13088,
+      "total_premium": 9411615.7425,
+      "trades": 510,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708.3,
+      "size": 13082,
+      "total_premium": 9266113.568215998,
+      "trades": 395,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 734.85,
+      "size": 12246,
+      "total_premium": 8998774.201500002,
+      "trades": 503,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 707.25,
+      "size": 12596,
+      "total_premium": 8908508.40359999,
+      "trades": 526,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.1999999999999,
+      "size": 12325,
+      "total_premium": 8888857.439699993,
+      "trades": 701,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717.4499999999999,
+      "size": 12274,
+      "total_premium": 8806089.403900016,
+      "trades": 579,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.5,
+      "size": 12025,
+      "total_premium": 8675963.42490001,
+      "trades": 551,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 707.1,
+      "size": 12086,
+      "total_premium": 8545938.421199998,
+      "trades": 287,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 734.6999999999999,
+      "size": 10825,
+      "total_premium": 7953032.183700004,
+      "trades": 441,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 734.4,
+      "size": 10357,
+      "total_premium": 7606169.8342420105,
+      "trades": 463,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729.3,
+      "size": 9836,
+      "total_premium": 7173317.057599994,
+      "trades": 352,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729.9,
+      "size": 9609,
+      "total_premium": 7013574.44793,
+      "trades": 672,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.65,
+      "size": 9632,
+      "total_premium": 6922073.767000001,
+      "trades": 505,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.1999999999999,
+      "size": 9205,
+      "total_premium": 6610964.516199993,
+      "trades": 375,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 706.9499999999999,
+      "size": 9295,
+      "total_premium": 6571133.588899995,
+      "trades": 499,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708,
+      "size": 9054,
+      "total_premium": 6410128.765424998,
+      "trades": 704,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 734.25,
+      "size": 8508,
+      "total_premium": 6247072.112974989,
+      "trades": 484,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 728.4,
+      "size": 8358,
+      "total_premium": 6088114.2438,
+      "trades": 175,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.65,
+      "size": 8317,
+      "total_premium": 6002020.673799988,
+      "trades": 455,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717.75,
+      "size": 8349,
+      "total_premium": 5992508.559206002,
+      "trades": 328,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 708.15,
+      "size": 8244,
+      "total_premium": 5837954.561899996,
+      "trades": 342,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 728.55,
+      "size": 7837,
+      "total_premium": 5709663.596400001,
+      "trades": 259,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 718.35,
+      "size": 7934,
+      "total_premium": 5699362.151900005,
+      "trades": 392,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.9499999999999,
+      "size": 7851,
+      "total_premium": 5691755.687900002,
+      "trades": 250,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.05,
+      "size": 7698,
+      "total_premium": 5412518.376300001,
+      "trades": 107,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 725.25,
+      "size": 7414,
+      "total_premium": 5377001.820700001,
+      "trades": 132,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.65,
+      "size": 7274,
+      "total_premium": 5336588.402800002,
+      "trades": 273,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 725.85,
+      "size": 7192,
+      "total_premium": 5220299.636600002,
+      "trades": 109,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726,
+      "size": 7118,
+      "total_premium": 5167615.271099999,
+      "trades": 196,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729,
+      "size": 6899,
+      "total_premium": 5029407.368488999,
+      "trades": 253,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.05,
+      "size": 7024,
+      "total_premium": 4917015.380099995,
+      "trades": 506,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 705.75,
+      "size": 6801,
+      "total_premium": 4799730.881399997,
+      "trades": 474,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717.6,
+      "size": 6635,
+      "total_premium": 4761243.488099996,
+      "trades": 436,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.9499999999999,
+      "size": 6446,
+      "total_premium": 4692444.880600006,
+      "trades": 291,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 734.1,
+      "size": 6275,
+      "total_premium": 4606501.750776998,
+      "trades": 265,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 725.1,
+      "size": 6346,
+      "total_premium": 4601475.5622999985,
+      "trades": 133,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735.15,
+      "size": 6165,
+      "total_premium": 4532291.015400007,
+      "trades": 277,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 733.9499999999999,
+      "size": 6147,
+      "total_premium": 4511772.007399999,
+      "trades": 230,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 728.6999999999999,
+      "size": 6074,
+      "total_premium": 4426140.654,
+      "trades": 231,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 705.9,
+      "size": 6053,
+      "total_premium": 4272832.047399996,
+      "trades": 542,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735.3,
+      "size": 5781,
+      "total_premium": 4250660.689800003,
+      "trades": 233,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.9499999999999,
+      "size": 5801,
+      "total_premium": 4188021.7041999996,
+      "trades": 215,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.05,
+      "size": 5589,
+      "total_premium": 3895795.469600001,
+      "trades": 453,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 729.15,
+      "size": 5286,
+      "total_premium": 3854254.959800001,
+      "trades": 229,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 728.1,
+      "size": 5133,
+      "total_premium": 3737271.7320000012,
+      "trades": 189,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.8,
+      "size": 4964,
+      "total_premium": 3612807.3951000017,
+      "trades": 198,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.9499999999999,
+      "size": 5041,
+      "total_premium": 3533759.8795999996,
+      "trades": 144,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 721.8,
+      "size": 4834,
+      "total_premium": 3489141.6057000016,
+      "trades": 206,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699.75,
+      "size": 4979,
+      "total_premium": 3484084.661699998,
+      "trades": 129,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723.15,
+      "size": 4770,
+      "total_premium": 3449359.566399999,
+      "trades": 167,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.65,
+      "size": 4694,
+      "total_premium": 3415675.3983000023,
+      "trades": 150,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 717.9,
+      "size": 4731,
+      "total_premium": 3396466.087999999,
+      "trades": 208,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699,
+      "size": 4830,
+      "total_premium": 3376192.6892000013,
+      "trades": 308,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.35,
+      "size": 4391,
+      "total_premium": 3193726.036400001,
+      "trades": 137,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 704.55,
+      "size": 4531,
+      "total_premium": 3192230.197700001,
+      "trades": 335,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696,
+      "size": 4278,
+      "total_premium": 2977540.5488999994,
+      "trades": 219,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 722.1,
+      "size": 4083,
+      "total_premium": 2948312.907500001,
+      "trades": 117,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.8,
+      "size": 3971,
+      "total_premium": 2878127.19,
+      "trades": 125,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.5,
+      "size": 3947,
+      "total_premium": 2776788.0935000004,
+      "trades": 251,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723.3,
+      "size": 3833,
+      "total_premium": 2772460.4292999995,
+      "trades": 78,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735.4499999999999,
+      "size": 3715,
+      "total_premium": 2732226.8173,
+      "trades": 194,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.05,
+      "size": 3719,
+      "total_premium": 2703940.1263,
+      "trades": 84,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.9499999999999,
+      "size": 3653,
+      "total_premium": 2571611.148899999,
+      "trades": 316,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 728.85,
+      "size": 3456,
+      "total_premium": 2518880.760700002,
+      "trades": 174,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 725.55,
+      "size": 3358,
+      "total_premium": 2436296.7338000005,
+      "trades": 122,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.65,
+      "size": 3328,
+      "total_premium": 2411599.7583999997,
+      "trades": 89,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 722.85,
+      "size": 3300,
+      "total_premium": 2385439.7432,
+      "trades": 117,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.35,
+      "size": 3408,
+      "total_premium": 2376706.902100004,
+      "trades": 136,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723.4499999999999,
+      "size": 3163,
+      "total_premium": 2288199.2180999997,
+      "trades": 122,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.5,
+      "size": 3259,
+      "total_premium": 2273114.1971000032,
+      "trades": 176,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.5,
+      "size": 3049,
+      "total_premium": 2218180.5995000014,
+      "trades": 110,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 725.6999999999999,
+      "size": 2884,
+      "total_premium": 2092907.50721,
+      "trades": 95,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699.9,
+      "size": 2966,
+      "total_premium": 2075823.8726000015,
+      "trades": 194,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 727.1999999999999,
+      "size": 2849,
+      "total_premium": 2071809.898800001,
+      "trades": 112,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 728.25,
+      "size": 2836,
+      "total_premium": 2065280.447600001,
+      "trades": 160,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693.4499999999999,
+      "size": 2862,
+      "total_premium": 1984755.7996000005,
+      "trades": 194,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699.3,
+      "size": 2735,
+      "total_premium": 1912597.0894000034,
+      "trades": 180,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.65,
+      "size": 2647,
+      "total_premium": 1862553.2280999995,
+      "trades": 301,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 698.25,
+      "size": 2318,
+      "total_premium": 1618488.5529000002,
+      "trades": 123,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 722.6999999999999,
+      "size": 2131,
+      "total_premium": 1540064.9466000004,
+      "trades": 96,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 722.55,
+      "size": 2013,
+      "total_premium": 1454548.2400000002,
+      "trades": 73,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 722.25,
+      "size": 2006,
+      "total_premium": 1448800.3599,
+      "trades": 80,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.8,
+      "size": 2044,
+      "total_premium": 1438513.2148000016,
+      "trades": 247,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 725.4,
+      "size": 1963,
+      "total_premium": 1423900.2819000003,
+      "trades": 64,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726.3,
+      "size": 1959,
+      "total_premium": 1422811.9686999999,
+      "trades": 103,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696.4499999999999,
+      "size": 2040,
+      "total_premium": 1420827.4843000006,
+      "trades": 262,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.1999999999999,
+      "size": 1969,
+      "total_premium": 1378688.2320000003,
+      "trades": 154,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.8,
+      "size": 1946,
+      "total_premium": 1352129.4584999995,
+      "trades": 148,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696.6,
+      "size": 1912,
+      "total_premium": 1331877.6475999996,
+      "trades": 69,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.9499999999999,
+      "size": 1873,
+      "total_premium": 1307344.5969999996,
+      "trades": 205,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.05,
+      "size": 1734,
+      "total_premium": 1276232.7365999997,
+      "trades": 76,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696.75,
+      "size": 1793,
+      "total_premium": 1249269.3641000001,
+      "trades": 163,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.9499999999999,
+      "size": 1760,
+      "total_premium": 1223124.747200001,
+      "trades": 137,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 722.4,
+      "size": 1594,
+      "total_premium": 1151522.8048999996,
+      "trades": 75,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726.4499999999999,
+      "size": 1580,
+      "total_premium": 1147732.6631999998,
+      "trades": 42,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693.9,
+      "size": 1564,
+      "total_premium": 1085301.2922999999,
+      "trades": 93,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 704.4,
+      "size": 1535,
+      "total_premium": 1081232.1767999995,
+      "trades": 130,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723,
+      "size": 1411,
+      "total_premium": 1020166.192,
+      "trades": 97,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726.15,
+      "size": 1393,
+      "total_premium": 1011511.6448999996,
+      "trades": 107,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.5,
+      "size": 1387,
+      "total_premium": 1004918.4557999995,
+      "trades": 39,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702,
+      "size": 1393,
+      "total_premium": 977913.6282,
+      "trades": 40,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 692.85,
+      "size": 1325,
+      "total_premium": 918008.6290000002,
+      "trades": 68,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.35,
+      "size": 1293,
+      "total_premium": 905547.5264000002,
+      "trades": 85,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696.3,
+      "size": 1248,
+      "total_premium": 868965.8677000002,
+      "trades": 154,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693,
+      "size": 1197,
+      "total_premium": 829517.2014000003,
+      "trades": 135,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696.9,
+      "size": 1150,
+      "total_premium": 801423.9392000004,
+      "trades": 97,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 696.15,
+      "size": 1142,
+      "total_premium": 794967.4604000001,
+      "trades": 73,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735.9,
+      "size": 1048,
+      "total_premium": 771197.4848000002,
+      "trades": 74,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.65,
+      "size": 1102,
+      "total_premium": 768782.5459999997,
+      "trades": 56,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.1999999999999,
+      "size": 1100,
+      "total_premium": 766935.1318999999,
+      "trades": 62,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702.6,
+      "size": 1071,
+      "total_premium": 752479.2671999999,
+      "trades": 49,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 695.85,
+      "size": 1077,
+      "total_premium": 749389.6101000005,
+      "trades": 67,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.1999999999999,
+      "size": 1036,
+      "total_premium": 728551.6417000004,
+      "trades": 89,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 697.8,
+      "size": 1019,
+      "total_premium": 711059.0277,
+      "trades": 98,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.65,
+      "size": 997,
+      "total_premium": 692540.4364000002,
+      "trades": 82,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 703.35,
+      "size": 963,
+      "total_premium": 677311.0865999996,
+      "trades": 178,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723.75,
+      "size": 899,
+      "total_premium": 650649.6805000001,
+      "trades": 45,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699.4499999999999,
+      "size": 926,
+      "total_premium": 647711.7685000008,
+      "trades": 166,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 695.55,
+      "size": 913,
+      "total_premium": 635030.1078000002,
+      "trades": 39,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693.75,
+      "size": 915,
+      "total_premium": 634753.4744000001,
+      "trades": 115,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702.4499999999999,
+      "size": 880,
+      "total_premium": 618194.1780000001,
+      "trades": 46,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693.3,
+      "size": 875,
+      "total_premium": 606659.2511999999,
+      "trades": 75,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.8,
+      "size": 820,
+      "total_premium": 604175.2949999999,
+      "trades": 13,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723.6,
+      "size": 824,
+      "total_premium": 596232.3980999999,
+      "trades": 80,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.05,
+      "size": 852,
+      "total_premium": 591289.6308000002,
+      "trades": 86,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726.9,
+      "size": 777,
+      "total_premium": 564780.1842000003,
+      "trades": 38,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 698.4,
+      "size": 806,
+      "total_premium": 562941.2821000002,
+      "trades": 84,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 698.55,
+      "size": 782,
+      "total_premium": 546235.2268000002,
+      "trades": 115,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 698.1,
+      "size": 782,
+      "total_premium": 545922.8746999999,
+      "trades": 54,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 704.25,
+      "size": 757,
+      "total_premium": 533094.2941000003,
+      "trades": 91,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735.6,
+      "size": 705,
+      "total_premium": 518597.0443999999,
+      "trades": 97,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.35,
+      "size": 662,
+      "total_premium": 459675.76609999995,
+      "trades": 94,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693.6,
+      "size": 594,
+      "total_premium": 412005.0576,
+      "trades": 103,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699.15,
+      "size": 584,
+      "total_premium": 408310.5951999999,
+      "trades": 96,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702.9,
+      "size": 550,
+      "total_premium": 386614.0611000003,
+      "trades": 58,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 723.9,
+      "size": 525,
+      "total_premium": 380043.1872,
+      "trades": 22,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 698.6999999999999,
+      "size": 540,
+      "total_premium": 377301.18489999993,
+      "trades": 91,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.1999999999999,
+      "size": 517,
+      "total_premium": 374402.08545500005,
+      "trades": 27,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 692.6999999999999,
+      "size": 535,
+      "total_premium": 370614.78699999995,
+      "trades": 49,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.5,
+      "size": 525,
+      "total_premium": 367764.5017000002,
+      "trades": 76,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 735.75,
+      "size": 495,
+      "total_premium": 364199.2795,
+      "trades": 47,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.35,
+      "size": 498,
+      "total_premium": 360716.0718000001,
+      "trades": 34,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.65,
+      "size": 478,
+      "total_premium": 334898.0850000001,
+      "trades": 24,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 724.05,
+      "size": 458,
+      "total_premium": 331608.4015,
+      "trades": 37,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 699.6,
+      "size": 459,
+      "total_premium": 321122.52389999985,
+      "trades": 106,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726.75,
+      "size": 426,
+      "total_premium": 309604.97199999995,
+      "trades": 20,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702.15,
+      "size": 416,
+      "total_premium": 292093.30039999995,
+      "trades": 21,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 698.85,
+      "size": 378,
+      "total_premium": 264166.562,
+      "trades": 81,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.5,
+      "size": 337,
+      "total_premium": 248201.14510000002,
+      "trades": 30,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 695.1,
+      "size": 352,
+      "total_premium": 244678.485,
+      "trades": 2,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 726.6,
+      "size": 322,
+      "total_premium": 233966.12889999998,
+      "trades": 16,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.9499999999999,
+      "size": 313,
+      "total_premium": 230680.0378,
+      "trades": 20,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 692.55,
+      "size": 311,
+      "total_premium": 215371.3,
+      "trades": 24,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 701.55,
+      "size": 306,
+      "total_premium": 214678.99520000006,
+      "trades": 41,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.35,
+      "size": 270,
+      "total_premium": 198808.2557,
+      "trades": 29,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702.75,
+      "size": 267,
+      "total_premium": 187627.72949999993,
+      "trades": 27,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 693.15,
+      "size": 268,
+      "total_premium": 185765.60309999992,
+      "trades": 68,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 704.1,
+      "size": 252,
+      "total_premium": 177431.54249999998,
+      "trades": 56,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 684.4499999999999,
+      "size": 200,
+      "total_premium": 136880.63999999998,
+      "trades": 2,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 701.4,
+      "size": 195,
+      "total_premium": 136765.9212,
+      "trades": 21,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.5,
+      "size": 181,
+      "total_premium": 125705.31999999999,
+      "trades": 26,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 694.1999999999999,
+      "size": 179,
+      "total_premium": 124264.81349999997,
+      "trades": 69,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 695.6999999999999,
+      "size": 124,
+      "total_premium": 86267.10499999998,
+      "trades": 71,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 695.25,
+      "size": 104,
+      "total_premium": 72303.5797,
+      "trades": 14,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.1999999999999,
+      "size": 98,
+      "total_premium": 72148.88970000001,
+      "trades": 23,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 700.8,
+      "size": 92,
+      "total_premium": 64470.609999999986,
+      "trades": 64,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 701.85,
+      "size": 90,
+      "total_premium": 63162.555,
+      "trades": 15,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 736.65,
+      "size": 82,
+      "total_premium": 60404.608700000004,
+      "trades": 14,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 702.3,
+      "size": 74,
+      "total_premium": 51968.1715,
+      "trades": 25,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 695.4,
+      "size": 60,
+      "total_premium": 41722.10500000001,
+      "trades": 22,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 743.4,
+      "size": 40,
+      "total_premium": 29733.476000000002,
+      "trades": 1,
+      "market_session": "During Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 701.25,
+      "size": 41,
+      "total_premium": 28749.750000000004,
+      "trades": 7,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 676.05,
+      "size": 40,
+      "total_premium": 27040.068,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 670.35,
+      "size": 20,
+      "total_premium": 13408.171999999999,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 667.1999999999999,
+      "size": 20,
+      "total_premium": 13343.155999999999,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 701.6999999999999,
+      "size": 10,
+      "total_premium": 7017.429999999999,
+      "trades": 7,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 692.4,
+      "size": 10,
+      "total_premium": 6923.7,
+      "trades": 1,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 737.1,
+      "size": 5,
+      "total_premium": 3685.6288,
+      "trades": 3,
+      "market_session": "Pre Market",
+      "trade_date": "2025-10-10"
+    },
+    {
+      "ticker": "META",
+      "price": 701.1,
+      "size": 2,
+      "total_premium": 1402.25,
+      "trades": 2,
+      "market_session": "After Market",
+      "trade_date": "2025-10-10"
+    }
+  ]
+}

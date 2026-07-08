@@ -1,0 +1,100 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/013-user-filter-ownership-and-preferences.yaml
+  - changeSet:
+      id: baseline-013-user-filter-ownership-and-preferences
+      author: marketmono
+      comment: Scope saved filters to users and add category-based user preferences for WS7.
+      changes:
+        - addColumn:
+            tableName: user_filters
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+              - column:
+                  name: filter_type
+                  type: VARCHAR(50)
+                  defaultValue: FLOW
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_user_filters_user_id
+            tableName: user_filters
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_user_filters_user_id_filter_type
+            tableName: user_filters
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: filter_type
+        - addForeignKeyConstraint:
+            baseTableName: user_filters
+            baseColumnNames: user_id
+            constraintName: fk_user_filters_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - createTable:
+            tableName: user_preferences
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: preferences_json
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_user_preferences_user_id
+            tableName: user_preferences
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_user_preferences_category
+            tableName: user_preferences
+            columns:
+              - column:
+                  name: category
+        - addUniqueConstraint:
+            tableName: user_preferences
+            columnNames: user_id, category
+            constraintName: uk_user_preferences_user_id_category
+        - addForeignKeyConstraint:
+            baseTableName: user_preferences
+            baseColumnNames: user_id
+            constraintName: fk_user_preferences_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE

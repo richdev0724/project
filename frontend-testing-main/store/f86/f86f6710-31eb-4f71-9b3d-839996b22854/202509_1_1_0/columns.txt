@@ -1,0 +1,11 @@
+columns format version: 1
+9 columns:
+`ticker` String
+`trade_date` Date
+`price` Float64
+`size` UInt64
+`total_premium` Float64
+`trades` UInt32
+`market_session` String
+`created_at` DateTime
+`updated_at` DateTime

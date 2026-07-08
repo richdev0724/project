@@ -1,0 +1,594 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Montserrat:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Inline&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=K2D:wght@100;200;300;400;500;600;700;800&display=swap');
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-XLightItalic.woff') format('woff2'),
+    url('../assets/fonts/Gotham-XLightItalic.woff') format('woff');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-XLight.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-XLight.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-Medium.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-LightItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-LightItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham Ultra';
+  src:
+    url('../assets/fonts/Gotham-UltraItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-UltraItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-ThinItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-ThinItalic.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-MediumItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-MediumItalic.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham Ultra';
+  src:
+    url('../assets/fonts/Gotham-Ultra.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Ultra.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-Thin.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-BlackItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-BlackItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-BookItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-BookItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-Light.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-Bold.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-Book.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Book.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-BoldItalic.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-BoldItalic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src:
+    url('../assets/fonts/Gotham-Black.woff2') format('woff2'),
+    url('../assets/fonts/Gotham-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Courier New';
+  src:
+    url('../assets/fonts/CourierNewPSMT.woff2') format('woff2'),
+    url('../assets/fonts/CourierNewPSMT.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goodly';
+  src:
+    url('../assets/fonts/GoodlySemibold.woff2') format('woff2'),
+    url('../assets/fonts/GoodlySemibold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goodly Extra';
+  src:
+    url('../assets/fonts/GoodlyExtraLight.woff2') format('woff2'),
+    url('../assets/fonts/GoodlyExtraLight.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goodly';
+  src:
+    url('../assets/fonts/GoodlyRegular.woff2') format('woff2'),
+    url('../assets/fonts/GoodlyRegular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goodly';
+  src:
+    url('../assets/fonts/GoodlyBold.woff2') format('woff2'),
+    url('../assets/fonts/GoodlyBold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goodly';
+  src:
+    url('../assets/fonts/GoodlyMedium.woff2') format('woff2'),
+    url('../assets/fonts/GoodlyMedium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goodly Light';
+  src:
+    url('../assets/fonts/GoodlyLight.woff2') format('woff2'),
+    url('../assets/fonts/GoodlyLight.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Aggressive bullish border: gradient from #9AF164 to #598B3A */
+  .aggressive-bullish-border {
+    box-shadow:
+      inset 0 1px 0 0 #9af164,
+      inset 0 -1px 0 0 #9af164,
+      inset 1px 0 0 0 #9af164,
+      inset -1px 0 0 0 #598b3a;
+  }
+
+  /* Aggressive bearish border: gradient from #F12617 to transparent */
+  .aggressive-bearish-border {
+    box-shadow:
+      inset 0 1px 0 0 #f12617,
+      inset 0 -1px 0 0 #f12617,
+      inset 1px 0 0 0 #f12617,
+      inset -1px 0 0 0 rgba(241, 38, 23, 0.3);
+  }
+}
+
+@keyframes borderGlow {
+  0%,
+  100% {
+    border-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.2);
+  }
+  50% {
+    border-color: rgba(34, 197, 94, 0.8);
+    box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.3);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Hide scrollbar for horizontal scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+@layer base {
+  :root {
+    /* Custom CSS Variables */
+    --header-height: 3rem;
+
+    /* CSS Variables for light theme */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    --placeHolder-color: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 230, 10%, 11%;
+    --foreground: 210 40% 98%;
+    --card: 222.86 17.07% 8.04%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 180, 11%, 96%, 1;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 210 6.5% 18;
+    --muted-foreground: 225, 2%, 40%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --greyBackground: 0, 0%, 100%, 0.05;
+    --border: 231.5, 3.8%, 13.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --shadow-blue: 220 18.8% 6.3%;
+    --sky-500: 199 89% 48%;
+    --gray-200: 220 13% 91%;
+    --slate-900: 222 47% 11%;
+    --sky-400: 198 93% 60%;
+    --green-success: 127, 71%, 49%;
+    --green-success-light: 127, 72%, 57%;
+    --red-danger: 4, 89%, 52%;
+    --red-warning: 4, 70%, 53%;
+    --yellow-warning: 35, 100%, 50%;
+    --white-50: 0 0% 100% 0.07;
+    --bgBullish: 127, 72%, 57%, 0.11;
+    --textBullish: 127, 76%, 45%;
+    --bgBearish: 4, 70%, 53%, 0.2;
+    --bearishBorder: 4, 89%, 52%, 0;
+    --textBearish: 4, 70%, 53%;
+    --bgNeutral: 223, 10%, 72%, 0.24;
+    --textNeutral: 192, 33%, 99%, 1;
+    --bgMultiLeg: 198, 100%, 57%, 0.21;
+    --textMultiLeg: 210, 33%, 99%, 1;
+    --bgSizeOI: 101, 29%, 19%, 1;
+    --textSizeOI: 97, 83%, 67%, 1;
+    --bgAggressive: 275, 60%, 30%, 1;
+    --textAggressive: 192, 11%, 91%, 1;
+    --bgFloor: 35, 82%, 22%, 1;
+    --textFloor: 35, 100%, 73%, 1;
+    --bgSweep: 298, 72%, 18%, 0.78;
+    --textSweep: 275, 100%, 84%, 1;
+    --gradientPurpleBackground: 248, 63%, 32%, 0.66;
+    --gradientRedBackground: 0, 63%, 32%, 0.66;
+    --header-primary: 0, 0%, 100%, 1;
+    --greyBorder: 0, 0%, 26%, 1;
+    --popOverBorder: 0, 0%, 60%, 1;
+    --inputBorderColor: 220, 9%, 46%, 1;
+    --placeHolderColor: 231, 9%, 24%, 1;
+    --navBarBg: 223, 14%, 10%;
+    --TableEven: 230, 9%, 13%;
+    --TableOdd: 230, 12%, 10%;
+    --multiSelectContentBackground: 230, 12%, 10%, 1;
+    --gradientButtonPrimary: 205, 48%, 17%, 1;
+    --gradientButtonPrimaryTransparent: 205, 48%, 17%, 0.9;
+    --inputFieldBackground: 230, 12%, 10%, 1;
+    --gradientButtonSecondary: 205, 6%, 32%, 1;
+    --gradientButtonSecondaryTransparent: 205, 25%, 40%, 0.9;
+    --gradientLinePrimary: 0, 0%, 40%, 0;
+    --gradientLinePrimaryTransparent: 180, 11%, 96%, 1;
+    --validationError: 4, 70%, 53%, 1;
+    --yellowHighLightText: 35, 100%, 50%, 1;
+    --purpleHighLightText: 280, 100%, 75%, 1;
+    --serverStatusPrimary: 231, 14%, 18%, 1;
+    --serverStatusPrimaryTransparent: 206, 27%, 12%, 1;
+    --LinearGradientPrimary: 203, 80%, 17%, 1;
+    --LinearGradientPrimaryForGround: 188, 42%, 43%, 1;
+    --tickerOneGradientPrimary: 116, 31%, 34%, 1;
+    --tickerOneGradientPrimaryTransparent: 53, 100%, 54%, 1;
+    --tickerTwoGradientPrimary: 187, 40%, 45%, 1;
+    --tickerTwoGradientPrimaryTransparent: 0, 0%, 85%, 1;
+    --tickerThreeGradientPrimary: 0, 80%, 38%, 1;
+    --tickerThreeGradientPrimaryTransparent: 0, 96%, 60%, 1;
+    --tickerFourGradientPrimary: 189, 44%, 40%, 0.6;
+    --tickerFourGradientPrimaryTransparent: 203, 78%, 18%, 1;
+    --tickerFiveGradientPrimary: 18, 90%, 49%, 1;
+    --tickerFiveGradientPrimaryTransparent: 18, 100%, 67%, 1;
+    --topDarkPoolProgressPrimary: 275, 26%, 57%, 1;
+    --topDarkPoolProgressPrimaryTransparent: 275, 50%, 32%, 1;
+    --topBullishNetPremiumPrimary: 116, 31%, 34%, 1;
+    --topBullishNetPremiumPrimaryTransparent: 53, 100%, 54%, 1;
+    --topBearishNetPremiumPrimary: 0, 80%, 38%, 1;
+    --topBearishNetPremiumPrimaryTransparent: 0, 96%, 60%, 1;
+    --topLitFlowPrimary: 89, 83%, 42%, 1;
+    --topLitFlowPrimaryTransparent: 89, 94%, 22%, 1;
+    --sectorPerformanceIncreaseBgColor: 163, 65%, 45%, 0.3;
+    --sectorPerformanceDecreaseBgColor: 8, 60%, 51%, 0.2;
+    --callPrimaryColor: 127, 71%, 49%, 1;
+    --putPrimaryColor: 4, 89%, 52%, 1;
+    --callSecondaryColor: 163, 65%, 45%, 1;
+    --putSecondaryColor: 8, 60%, 51%, 1;
+    --democratBlue: 197, 100%, 48%, 1;
+    --democratRed: 358, 82%, 51%, 1;
+    --politicianTradesTable: 230, 9%, 13%, 1;
+    --mintColor: 177, 100%, 39%, 1;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body > #root {
+    @apply h-screen font-gotham;
+  }
+
+  body {
+    @apply min-h-svh w-full bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .faded-bottom {
+    @apply after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:hidden after:h-32 after:w-full after:bg-[linear-gradient(180deg,_transparent_10%,_hsl(var(--background))_70%)] after:md:block;
+  }
+}
+
+@layer components {
+  .custom-card-title {
+    @apply text-lg text-white50;
+  }
+}
+
+@layer components {
+  .ti-offcanvas {
+    @apply fixed z-[150] h-full transform bg-white shadow-md transition-all duration-300 dark:border-white/10 dark:bg-slate-400;
+  }
+
+  .ti-offcanvas-header {
+    @apply flex items-center justify-between bg-white px-4 py-3 dark:bg-slate-400;
+  }
+
+  .ti-offcanvas-body {
+    @apply h-screen overflow-y-auto px-0 pb-80;
+  }
+}
+
+/* Collapsible Animation Styles */
+.collapsibleDropdown {
+  overflow: hidden;
+}
+
+.collapsibleDropdown[data-state='open'] {
+  animation: slideDown 200ms ease-out;
+}
+
+.collapsibleDropdown[data-state='closed'] {
+  animation: slideUp 200ms ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.sidebar-collapse .flow-filter-wrapper {
+  left: 44px !important;
+}
+
+.display-week-active:after {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  inset: 0;
+  background-image: url('/assets/images/week-bg-active.png');
+}
+
+tr:has(.active-week-day) {
+  background: #000000b0;
+  position: relative;
+}
+
+tr:has(.active-week-day) td {
+  z-index: 10;
+}
+
+tr:has(.active-week-day):after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: -4px;
+  bottom: -4px;
+  border: 1px solid #ef510d;
+  border-radius: 5px;
+  background: #000;
+  z-index: 0;
+}
+
+.table-header-with-bg thead {
+  background-color: #1d1e24;
+}
+
+.table-header-with-bg tbody {
+  border: 1px solid #424242;
+  border-top: 0;
+}
+.card-text-shadow {
+  text-shadow: 0px 3px 4px #00000059;
+}
+.folder-div {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.folder-div:before {
+  content: ' ';
+  position: absolute;
+  top: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 10px;
+  background: #161b1f;
+  z-index: 2;
+  right: -7px;
+}
+.folder-div:after {
+  content: ' ';
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  right: -1px;
+  height: 6px;
+  background: #2d2d2d;
+  z-index: 1;
+}
+
+.thin-slider .radix-slider-track {
+  height: 1.5px !important;
+}
+
+.react-grid-placeholder {
+  background-color: #000 !important;
+}

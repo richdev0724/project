@@ -1,0 +1,227 @@
+databaseChangeLog:
+  - logicalFilePath: src/main/resources/db/changelog/011-option-trade-aggregates.yaml
+  - changeSet:
+      id: feature-011-option-trade-aggregates
+      author: marketmono
+      comment: >-
+        Create derived option-trade aggregate feed tables for WS8 aggregated trades.
+        The member table intentionally does not declare a foreign key to option_trades
+        because option_trades is a TimescaleDB hypertable with a composite primary key.
+      changes:
+        - createTable:
+            tableName: option_trade_aggregates
+            columns:
+              - column:
+                  name: aggregate_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: grouping_version
+                  type: INTEGER
+                  defaultValueNumeric: 1
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ticker
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_chain
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: side
+                  type: VARCHAR(50)
+              - column:
+                  name: aggressor
+                  type: VARCHAR(50)
+              - column:
+                  name: condition_signature
+                  type: VARCHAR(100)
+              - column:
+                  name: is_sweep
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_floor_trade
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_multileg
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_executed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_executed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: representative_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: min_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: max_price
+                  type: DECIMAL(12,4)
+              - column:
+                  name: total_size
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_premium
+                  type: DECIMAL(15,2)
+              - column:
+                  name: trade_count
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: exchange_count
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiry
+                  type: DATE
+              - column:
+                  name: option_type
+                  type: VARCHAR(10)
+              - column:
+                  name: strike
+                  type: DECIMAL(12,4)
+              - column:
+                  name: underlying_price_first
+                  type: DECIMAL(12,4)
+              - column:
+                  name: underlying_price_last
+                  type: DECIMAL(12,4)
+              - column:
+                  name: open_interest
+                  type: INTEGER
+              - column:
+                  name: volume
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: option_trade_aggregates
+            columnNames: aggregate_id
+            constraintName: option_trade_aggregates_pkey
+        - createIndex:
+            indexName: idx_option_trade_aggregates_ticker_last_executed
+            tableName: option_trade_aggregates
+            columns:
+              - column:
+                  name: ticker
+              - column:
+                  name: last_executed_at
+                  descending: true
+        - createIndex:
+            indexName: idx_option_trade_aggregates_option_chain_last_exec
+            tableName: option_trade_aggregates
+            columns:
+              - column:
+                  name: option_chain
+              - column:
+                  name: last_executed_at
+                  descending: true
+        - createIndex:
+            indexName: idx_option_trade_aggregates_last_executed
+            tableName: option_trade_aggregates
+            columns:
+              - column:
+                  name: last_executed_at
+                  descending: true
+
+        - createTable:
+            tableName: option_trade_aggregate_members
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: aggregate_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trade_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: executed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: member_order
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: option_trade_aggregate_members
+            columnNames: id
+            constraintName: option_trade_aggregate_members_pkey
+        - addUniqueConstraint:
+            tableName: option_trade_aggregate_members
+            columnNames: aggregate_id, trade_id, executed_at
+            constraintName: uq_option_trade_aggregate_members_trade
+        - addForeignKeyConstraint:
+            constraintName: fk_option_trade_aggregate_members_aggregate
+            baseTableName: option_trade_aggregate_members
+            baseColumnNames: aggregate_id
+            referencedTableName: option_trade_aggregates
+            referencedColumnNames: aggregate_id
+            onDelete: CASCADE
+        - createIndex:
+            indexName: idx_option_trade_aggregate_members_aggregate_order
+            tableName: option_trade_aggregate_members
+            columns:
+              - column:
+                  name: aggregate_id
+              - column:
+                  name: member_order
+        - createIndex:
+            indexName: idx_option_trade_aggregate_members_trade_exec
+            tableName: option_trade_aggregate_members
+            columns:
+              - column:
+                  name: trade_id
+              - column:
+                  name: executed_at

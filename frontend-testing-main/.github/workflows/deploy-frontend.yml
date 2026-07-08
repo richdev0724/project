@@ -1,0 +1,349 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - 'src/**'
+      - 'app/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'bun.lock'
+      - 'bun.lockb'
+      - 'components.json'
+      - 'env.ts'
+      - 'next.config.js'
+      - 'next.config.mjs'
+      - 'postcss.config.js'
+      - 'proxy.ts'
+      - 'tailwind.config.js'
+      - 'tsconfig.json'
+      - 'Dockerfile'
+      - 'nginx.conf'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
+
+# Keep this workflow file in the push path filter so deploy-only fixes can
+# retrigger staging without unrelated app changes.
+concurrency:
+  group: deploy-frontend-staging
+  cancel-in-progress: false
+
+env:
+  IMAGE_NAME: ghcr.io/market-mono/frontend-testing
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          if [ -f bun.lock ] || [ -f bun.lockb ]; then
+            bun install --frozen-lockfile
+          else
+            echo "No Bun lockfile committed on this branch; installing from package manifests"
+            bun install
+          fi
+
+      - name: Validate frontend provider config
+        env:
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID || secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID || secrets.VITE_GOOGLE_CLIENT_ID }}
+          HCAPTCHA_SITE_KEY: ${{ vars.HCAPTCHA_SITE_KEY }}
+        run: |
+          if [ -z "$GOOGLE_OAUTH_CLIENT_ID" ]; then
+            echo "❌ GOOGLE_OAUTH_CLIENT_ID secret is required for Google login."
+            exit 1
+          fi
+          if [ -z "$HCAPTCHA_SITE_KEY" ]; then
+            echo "❌ HCAPTCHA_SITE_KEY repository variable is required for hCaptcha."
+            exit 1
+          fi
+
+      - name: Build application
+        run: bun run build
+        env:
+          NEXT_PUBLIC_API_URL: https://marketmono.com/api/v1
+          NEXT_PUBLIC_BASE_URL: https://marketmono.com/api
+          NEXT_PUBLIC_API_BASE_URL: https://marketmono.com/api
+          NEXT_PUBLIC_ADMIN_API_URL: https://marketmono.com/admin-api
+          NEXT_PUBLIC_MONO_AI_URL: /mono-ai-api
+          NEXT_PUBLIC_WS_URL: wss://marketmono.com/ws
+          NEXT_PUBLIC_APP_URL: https://marketmono.com
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID || secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID || secrets.VITE_GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_HCAPTCHA_SITE_KEY: ${{ vars.HCAPTCHA_SITE_KEY }}
+          NEXT_PUBLIC_COOKIE_BASED_AUTHENTICATION: 'true'
+          BACKEND_INTERNAL_URL: http://host.docker.internal
+
+      - name: Verify standalone output
+        run: |
+          if [ -d ".next/standalone" ]; then
+            echo "✅ Standalone build successful"
+            du -sh .next/standalone
+          else
+            echo "❌ Standalone build failed - missing .next/standalone directory"
+            exit 1
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/market-mono/frontend-testing:latest
+            ghcr.io/market-mono/frontend-testing:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://marketmono.com/api/v1
+            NEXT_PUBLIC_BASE_URL=https://marketmono.com/api
+            NEXT_PUBLIC_API_BASE_URL=https://marketmono.com/api
+            NEXT_PUBLIC_ADMIN_API_URL=https://marketmono.com/admin-api
+            NEXT_PUBLIC_MONO_AI_URL=/mono-ai-api
+            NEXT_PUBLIC_WS_URL=wss://marketmono.com/ws
+            NEXT_PUBLIC_APP_URL=https://marketmono.com
+            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID || secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID || secrets.VITE_GOOGLE_CLIENT_ID }}
+            NEXT_PUBLIC_HCAPTCHA_SITE_KEY=${{ vars.HCAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_COOKIE_BASED_AUTHENTICATION=true
+            BACKEND_INTERNAL_URL=http://host.docker.internal
+
+  deploy:
+    needs: build-and-push
+    runs-on:
+      - self-hosted
+      - marketmono-prod-deploy
+    if: github.ref == 'refs/heads/staging'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Runner disk preflight
+        run: |
+          set -euo pipefail
+          ROOT_USAGE_PCT=$(df -Pk / | awk 'NR==2 {gsub("%", "", $5); print $5}')
+          ROOT_FREE_KB=$(df -Pk / | awk 'NR==2 {print $4}')
+          MIN_FREE_KB=$((10 * 1024 * 1024))
+          TEMP_ROOT="${RUNNER_TEMP:-/tmp}"
+
+          echo "Runner temp root: $TEMP_ROOT"
+          df -h / "$TEMP_ROOT"
+          du -sh "$TEMP_ROOT" 2>/dev/null || true
+
+          if [ "$ROOT_USAGE_PCT" -ge 90 ]; then
+            echo "❌ Runner root filesystem usage is ${ROOT_USAGE_PCT}% (threshold: 90%)."
+            exit 1
+          fi
+
+          if [ "$ROOT_FREE_KB" -lt "$MIN_FREE_KB" ]; then
+            echo "❌ Runner root filesystem free space is below 10 GiB."
+            exit 1
+          fi
+
+      - name: Setup SSH
+        env:
+          DEPLOY_SERVER_HOSTKEY: ${{ secrets.DEPLOY_SERVER_HOSTKEY }}
+        run: |
+          set -euo pipefail
+          SSH_WORK_DIR="${RUNNER_TEMP:-/tmp}/marketmono-${GITHUB_RUN_ID}"
+          mkdir -p ~/.ssh
+          mkdir -p "$SSH_WORK_DIR"
+          chmod 700 ~/.ssh
+          chmod 700 "$SSH_WORK_DIR"
+          SSH_KEY_FILE="$SSH_WORK_DIR/deploy_key"
+          SSH_CONFIG_FILE="$SSH_WORK_DIR/ssh_config"
+          echo "${{ secrets.DEPLOY_SERVER_SSH_KEY }}" | base64 -d > "$SSH_KEY_FILE"
+          chmod 600 "$SSH_KEY_FILE"
+          printf '%s\n' "$DEPLOY_SERVER_HOSTKEY" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          cat > "$SSH_CONFIG_FILE" << SSHCONF
+          Host *
+            ServerAliveInterval 30
+            ServerAliveCountMax 3
+            ConnectTimeout 10
+          SSHCONF
+          chmod 600 "$SSH_CONFIG_FILE"
+
+      - name: Prepare frontend environment file
+        env:
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID || secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID || secrets.VITE_GOOGLE_CLIENT_ID }}
+          HCAPTCHA_SITE_KEY: ${{ vars.HCAPTCHA_SITE_KEY }}
+        run: |
+          if [ -z "$GOOGLE_OAUTH_CLIENT_ID" ]; then
+            echo "❌ GOOGLE_OAUTH_CLIENT_ID secret is required for Google login."
+            exit 1
+          fi
+          if [ -z "$HCAPTCHA_SITE_KEY" ]; then
+            echo "❌ HCAPTCHA_SITE_KEY repository variable is required for hCaptcha."
+            exit 1
+          fi
+
+          cat > frontend.env <<EOF
+          PORT=3000
+          HOSTNAME=0.0.0.0
+          NODE_ENV=production
+          NEXT_PUBLIC_API_URL=https://marketmono.com/api/v1
+          NEXT_PUBLIC_BASE_URL=https://marketmono.com/api
+          NEXT_PUBLIC_API_BASE_URL=https://marketmono.com/api
+          NEXT_PUBLIC_ADMIN_API_URL=https://marketmono.com/admin-api
+          NEXT_PUBLIC_MONO_AI_URL=/mono-ai-api
+          NEXT_PUBLIC_WS_URL=wss://marketmono.com/ws
+          NEXT_PUBLIC_APP_URL=https://marketmono.com
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID=$GOOGLE_OAUTH_CLIENT_ID
+          NEXT_PUBLIC_HCAPTCHA_SITE_KEY=$HCAPTCHA_SITE_KEY
+          NEXT_PUBLIC_COOKIE_BASED_AUTHENTICATION=true
+          BACKEND_INTERNAL_URL=http://host.docker.internal
+          EOF
+          chmod 600 frontend.env
+
+      - name: Render edge proxy configuration
+        run: |
+          sed \
+            -e "s/__BACKEND_A_PRIVATE_HOST__/${{ secrets.BACKEND_PRIVATE_HOST_A }}/g" \
+            -e "s/__BACKEND_B_PRIVATE_HOST__/${{ secrets.BACKEND_PRIVATE_HOST_B }}/g" \
+            -e "s/__BACKEND_ADMIN_PRIVATE_HOST__/${{ secrets.BACKEND_ADMIN_PRIVATE_HOST }}/g" \
+            -e "s/__MONO_AI_PRIVATE_HOST__/${{ secrets.MONO_AI_PRIVATE_HOST }}/g" \
+            nginx.conf > marketmono-edge.conf
+
+      - name: Deploy frontend image and edge proxy config
+        timeout-minutes: 10
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_SERVER_USER }}
+          TARGET_HOST: ${{ secrets.DEPLOY_EDGE_SERVER_HOST }}
+        run: |
+          set -euo pipefail
+          SSH_WORK_DIR="${RUNNER_TEMP:-/tmp}/marketmono-${GITHUB_RUN_ID}"
+          SSH_KEY_FILE="$SSH_WORK_DIR/deploy_key"
+          SSH_CONFIG_FILE="$SSH_WORK_DIR/ssh_config"
+          ssh -i "$SSH_KEY_FILE" -F "$SSH_CONFIG_FILE" "$DEPLOY_USER@$TARGET_HOST" 'mkdir -p ~/marketmono'
+          scp -i "$SSH_KEY_FILE" -F "$SSH_CONFIG_FILE" frontend.env "$DEPLOY_USER@$TARGET_HOST:~/marketmono/frontend.env"
+          scp -i "$SSH_KEY_FILE" -F "$SSH_CONFIG_FILE" marketmono-edge.conf "$DEPLOY_USER@$TARGET_HOST:~/marketmono/marketmono-edge.conf"
+          ssh -T -i "$SSH_KEY_FILE" -F "$SSH_CONFIG_FILE" "$DEPLOY_USER@$TARGET_HOST" "IMAGE_NAME='$IMAGE_NAME' IMAGE_TAG='$IMAGE_TAG' GHCR_TOKEN='${{ secrets.GITHUB_TOKEN }}' GITHUB_ACTOR='${{ github.actor }}' bash -s" <<'EOF'
+          set -euo pipefail
+          cd ~/marketmono
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+          DOCKER_ROOT="$(docker info -f '{{.DockerRootDir}}' 2>/dev/null || echo /var/lib/docker)"
+          echo "Target Docker root: $DOCKER_ROOT"
+          echo "Target disk usage before cleanup:"
+          for disk_path in / "$DOCKER_ROOT" /var/lib/containerd; do
+            if [ -e "$disk_path" ]; then
+              df -h "$disk_path" || true
+              df -ih "$disk_path" || true
+            fi
+          done
+          docker system df || true
+
+          CURRENT_FRONTEND_IMAGE_ID="$(docker inspect -f '{{.Image}}' marketmono-frontend 2>/dev/null || true)"
+          FRONTEND_IMAGE_IDS="$(docker images --no-trunc "$IMAGE_NAME" --format '{{.ID}}' 2>/dev/null | sort -u || true)"
+          for image_id in $FRONTEND_IMAGE_IDS; do
+            if [ -z "$image_id" ]; then
+              continue
+            fi
+            if [ -n "$CURRENT_FRONTEND_IMAGE_ID" ] && [ "$image_id" = "$CURRENT_FRONTEND_IMAGE_ID" ]; then
+              continue
+            fi
+            docker rmi "$image_id" 2>/dev/null || true
+          done
+          docker image prune -af || true
+          docker builder prune -af || true
+
+          echo "Target disk usage after cleanup:"
+          docker system df || true
+          CHECK_PATH="$DOCKER_ROOT"
+          if [ -d /var/lib/containerd ]; then
+            CHECK_PATH=/var/lib/containerd
+          fi
+          FREE_KB="$(df -Pk "$CHECK_PATH" | awk 'NR==2 {print $4}')"
+          MIN_TARGET_FREE_KB=$((2 * 1024 * 1024))
+          if [ "$FREE_KB" -lt "$MIN_TARGET_FREE_KB" ]; then
+            echo "Target host free space is below 2 GiB after Docker cleanup."
+            df -h "$CHECK_PATH" || true
+            df -ih "$CHECK_PATH" || true
+            exit 1
+          fi
+
+          docker pull "$IMAGE_NAME:$IMAGE_TAG"
+          docker stop marketmono-frontend 2>/dev/null || true
+          docker rm marketmono-frontend 2>/dev/null || true
+          docker run -d \
+            --name marketmono-frontend \
+            --restart unless-stopped \
+            --env-file ~/marketmono/frontend.env \
+            --add-host host.docker.internal:host-gateway \
+            -p 3000:3000 \
+            "$IMAGE_NAME:$IMAGE_TAG"
+
+          sudo install -m 644 ~/marketmono/marketmono-edge.conf /etc/nginx/conf.d/marketmono-edge.conf
+          sudo nginx -t
+          sudo systemctl reload nginx
+
+          for i in $(seq 1 40); do
+            if docker exec marketmono-frontend wget --spider -q http://localhost:3000 2>/dev/null \
+              && curl -fsS -H 'Host: marketmono.com' http://127.0.0.1/ >/dev/null \
+              && curl -fsS -H 'Host: marketmono.com' http://127.0.0.1/actuator/health/readiness >/dev/null \
+              && curl -fsS -H 'Host: marketmono.com' http://127.0.0.1/admin-api/actuator/health >/dev/null \
+              && curl -fsS -H 'Host: marketmono.com' http://127.0.0.1/mono-ai-api/health >/dev/null; then
+              echo "✅ frontend-edge is healthy on attempt $i"
+              exit 0
+            fi
+
+            if ! docker ps --format '{{.Names}}' | grep -qx marketmono-frontend; then
+              echo "❌ frontend container stopped unexpectedly"
+              docker logs marketmono-frontend --tail 200 || true
+              exit 1
+            fi
+
+            echo "Waiting for frontend-edge readiness (attempt $i/40)..."
+            sleep 5
+          done
+
+          echo "❌ frontend-edge failed readiness checks"
+          docker logs marketmono-frontend --tail 200 || true
+          sudo journalctl -u nginx --no-pager -n 50 || true
+          exit 1
+          EOF
+
+      - name: Cleanup SSH keys
+        if: always()
+        run: |
+          rm -rf "${RUNNER_TEMP:-/tmp}/marketmono-${GITHUB_RUN_ID}"
+          rm -f frontend.env marketmono-edge.conf
+
+  notify:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Report status
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "✅ Frontend edge deployment successful"
+          else
+            echo "❌ Frontend edge deployment failed"
+            exit 1
+          fi

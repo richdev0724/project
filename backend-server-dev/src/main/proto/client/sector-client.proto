@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "com.marketmono.proto.client";
+option java_outer_classname = "SectorProto";
+
+enum Sector {
+    BasicMaterials = 0;
+    CommunicationServices = 1;
+    ConsumerCyclical = 2;
+    ConsumerDefensive = 3;
+    Energy = 4;
+    FinancialServices = 5;
+    Healthcare = 6;
+    Industrials = 7;
+    RealEstate = 8;
+    Technology = 9;
+    Utilities = 10;
+}
